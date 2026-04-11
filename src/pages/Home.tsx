@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Calendar, Users, ImageIcon, ChevronDown } from 'lucide-react'
 import { events } from '../data/events'
-import { members } from '../data/members'
 import { useLang } from '../context/LanguageContext'
 
 function HeroSection() {
@@ -140,7 +139,6 @@ function UpcomingEvents() {
 
 function FeaturedMembers() {
   const { t } = useLang()
-  const featured = members.filter(m => m.role === 'Performer').slice(0, 3)
 
   return (
     <section className="py-16 px-6">
@@ -148,25 +146,22 @@ function FeaturedMembers() {
         <h2 className="section-title text-center">{t('KANADEについて', 'Meet KANADE')}</h2>
         <div className="section-divider" />
 
-        <div className="grid md:grid-cols-3 gap-6 mb-10">
-          {featured.map(member => (
-            <div key={member.id} className="card text-center group">
-              <div className={`w-20 h-20 mx-auto rounded-full bg-gradient-to-br ${member.color}
-                              flex items-center justify-center mb-4 text-2xl font-serif
-                              text-kanade-cream/60 group-hover:scale-110 transition-transform duration-300`}>
-                {member.name[0]}
-              </div>
-              <h3 className="font-serif text-lg text-kanade-cream font-light">{member.name}</h3>
-              <p className="text-kanade-lavender/70 text-xs tracking-widest uppercase mt-1">{member.job}</p>
-              <p className="text-kanade-sand/50 text-sm mt-3 line-clamp-3 leading-relaxed">{member.bio}</p>
+        <div className="flex justify-center mb-10">
+          <div className="card text-center group w-64">
+            <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-kanade-blush/20 to-kanade-lavender/20
+                            flex items-center justify-center mb-4 text-2xl font-serif
+                            text-kanade-cream/60 group-hover:scale-110 transition-transform duration-300">
+              S
             </div>
-          ))}
+            <h3 className="font-serif text-lg text-kanade-cream font-light">Shia Crawford</h3>
+            <p className="text-kanade-lavender/70 text-xs tracking-widest uppercase mt-1">{t('団長', 'Guild Leader')}</p>
+          </div>
         </div>
 
         <div className="text-center">
           <Link to="/members" className="btn-ghost inline-flex items-center gap-2">
             <Users size={16} />
-            {t('全15名を見る', 'All 15 Members')}
+            {t('メンバーを見る', 'Meet the Members')}
           </Link>
         </div>
       </div>
