@@ -30,6 +30,8 @@ function seededRandom(seed: number) {
 }
 
 export default function ParticleBackground() {
+  const reducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
   const notes: NoteConfig[] = useMemo(() => {
     return Array.from({ length: 28 }, (_, i) => {
       const r = (offset = 0) => seededRandom(i * 17 + offset)
@@ -48,6 +50,8 @@ export default function ParticleBackground() {
       }
     })
   }, [])
+
+  if (reducedMotion) return null
 
   return (
     <div

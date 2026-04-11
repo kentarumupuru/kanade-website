@@ -82,10 +82,18 @@ export default function Contact() {
     if (!validate()) return
 
     setStatus('submitting')
-    // Simulated submission — wire up to a real backend/email service (e.g. Formspree, EmailJS)
-    await new Promise(r => setTimeout(r, 1200))
-    setStatus('success')
-    setForm(EMPTY_FORM)
+    try {
+      // TODO: replace with real endpoint, e.g. Formspree or EmailJS
+      // const res = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      //   body: JSON.stringify(form),
+      // })
+      // if (!res.ok) throw new Error('Send failed')
+      throw new Error('No endpoint configured')
+    } catch {
+      setStatus('error')
+    }
   }
 
   const fieldClass = (field: keyof FormData) =>
@@ -248,6 +256,12 @@ export default function Contact() {
                 />
                 {errors.message && <p className="text-kanade-rose/80 text-xs mt-1">{errors.message}</p>}
               </div>
+
+              {status === 'error' && (
+                <p className="text-kanade-rose/80 text-sm text-center">
+                  {t('送信に失敗しました。後ほど再試行してください。', 'Failed to send. Please try again later.')}
+                </p>
+              )}
 
               <button
                 type="submit"

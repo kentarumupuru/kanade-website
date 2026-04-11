@@ -1,6 +1,7 @@
 import { Twitter } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useLang } from '../context/LanguageContext'
+import { NAV_ITEMS } from '../data/navItems'
 
 // Replace with real Twitter/X URL once available
 const TWITTER_URL = 'https://x.com/FF14_Kanade2020'
@@ -8,19 +9,13 @@ const TWITTER_URL = 'https://x.com/FF14_Kanade2020'
 export default function Footer() {
   const { t } = useLang()
 
-  const navItems = [
-    { label: t('ホーム',       'Home'),    to: '/' },
-    { label: t('イベント',     'Events'),  to: '/events' },
-    { label: t('メンバー',     'Members'), to: '/members' },
-    { label: t('ギャラリー',   'Gallery'), to: '/gallery' },
-    { label: t('お問い合わせ', 'Contact'), to: '/contact' },
-  ]
+  const navItems = NAV_ITEMS.map(item => ({ label: t(item.labelJa, item.labelEn), to: item.to }))
 
   return (
     <footer className="relative z-10 border-t border-white/5 py-10 px-6 mt-20 pb-28">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="text-center md:text-left">
-          <img src="/titlelogo.png" alt="KANADE" className="h-6 w-auto" />
+          <img src="/titlelogo.png" alt="KANADE" className="h-9 w-auto" />
           <p className="text-kanade-sand/40 text-xs tracking-widest mt-1 uppercase">
             {t('パフォーミンググループ・ファイナルファンタジーXIV', 'Performing Group · Final Fantasy XIV')}
           </p>

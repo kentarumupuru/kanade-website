@@ -33,7 +33,7 @@ export default function AnimatedBackground() {
   const [current,  setCurrent]  = useState(0)
   const [next,     setNext]     = useState<number | null>(null)
   const [fading,   setFading]   = useState(false)
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
+  const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768)
   const parallaxRef = useRef<HTMLDivElement>(null)
   const timerRef    = useRef<ReturnType<typeof setTimeout> | null>(null)
 

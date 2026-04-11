@@ -3,19 +3,14 @@ import { NavLink, Link } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import MusicPlayer from './MusicPlayer'
 import { useLang } from '../context/LanguageContext'
+import { NAV_ITEMS } from '../data/navItems'
 
 export default function Navbar() {
   const [scrolled,  setScrolled]  = useState(false)
   const [menuOpen,  setMenuOpen]  = useState(false)
   const { lang, toggle, t } = useLang()
 
-  const navItems = [
-    { label: t('ホーム',     'Home'),    to: '/' },
-    { label: t('イベント',   'Events'),  to: '/events' },
-    { label: t('メンバー',   'Members'), to: '/members' },
-    { label: t('ギャラリー', 'Gallery'), to: '/gallery' },
-    { label: t('お問い合わせ', 'Contact'), to: '/contact' },
-  ]
+  const navItems = NAV_ITEMS.map(item => ({ label: t(item.labelJa, item.labelEn), to: item.to }))
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -42,7 +37,7 @@ export default function Navbar() {
             className="w-9 h-9 rounded-full object-cover"
             onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
           />
-          <img src="/titlelogo.png" alt="KANADE" className="h-7 w-auto" />
+          <img src="/titlelogo.png" alt="KANADE" className="h-10 w-auto" />
         </Link>
 
         {/* Center — desktop nav links */}

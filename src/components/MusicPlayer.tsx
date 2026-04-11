@@ -4,7 +4,7 @@ import { tracks } from '../data/tracks'
 
 export default function MusicPlayer() {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [isPlaying,    setIsPlaying]    = useState(false)
+  const [isPlaying,    setIsPlaying]    = useState(true)
   const [progress,     setProgress]     = useState(0)
   const [volume,       setVolume]       = useState(0.7)
   const [muted,        setMuted]        = useState(false)
@@ -25,21 +25,27 @@ export default function MusicPlayer() {
     }, 250)
   }, [stopProgress])
 
+  // Effect 1: load new src when track changes, reset progress
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
-    audio.volume = muted ? 0 : volume
-    if (current.src) {
-      audio.src = current.src
-      if (isPlaying) {
-        audio.play().catch(() => setIsPlaying(false))
-        startProgress()
-      }
+    audio.src = current.src ?? ''
+    setProgress(0)
+  }, [currentIndex, current.src])
+
+  // Effect 2: sync play/pause state to the audio element
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio || !current.src) return
+    if (isPlaying) {
+      audio.play().catch(() => setIsPlaying(false))
+      startProgress()
     } else {
-      audio.src = ''
+      audio.pause()
+      stopProgress()
     }
     return stopProgress
-  }, [currentIndex, current.src]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isPlaying, current.src, startProgress, stopProgress])
 
   useEffect(() => {
     const audio = audioRef.current
@@ -142,7 +148,7 @@ export default function MusicPlayer() {
 
         {/* Volume popover */}
         {showVolume && (
-          <div className="absolute bottom-full right-0 mb-2 glass-strong rounded-xl px-3 py-2 flex items-center gap-2 shadow-xl">
+          <div className="absolute top-full right-0 mt-2 glass-strong rounded-xl px-3 py-2 flex items-center gap-2 shadow-xl z-50">
             <button
               onClick={() => setMuted(v => !v)}
               className="text-kanade-sand/60 hover:text-kanade-blush transition-colors"
