@@ -1,0 +1,226 @@
+import { Link } from 'react-router-dom'
+import { Calendar, Users, ImageIcon, ChevronDown } from 'lucide-react'
+import { events } from '../data/events'
+import { members } from '../data/members'
+import { useLang } from '../context/LanguageContext'
+
+function HeroSection() {
+  const { t } = useLang()
+  return (
+    <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6">
+      {/* Decorative rings */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="w-[600px] h-[600px] rounded-full border border-kanade-lavender/10 animate-spin-slow" />
+        <div className="absolute w-[400px] h-[400px] rounded-full border border-kanade-blush/8" style={{ animationDirection: 'reverse' }} />
+      </div>
+
+      {/* Floating musical notes */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {['♩', '♪', '♫', '♬'].map((note, i) => (
+          <span
+            key={i}
+            className="absolute text-kanade-lavender/20 font-serif select-none"
+            style={{
+              fontSize: `${1.5 + i * 0.5}rem`,
+              left:     `${15 + i * 20}%`,
+              top:      `${20 + (i % 2) * 40}%`,
+              animation: `float ${6 + i * 2}s ease-in-out infinite`,
+              animationDelay: `${i * 1.5}s`,
+            }}
+          >
+            {note}
+          </span>
+        ))}
+      </div>
+
+      {/* Main hero content */}
+      <div className="relative animate-fade-in">
+        <p className="text-kanade-lavender/70 tracking-[0.5em] text-xs uppercase mb-6 font-sans">
+          {t('ファイナルファンタジーXIV・パフォーミンググループ', 'Final Fantasy XIV · Performing Group')}
+        </p>
+
+        <h1 className="font-serif font-light tracking-[0.4em] mb-4" style={{ fontSize: 'clamp(3rem, 10vw, 7rem)' }}>
+          <span className="text-gradient">KANADE</span>
+        </h1>
+
+        <div className="w-32 h-px mx-auto mb-6" style={{ background: 'linear-gradient(90deg, transparent, #c3aed6, transparent)' }} />
+
+        <p className="text-kanade-sand/60 font-sans font-light tracking-widest text-sm md:text-base max-w-md mx-auto mb-10 leading-relaxed">
+          {t(
+            '音楽と動きが交わる場所。エオルゼアの舞台に美しさと温もりをもたらす、パフォーマー・アーティスト・職人たちのアンサンブル。',
+            'Where music meets movement. An ensemble of performers, artists, and craftspeople bringing beauty and warmth to Eorzea\'s stages.'
+          )}
+        </p>
+
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Link to="/events" className="btn-primary">
+            {t('イベント情報', 'Upcoming Events')}
+          </Link>
+          <Link to="/members" className="btn-ghost">
+            {t('メンバーを見る', 'Meet the Group')}
+          </Link>
+        </div>
+      </div>
+
+      {/* Scroll indicator */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-pulse-soft">
+        <span className="text-kanade-sand/30 text-xs tracking-widest uppercase">
+          {t('スクロール', 'Scroll')}
+        </span>
+        <ChevronDown size={16} className="text-kanade-sand/30" />
+      </div>
+    </section>
+  )
+}
+
+function Vibesbanner() {
+  const { t } = useLang()
+  return (
+    <section className="py-16 px-6">
+      <div className="max-w-4xl mx-auto text-center">
+        <p className="font-serif text-3xl md:text-4xl font-light tracking-widest text-gradient">
+          {t('一緒にバイブスを楽しもう', 'Enjoy the vibes with us')}
+        </p>
+      </div>
+    </section>
+  )
+}
+
+function UpcomingEvents() {
+  const { t, lang } = useLang()
+  const upcoming = events.filter(e => e.status === 'upcoming').slice(0, 2)
+
+  return (
+    <section className="py-16 px-6">
+      <div className="max-w-5xl mx-auto">
+        <h2 className="section-title text-center">{t('開催予定イベント', 'Upcoming Events')}</h2>
+        <div className="section-divider" />
+
+        <div className="grid md:grid-cols-2 gap-6 mb-10">
+          {upcoming.map(event => (
+            <div key={event.id} className="card group">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 text-center glass rounded-xl px-4 py-3 min-w-[64px]">
+                  <p className="text-kanade-blush font-serif text-2xl font-light leading-none">
+                    {new Date(event.date).getDate()}
+                  </p>
+                  <p className="text-kanade-sand/50 text-xs uppercase tracking-wider mt-0.5">
+                    {new Date(event.date).toLocaleString(lang === 'ja' ? 'ja' : 'en', { month: 'short' })}
+                  </p>
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-kanade-cream font-serif text-lg font-light group-hover:text-kanade-blush transition-colors">
+                    {event.title}
+                  </h3>
+                  <p className="text-kanade-sand/50 text-xs mt-1">{event.time} · {event.world}</p>
+                  <p className="text-kanade-sand/60 text-sm mt-2 line-clamp-2">{event.description}</p>
+                  <div className="flex gap-2 mt-3 flex-wrap">
+                    {event.tags.map(tag => (
+                      <span key={tag} className="text-xs px-2 py-0.5 rounded-full border border-kanade-lavender/30 text-kanade-lavender/70">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center">
+          <Link to="/events" className="btn-ghost inline-flex items-center gap-2">
+            <Calendar size={16} />
+            {t('すべてのイベントを見る', 'View All Events')}
+          </Link>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function FeaturedMembers() {
+  const { t } = useLang()
+  const featured = members.filter(m => m.role === 'Performer').slice(0, 3)
+
+  return (
+    <section className="py-16 px-6">
+      <div className="max-w-5xl mx-auto">
+        <h2 className="section-title text-center">{t('KANADEについて', 'Meet KANADE')}</h2>
+        <div className="section-divider" />
+
+        <div className="grid md:grid-cols-3 gap-6 mb-10">
+          {featured.map(member => (
+            <div key={member.id} className="card text-center group">
+              <div className={`w-20 h-20 mx-auto rounded-full bg-gradient-to-br ${member.color}
+                              flex items-center justify-center mb-4 text-2xl font-serif
+                              text-kanade-cream/60 group-hover:scale-110 transition-transform duration-300`}>
+                {member.name[0]}
+              </div>
+              <h3 className="font-serif text-lg text-kanade-cream font-light">{member.name}</h3>
+              <p className="text-kanade-lavender/70 text-xs tracking-widest uppercase mt-1">{member.job}</p>
+              <p className="text-kanade-sand/50 text-sm mt-3 line-clamp-3 leading-relaxed">{member.bio}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center">
+          <Link to="/members" className="btn-ghost inline-flex items-center gap-2">
+            <Users size={16} />
+            {t('全15名を見る', 'All 15 Members')}
+          </Link>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function GalleryTeaser() {
+  const { t } = useLang()
+  const tiles = [
+    'from-kanade-blush/30 to-kanade-lavender/30',
+    'from-kanade-lavender/30 to-kanade-mist/30',
+    'from-kanade-gold/20 to-kanade-blush/20',
+    'from-kanade-mist/30 to-kanade-lavender/20',
+  ]
+
+  return (
+    <section className="py-16 px-6">
+      <div className="max-w-5xl mx-auto">
+        <h2 className="section-title text-center">{t('ギャラリー', 'Gallery')}</h2>
+        <div className="section-divider" />
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
+          {tiles.map((gradient, i) => (
+            <div
+              key={i}
+              className={`aspect-square rounded-xl bg-gradient-to-br ${gradient}
+                          flex items-center justify-center glass hover:scale-[1.02]
+                          transition-transform duration-300 cursor-pointer`}
+            >
+              <ImageIcon size={28} className="text-kanade-cream/20" />
+            </div>
+          ))}
+        </div>
+
+        <div className="text-center">
+          <Link to="/gallery" className="btn-ghost inline-flex items-center gap-2">
+            <ImageIcon size={16} />
+            {t('ギャラリーを見る', 'View Gallery')}
+          </Link>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export default function Home() {
+  return (
+    <>
+      <HeroSection />
+      <Vibesbanner />
+      <UpcomingEvents />
+      <FeaturedMembers />
+      <GalleryTeaser />
+    </>
+  )
+}

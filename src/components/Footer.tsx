@@ -1,0 +1,57 @@
+import { Twitter } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { useLang } from '../context/LanguageContext'
+
+// Replace with real Twitter/X URL once available
+const TWITTER_URL = 'https://x.com/FF14_Kanade2020'
+
+export default function Footer() {
+  const { t } = useLang()
+
+  const navItems = [
+    { label: t('ホーム',       'Home'),    to: '/' },
+    { label: t('イベント',     'Events'),  to: '/events' },
+    { label: t('メンバー',     'Members'), to: '/members' },
+    { label: t('ギャラリー',   'Gallery'), to: '/gallery' },
+    { label: t('お問い合わせ', 'Contact'), to: '/contact' },
+  ]
+
+  return (
+    <footer className="relative z-10 border-t border-white/5 py-10 px-6 mt-20 pb-28">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="text-center md:text-left">
+          <p className="font-serif text-xl tracking-[0.3em] text-gradient">KANADE</p>
+          <p className="text-kanade-sand/40 text-xs tracking-widest mt-1 uppercase">
+            {t('パフォーミンググループ・ファイナルファンタジーXIV', 'Performing Group · Final Fantasy XIV')}
+          </p>
+        </div>
+
+        <nav className="flex items-center gap-6 text-xs tracking-widest uppercase text-kanade-sand/50">
+          {navItems.map(({ label, to }) => (
+            <Link key={to} to={to} className="hover:text-kanade-blush transition-colors">
+              {label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="flex items-center gap-4">
+          <a
+            href={TWITTER_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="glass rounded-full p-2.5 text-kanade-sand/50 hover:text-kanade-blush
+                       hover:border-kanade-blush/30 transition-all duration-200"
+            aria-label={t('KANADEをX/Twitterでフォロー', 'Follow KANADE on X / Twitter')}
+          >
+            <Twitter size={18} />
+          </a>
+        </div>
+      </div>
+
+      <p className="text-center text-kanade-sand/25 text-xs mt-8 tracking-widest">
+        © {new Date().getFullYear()} KANADE Performing Group.{' '}
+        {t('全著作権所有。', 'All rights reserved.')}
+      </p>
+    </footer>
+  )
+}
