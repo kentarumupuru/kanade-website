@@ -42,7 +42,7 @@ export default function Navbar() {
             className="w-9 h-9 rounded-full object-cover"
             onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
           />
-          <span className="font-serif text-2xl tracking-[0.3em] text-gradient">KANADE</span>
+          <img src="/titlelogo.png" alt="KANADE" className="h-7 w-auto" />
         </Link>
 
         {/* Center — desktop nav links */}

@@ -25,6 +25,15 @@
   100% { transform: scale(1.1) translate(-0.5%, -1.5%); }
 }
 
+/* On mobile, keep Ken Burns to scale-only so the image stays centered */
+@media (max-width: 767px) {
+  @keyframes kenBurns {
+    0%   { transform: scale(1.0); }
+    50%  { transform: scale(1.06); }
+    100% { transform: scale(1.03); }
+  }
+}
+
 @keyframes bgFadeIn {
   from { opacity: 0; }
   to   { opacity: 1; }
@@ -118,7 +127,13 @@
 
   .nav-link {
     @apply relative font-sans text-sm tracking-widest uppercase text-kanade-sand/70
-           transition-colors duration-200 hover:text-kanade-blush;
+           transition-colors duration-200 hover:text-kanade-blush whitespace-nowrap;
+  }
+
+  @media (max-width: 767px) {
+    .nav-link {
+      @apply tracking-wider text-xs;
+    }
   }
 
   .nav-link::after {

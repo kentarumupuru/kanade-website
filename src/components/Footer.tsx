@@ -20,15 +20,15 @@ export default function Footer() {
     <footer className="relative z-10 border-t border-white/5 py-10 px-6 mt-20 pb-28">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="text-center md:text-left">
-          <p className="font-serif text-xl tracking-[0.3em] text-gradient">KANADE</p>
+          <img src="/titlelogo.png" alt="KANADE" className="h-6 w-auto" />
           <p className="text-kanade-sand/40 text-xs tracking-widest mt-1 uppercase">
             {t('パフォーミンググループ・ファイナルファンタジーXIV', 'Performing Group · Final Fantasy XIV')}
           </p>
         </div>
 
-        <nav className="flex items-center gap-6 text-xs tracking-widest uppercase text-kanade-sand/50">
+        <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs tracking-wide uppercase text-kanade-sand/50 md:gap-x-6 md:tracking-widest">
           {navItems.map(({ label, to }) => (
-            <Link key={to} to={to} className="hover:text-kanade-blush transition-colors">
+            <Link key={to} to={to} className="hover:text-kanade-blush transition-colors whitespace-nowrap">
               {label}
             </Link>
           ))}

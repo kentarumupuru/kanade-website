@@ -38,8 +38,8 @@ function HeroSection() {
           {t('ファイナルファンタジーXIV・パフォーミンググループ', 'Final Fantasy XIV · Performing Group')}
         </p>
 
-        <h1 className="font-serif font-light tracking-[0.4em] mb-4" style={{ fontSize: 'clamp(3rem, 10vw, 7rem)' }}>
-          <span className="text-gradient">KANADE</span>
+        <h1 className="mb-4 flex justify-center">
+          <img src="/titlelogo.png" alt="KANADE" className="w-auto max-w-xs sm:max-w-sm md:max-w-md" />
         </h1>
 
         <div className="w-32 h-px mx-auto mb-6" style={{ background: 'linear-gradient(90deg, transparent, #c3aed6, transparent)' }} />

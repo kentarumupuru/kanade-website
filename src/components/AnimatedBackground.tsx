@@ -33,8 +33,16 @@ export default function AnimatedBackground() {
   const [current,  setCurrent]  = useState(0)
   const [next,     setNext]     = useState<number | null>(null)
   const [fading,   setFading]   = useState(false)
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
   const parallaxRef = useRef<HTMLDivElement>(null)
   const timerRef    = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)')
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
 
   // Crossfade cycle
   useEffect(() => {
@@ -56,7 +64,12 @@ export default function AnimatedBackground() {
   }, [current])
 
   // Scroll parallax — clamp so the background never scrolls past its extended area
+  // Disabled on mobile: container is 100% height so there's no room to shift
   useEffect(() => {
+    if (isMobile) {
+      if (parallaxRef.current) parallaxRef.current.style.transform = ''
+      return
+    }
     const onScroll = () => {
       if (parallaxRef.current) {
         const maxShift = parallaxRef.current.offsetHeight - window.innerHeight
@@ -67,7 +80,7 @@ export default function AnimatedBackground() {
     }
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  }, [isMobile])
 
   return (
     <div className="fixed inset-0 z-0 overflow-hidden bg-kanade-charcoal">
@@ -75,7 +88,10 @@ export default function AnimatedBackground() {
       <div
         ref={parallaxRef}
         className="absolute inset-0 will-change-transform"
-        style={{ top: '-20%', height: '140%' }}
+        style={{
+          top: isMobile ? '0%' : '-20%',
+          height: isMobile ? '100%' : '140%',
+        }}
       >
         {/* Current slide */}
         <Slide slide={SLIDES[current]} visible kenBurns />
