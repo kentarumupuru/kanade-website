@@ -52,9 +52,13 @@ export default function AnimatedBackground() {
       setFading(true)
 
       setTimeout(() => {
+        // First: swap current (next slide is still rendered on top at full opacity)
         setCurrent(nextIdx)
-        setNext(null)
-        setFading(false)
+        // Then on next frame: remove the overlay so only the new current remains
+        requestAnimationFrame(() => {
+          setNext(null)
+          setFading(false)
+        })
       }, FADE_DURATION)
     }, SLIDE_DURATION)
 
@@ -98,7 +102,7 @@ export default function AnimatedBackground() {
 
         {/* Next slide fades in on top during transition */}
         {fading && next !== null && (
-          <Slide slide={SLIDES[next]} visible={false} fadingIn kenBurns={false} />
+          <Slide slide={SLIDES[next]} visible={false} fadingIn kenBurns />
         )}
       </div>
 
