@@ -84,9 +84,12 @@ export default function MusicPlayer() {
       {/* Music icon — always visible */}
       <Music size={13} className="text-kanade-blush/70 flex-shrink-0" />
 
-      {/* Track title — hidden on small screens */}
+      {/* Track title + artist — hidden on small screens */}
       <span className="hidden lg:block text-kanade-sand/50 text-xs truncate max-w-[100px]">
         {current.title}
+      </span>
+      <span className="hidden lg:block text-kanade-sand/30 text-xs whitespace-nowrap flex-shrink-0">
+        by {current.artist}
       </span>
 
       {/* Prev */}
