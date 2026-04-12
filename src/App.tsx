@@ -10,7 +10,7 @@ import Contact from './pages/Contact'
 export default function App() {
   return (
     <LanguageProvider>
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route element={<Layout />}>
           <Route index       element={<Home />}    />
