@@ -54,8 +54,13 @@ function MemberCard({ member }: { member: typeof members[0] }) {
       >
         {/* Front */}
         <div
-          className="absolute inset-0 card flex flex-col items-center justify-center text-center p-6"
-          style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}
+          className="absolute inset-0 rounded-2xl flex flex-col items-center justify-center text-center p-6 border border-white/8 transition-all duration-300"
+          style={{
+            background: 'rgba(255,255,255,0.05)',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.2)',
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden',
+          }}
         >
           {/* Avatar */}
           <div
@@ -86,8 +91,14 @@ function MemberCard({ member }: { member: typeof members[0] }) {
 
         {/* Back */}
         <div
-          className="absolute inset-0 card flex flex-col justify-center p-6"
-          style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
+          className="absolute inset-0 rounded-2xl flex flex-col justify-center p-6 border border-white/8 transition-all duration-300"
+          style={{
+            background: 'rgba(255,255,255,0.05)',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.2)',
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden',
+            transform: 'rotateY(180deg)',
+          }}
         >
           <span className={`self-start text-xs px-3 py-1 rounded-full border mb-3 ${roleColors[member.role]}`}>
             {roleLabels[member.role]}
