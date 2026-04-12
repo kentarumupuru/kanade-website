@@ -1,13 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 
-/**
- * Slides to cycle through.
- *
- * To use real images: add src paths like '/bg1.jpg', '/bg2.jpg', etc.
- * Until then, each slide shows a rich gradient as a placeholder.
- * The gradient is always visible behind the image, so if the image
- * fails to load the background still looks great.
- */
 const SLIDES = [
   {
     src: `${import.meta.env.BASE_URL}bg1.jpg`,
@@ -26,13 +18,16 @@ const SLIDES = [
   },
 ]
 
-const SLIDE_DURATION  = 7000  // ms each slide is visible
-const FADE_DURATION   = 2000  // ms crossfade
+const SLIDE_DURATION = 7000  // ms each slide is visible
+const FADE_DURATION  = 2000  // ms crossfade
+
+// Each slide has a different Ken Burns start offset so they look varied
+const KB_OFFSETS = ['-4s', '-8s', '-11s']
 
 export default function AnimatedBackground() {
   const [current,  setCurrent]  = useState(0)
-  const [next,     setNext]     = useState<number | null>(null)
   const [fading,   setFading]   = useState(false)
+  const [next,     setNext]     = useState<number | null>(null)
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768)
   const parallaxRef = useRef<HTMLDivElement>(null)
   const timerRef    = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -52,9 +47,7 @@ export default function AnimatedBackground() {
       setFading(true)
 
       setTimeout(() => {
-        // First: swap current (next slide is still rendered on top at full opacity)
         setCurrent(nextIdx)
-        // Then on next frame: remove the overlay so only the new current remains
         requestAnimationFrame(() => {
           setNext(null)
           setFading(false)
@@ -67,8 +60,7 @@ export default function AnimatedBackground() {
     }
   }, [current])
 
-  // Scroll parallax — clamp so the background never scrolls past its extended area
-  // Disabled on mobile: container is 100% height so there's no room to shift
+  // Scroll parallax
   useEffect(() => {
     if (isMobile) {
       if (parallaxRef.current) parallaxRef.current.style.transform = ''
@@ -88,25 +80,66 @@ export default function AnimatedBackground() {
 
   return (
     <div className="fixed inset-0 z-0 overflow-hidden bg-kanade-charcoal">
-      {/* Parallax container — moves up as you scroll */}
       <div
         ref={parallaxRef}
         className="absolute inset-0 will-change-transform"
         style={{
-          top: isMobile ? '0%' : '-20%',
+          top:    isMobile ? '0%'  : '-20%',
           height: isMobile ? '100%' : '140%',
         }}
       >
-        {/* Current slide */}
-        <Slide slide={SLIDES[current]} visible kenBurns />
+        {/*
+          All slides are always mounted so Ken Burns never restarts.
+          Opacity is driven by whether it's the current, the fading-in next, or hidden.
+        */}
+        {SLIDES.map((slide, i) => {
+          let opacity = 0
+          let transitionDuration = `${FADE_DURATION}ms`
 
-        {/* Next slide fades in on top during transition */}
-        {fading && next !== null && (
-          <Slide slide={SLIDES[next]} visible={false} fadingIn kenBurns />
-        )}
+          if (i === current && !fading) {
+            // Settled: fully visible, no transition needed
+            opacity = 1
+            transitionDuration = '0ms'
+          } else if (i === current && fading) {
+            // Being replaced: stay visible while next fades in over it
+            opacity = 1
+            transitionDuration = '0ms'
+          } else if (i === next && fading) {
+            // Fading in on top
+            opacity = 1
+            transitionDuration = `${FADE_DURATION}ms`
+          }
+
+          return (
+            <div
+              key={i}
+              className="absolute inset-0"
+              style={{
+                opacity,
+                transition: `opacity ${transitionDuration} ease`,
+              }}
+            >
+              <div className="absolute inset-0" style={{ background: slide.gradient }} />
+              <div className="absolute inset-0" style={{ background: slide.accent }} />
+              <img
+                src={slide.src}
+                alt=""
+                aria-hidden
+                className="absolute inset-0 w-full h-full object-cover"
+                style={{
+                  animation: `kenBurns 12s ease-in-out infinite alternate`,
+                  animationDelay: KB_OFFSETS[i],
+                  mixBlendMode: 'luminosity',
+                  opacity: 0.55,
+                }}
+                onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
+              />
+            </div>
+          )
+        })}
       </div>
 
-      {/* Overlay — lighter so the background shows through more vividly */}
+      {/* Overlay */}
       <div
         className="absolute inset-0 z-10"
         style={{
@@ -115,16 +148,15 @@ export default function AnimatedBackground() {
         }}
       />
 
-      {/* Radial vignette for depth */}
+      {/* Radial vignette */}
       <div
         className="absolute inset-0 z-10 pointer-events-none"
         style={{
-          background:
-            'radial-gradient(ellipse at center, transparent 40%, rgba(26,18,37,0.6) 100%)',
+          background: 'radial-gradient(ellipse at center, transparent 40%, rgba(26,18,37,0.6) 100%)',
         }}
       />
 
-      {/* Soft top/bottom gradient blends into page content */}
+      {/* Top/bottom fades */}
       <div
         className="absolute inset-x-0 top-0 z-10 h-32 pointer-events-none"
         style={{ background: 'linear-gradient(to bottom, rgba(26,18,37,0.7), transparent)' }}
@@ -132,56 +164,6 @@ export default function AnimatedBackground() {
       <div
         className="absolute inset-x-0 bottom-0 z-10 h-48 pointer-events-none"
         style={{ background: 'linear-gradient(to top, rgba(26,18,37,0.85), transparent)' }}
-      />
-    </div>
-  )
-}
-
-function Slide({
-  slide,
-  visible,
-  fadingIn,
-  kenBurns,
-}: {
-  slide: typeof SLIDES[number]
-  visible: boolean
-  fadingIn?: boolean
-  kenBurns: boolean
-}) {
-  return (
-    <div
-      className="absolute inset-0 transition-opacity"
-      style={{
-        opacity:           fadingIn ? undefined : visible ? 1 : 0,
-        transitionDuration: fadingIn ? `${FADE_DURATION}ms` : '0ms',
-        animation:          fadingIn ? `bgFadeIn ${FADE_DURATION}ms ease forwards` : undefined,
-      }}
-    >
-      {/* Gradient base — always visible, doubles as placeholder */}
-      <div
-        className="absolute inset-0"
-        style={{ background: slide.gradient }}
-      />
-
-      {/* Accent colour layer */}
-      <div
-        className="absolute inset-0"
-        style={{ background: slide.accent }}
-      />
-
-      {/* Real image — Ken Burns zoom when active, hidden on load error */}
-      <img
-        src={slide.src}
-        alt=""
-        aria-hidden
-        className="absolute inset-0 w-full h-full object-cover"
-        style={{
-          animation: kenBurns ? 'kenBurns 12s ease-in-out infinite alternate' : undefined,
-          animationDelay: kenBurns ? '-6s' : undefined,
-          mixBlendMode: 'luminosity',
-          opacity: 0.55,
-        }}
-        onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
       />
     </div>
   )
