@@ -177,6 +177,7 @@ function Slide({
         className="absolute inset-0 w-full h-full object-cover"
         style={{
           animation: kenBurns ? 'kenBurns 12s ease-in-out infinite alternate' : undefined,
+          animationDelay: kenBurns ? '-6s' : undefined,
           mixBlendMode: 'luminosity',
           opacity: 0.55,
         }}
