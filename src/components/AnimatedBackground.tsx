@@ -10,17 +10,17 @@ import { useEffect, useRef, useState } from 'react'
  */
 const SLIDES = [
   {
-    src: '/bg1.jpg',
+    src: `${import.meta.env.BASE_URL}bg1.jpg`,
     gradient: 'radial-gradient(ellipse at 30% 60%, #4a2060 0%, #1a1225 55%), radial-gradient(ellipse at 80% 20%, #2d1845 0%, transparent 60%)',
     accent:   'radial-gradient(ellipse at 60% 80%, rgba(212,120,138,0.35) 0%, transparent 55%)',
   },
   {
-    src: '/bg2.jpg',
+    src: `${import.meta.env.BASE_URL}bg2.jpg`,
     gradient: 'radial-gradient(ellipse at 70% 40%, #1e2d50 0%, #1a1225 55%), radial-gradient(ellipse at 20% 70%, #2d1f3d 0%, transparent 60%)',
     accent:   'radial-gradient(ellipse at 30% 30%, rgba(195,174,214,0.30) 0%, transparent 55%)',
   },
   {
-    src: '/bg3.jpg',
+    src: `${import.meta.env.BASE_URL}bg3.jpg`,
     gradient: 'radial-gradient(ellipse at 50% 30%, #2d1f3d 0%, #1a1225 55%), radial-gradient(ellipse at 80% 80%, #1e1535 0%, transparent 60%)',
     accent:   'radial-gradient(ellipse at 70% 60%, rgba(212,175,122,0.25) 0%, transparent 55%)',
   },

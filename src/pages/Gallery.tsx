@@ -15,8 +15,8 @@ export interface GalleryImage {
 // Placeholder gallery data — replace src/thumbnail with real image paths in public/gallery/
 export const galleryImages: GalleryImage[] = Array.from({ length: 12 }, (_, i) => ({
   id: i + 1,
-  src: `/gallery/image-${i + 1}.jpg`,
-  thumbnail: `/gallery/thumb-${i + 1}.jpg`,
+  src: `${import.meta.env.BASE_URL}gallery/image-${i + 1}.jpg`,
+  thumbnail: `${import.meta.env.BASE_URL}gallery/thumb-${i + 1}.jpg`,
   alt: `KANADE performance photo ${i + 1}`,
   caption: [
     'Spring Bloom Concert — Shirogane',
