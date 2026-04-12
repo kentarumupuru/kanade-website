@@ -79,7 +79,7 @@ export default function MusicPlayer() {
 
   return (
     <div className="flex items-center gap-2">
-      <audio ref={audioRef} onEnded={() => skipTo('next')} />
+      <audio ref={audioRef} onEnded={() => skipTo('next')} loop={tracks.length === 1} />
 
       {/* Music icon — always visible */}
       <Music size={13} className="text-kanade-blush/70 flex-shrink-0" />
