@@ -44,17 +44,18 @@ function MemberCard({ member }: { member: typeof members[0] }) {
       aria-label={`${member.name} — ${t('クリックして紹介を読む', 'click to read bio')}`}
     >
       <div
-        className="relative w-full transition-transform duration-500"
+        className="relative w-full"
         style={{
           transformStyle: 'preserve-3d',
-          WebkitTransformStyle: 'preserve-3d',
+          WebkitTransformStyle: 'preserve-3d' as React.CSSProperties['transformStyle'],
+          transition: 'transform 0.5s',
           transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
           minHeight: '240px',
         }}
       >
         {/* Front */}
         <div
-          className="absolute inset-0 rounded-2xl flex flex-col items-center justify-center text-center p-6 border border-white/8 transition-all duration-300"
+          className="absolute inset-0 rounded-2xl flex flex-col items-center justify-center text-center p-6 border border-white/8"
           style={{
             background: 'rgba(255,255,255,0.05)',
             boxShadow: '0 4px 24px rgba(0,0,0,0.2)',
@@ -91,7 +92,7 @@ function MemberCard({ member }: { member: typeof members[0] }) {
 
         {/* Back */}
         <div
-          className="absolute inset-0 rounded-2xl flex flex-col justify-center p-6 border border-white/8 transition-all duration-300"
+          className="absolute inset-0 rounded-2xl flex flex-col justify-center p-6 border border-white/8"
           style={{
             background: 'rgba(255,255,255,0.05)',
             boxShadow: '0 4px 24px rgba(0,0,0,0.2)',
