@@ -12,6 +12,6 @@ export const tracks: Track[] = [
     title: '死の大地 "A Land Long Dead" ~永久焦土 The・Burn~クワイアVer',
     artist: 'Mirka Flory',
     duration: '0:00',
-    src: '/a-land-long-dead.mp3',
+    src: `${import.meta.env.BASE_URL}a-land-long-dead.mp3`,
   },
 ]
