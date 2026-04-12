@@ -33,83 +33,77 @@ function MemberCard({ member }: { member: typeof members[0] }) {
     MC:        'MC',
   }
 
+  const faceStyle = {
+    background: 'rgba(255,255,255,0.05)',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.2)',
+    transition: 'opacity 0.3s ease, transform 0.3s ease',
+  }
+
   return (
     <div
-      className="cursor-pointer"
-      style={{ perspective: '1000px' }}
+      className="cursor-pointer relative"
+      style={{ minHeight: '240px' }}
       onClick={() => setFlipped(v => !v)}
       role="button"
       tabIndex={0}
       onKeyDown={e => e.key === 'Enter' && setFlipped(v => !v)}
       aria-label={`${member.name} — ${t('クリックして紹介を読む', 'click to read bio')}`}
     >
+      {/* Front */}
       <div
-        className="relative w-full"
+        className="absolute inset-0 rounded-2xl flex flex-col items-center justify-center text-center p-6 border border-white/8"
         style={{
-          transformStyle: 'preserve-3d',
-          WebkitTransformStyle: 'preserve-3d' as React.CSSProperties['transformStyle'],
-          transition: 'transform 0.5s',
-          transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-          minHeight: '240px',
+          ...faceStyle,
+          opacity: flipped ? 0 : 1,
+          transform: flipped ? 'scale(0.95)' : 'scale(1)',
+          pointerEvents: flipped ? 'none' : 'auto',
         }}
       >
-        {/* Front */}
+        {/* Avatar */}
         <div
-          className="absolute inset-0 rounded-2xl flex flex-col items-center justify-center text-center p-6 border border-white/8"
-          style={{
-            background: 'rgba(255,255,255,0.05)',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.2)',
-            backfaceVisibility: 'hidden',
-            WebkitBackfaceVisibility: 'hidden',
-          }}
+          className={`w-20 h-20 rounded-full bg-gradient-to-br ${member.color}
+                      flex items-center justify-center mb-4 text-3xl font-serif text-kanade-cream/60
+                      border border-white/10 shadow-lg`}
         >
-          {/* Avatar */}
-          <div
-            className={`w-20 h-20 rounded-full bg-gradient-to-br ${member.color}
-                        flex items-center justify-center mb-4 text-3xl font-serif text-kanade-cream/60
-                        border border-white/10 shadow-lg`}
-          >
-            {member.name[0]}
-          </div>
-
-          <h3 className="font-serif text-lg text-kanade-cream font-light mb-1">{member.name}</h3>
-
-          <span className={`text-xs px-3 py-1 rounded-full border font-sans tracking-widest uppercase ${roleColors[member.role]}`}>
-            {roleLabels[member.role]}
-          </span>
-
-          <p className="text-kanade-lavender/60 text-xs tracking-wider mt-2">{member.job}</p>
-
-          <div className="flex items-center gap-1 mt-3 text-kanade-sand/30">
-            <Globe size={11} />
-            <span className="text-xs">{member.world}</span>
-          </div>
-
-          <p className="text-kanade-sand/30 text-xs mt-4">
-            {t('クリックして紹介を読む', 'Click to read bio')}
-          </p>
+          {member.name[0]}
         </div>
 
-        {/* Back */}
-        <div
-          className="absolute inset-0 rounded-2xl flex flex-col justify-center p-6 border border-white/8"
-          style={{
-            background: 'rgba(255,255,255,0.05)',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.2)',
-            backfaceVisibility: 'hidden',
-            WebkitBackfaceVisibility: 'hidden',
-            transform: 'rotateY(180deg)',
-          }}
-        >
-          <span className={`self-start text-xs px-3 py-1 rounded-full border mb-3 ${roleColors[member.role]}`}>
-            {roleLabels[member.role]}
-          </span>
-          <h3 className="font-serif text-lg text-kanade-cream font-light mb-3">{member.name}</h3>
-          <p className="text-kanade-sand/60 text-sm leading-relaxed flex-1">{member.bio}</p>
-          <p className="text-kanade-sand/30 text-xs mt-4">
-            {t('クリックして戻る', 'Click to flip back')}
-          </p>
+        <h3 className="font-serif text-lg text-kanade-cream font-light mb-1">{member.name}</h3>
+
+        <span className={`text-xs px-3 py-1 rounded-full border font-sans tracking-widest uppercase ${roleColors[member.role]}`}>
+          {roleLabels[member.role]}
+        </span>
+
+        <p className="text-kanade-lavender/60 text-xs tracking-wider mt-2">{member.job}</p>
+
+        <div className="flex items-center gap-1 mt-3 text-kanade-sand/30">
+          <Globe size={11} />
+          <span className="text-xs">{member.world}</span>
         </div>
+
+        <p className="text-kanade-sand/30 text-xs mt-4">
+          {t('クリックして紹介を読む', 'Click to read bio')}
+        </p>
+      </div>
+
+      {/* Back */}
+      <div
+        className="absolute inset-0 rounded-2xl flex flex-col justify-center p-6 border border-white/8"
+        style={{
+          ...faceStyle,
+          opacity: flipped ? 1 : 0,
+          transform: flipped ? 'scale(1)' : 'scale(0.95)',
+          pointerEvents: flipped ? 'auto' : 'none',
+        }}
+      >
+        <span className={`self-start text-xs px-3 py-1 rounded-full border mb-3 ${roleColors[member.role]}`}>
+          {roleLabels[member.role]}
+        </span>
+        <h3 className="font-serif text-lg text-kanade-cream font-light mb-3">{member.name}</h3>
+        <p className="text-kanade-sand/60 text-sm leading-relaxed flex-1">{member.bio}</p>
+        <p className="text-kanade-sand/30 text-xs mt-4">
+          {t('クリックして戻る', 'Click to flip back')}
+        </p>
       </div>
     </div>
   )
