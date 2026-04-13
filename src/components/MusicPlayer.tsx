@@ -53,13 +53,7 @@ export default function MusicPlayer() {
     audio.volume = muted ? 0 : volume
   }, [volume, muted])
 
-  const togglePlay = () => {
-    const audio = audioRef.current
-    if (!audio || !current.src) { setIsPlaying(v => !v); return }
-    if (isPlaying) { audio.pause(); stopProgress() }
-    else { audio.play().catch(() => {}); startProgress() }
-    setIsPlaying(v => !v)
-  }
+  const togglePlay = () => setIsPlaying(v => !v)
 
   const skipTo = (dir: 'prev' | 'next') => {
     setCurrentIndex(i =>

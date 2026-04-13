@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 
 const NOTES = ['♩', '♪', '♫', '♬', '𝅗𝅥', '♭', '♮', '𝄞']
 
@@ -30,7 +30,16 @@ function seededRandom(seed: number) {
 }
 
 export default function ParticleBackground() {
-  const reducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const [reducedMotion, setReducedMotion] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  )
+
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
 
   const notes: NoteConfig[] = useMemo(() => {
     return Array.from({ length: 28 }, (_, i) => {

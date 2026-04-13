@@ -22,16 +22,9 @@ function PageHeader() {
   )
 }
 
-function MemberCard({ member }: { member: typeof members[0] }) {
+function MemberCard({ member, roleLabels }: { member: typeof members[0]; roleLabels: Record<MemberRole, string> }) {
   const [flipped, setFlipped] = useState(false)
   const { t } = useLang()
-
-  const roleLabels: Record<MemberRole, string> = {
-    Performer: t('パフォーマー', 'Performer'),
-    Housing:   t('ハウジング',   'Housing'),
-    Manager:   t('マネージャー', 'Manager'),
-    MC:        'MC',
-  }
 
   return (
     <div
@@ -135,7 +128,7 @@ export default function Members() {
     MC:        'MC',
   }
 
-  const filtered = activeRole === 'all'
+  const filtered: typeof members = activeRole === 'all'
     ? members
     : members.filter(m => m.role === activeRole)
 
@@ -168,7 +161,7 @@ export default function Members() {
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
           {filtered.map(member => (
-            <MemberCard key={member.id} member={member} />
+            <MemberCard key={member.id} member={member} roleLabels={roleLabels} />
           ))}
         </div>
 

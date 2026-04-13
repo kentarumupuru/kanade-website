@@ -66,6 +66,25 @@ function PlaceholderTile({ image }: { image: GalleryImage }) {
   )
 }
 
+function LightboxImage({ image }: { image: GalleryImage }) {
+  const [imgError, setImgError] = useState(false)
+  if (imgError) {
+    return (
+      <div className="flex w-[600px] h-[400px] rounded-xl bg-gradient-to-br from-kanade-blush/20 to-kanade-lavender/20 items-center justify-center">
+        <ImageIcon size={48} className="text-kanade-cream/20" />
+      </div>
+    )
+  }
+  return (
+    <img
+      src={image.src}
+      alt={image.alt}
+      className="max-w-full max-h-[70vh] object-contain rounded-xl shadow-2xl"
+      onError={() => setImgError(true)}
+    />
+  )
+}
+
 function Lightbox({
   images,
   index,
@@ -119,22 +138,7 @@ function Lightbox({
         className="relative max-w-4xl max-h-[80vh] mx-16"
         onClick={e => e.stopPropagation()}
       >
-        {/* Real image with fallback */}
-        {(() => {
-          const [imgError, setImgError] = useState(false)
-          return imgError ? (
-            <div className="flex w-[600px] h-[400px] rounded-xl bg-gradient-to-br from-kanade-blush/20 to-kanade-lavender/20 items-center justify-center">
-              <ImageIcon size={48} className="text-kanade-cream/20" />
-            </div>
-          ) : (
-            <img
-              src={image.src}
-              alt={image.alt}
-              className="max-w-full max-h-[70vh] object-contain rounded-xl shadow-2xl"
-              onError={() => setImgError(true)}
-            />
-          )
-        })()}
+        <LightboxImage image={image} />
 
         {caption && (
           <p className="text-center text-kanade-sand/60 text-sm mt-4 tracking-wide">{caption}</p>

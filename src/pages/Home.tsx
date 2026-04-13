@@ -3,6 +3,8 @@ import { Calendar, Users, ImageIcon, ChevronDown } from 'lucide-react'
 import { events } from '../data/events'
 import { useLang } from '../context/LanguageContext'
 
+const HERO_NOTES = ['♩', '♪', '♫', '♬'] as const
+
 function HeroSection() {
   const { t } = useLang()
   return (
@@ -15,7 +17,7 @@ function HeroSection() {
 
       {/* Floating musical notes */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {['♩', '♪', '♫', '♬'].map((note, i) => (
+        {HERO_NOTES.map((note, i) => (
           <span
             key={i}
             className="absolute text-kanade-lavender/20 font-serif select-none"

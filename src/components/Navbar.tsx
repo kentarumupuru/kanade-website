@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import MusicPlayer from './MusicPlayer'
@@ -10,11 +10,14 @@ export default function Navbar() {
   const [menuOpen,  setMenuOpen]  = useState(false)
   const { lang, toggle, t } = useLang()
 
-  const navItems = NAV_ITEMS.map(item => ({ label: t(item.labelJa, item.labelEn), to: item.to }))
+  const navItems = useMemo(
+    () => NAV_ITEMS.map(item => ({ label: t(item.labelJa, item.labelEn), to: item.to })),
+    [t],
+  )
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
-    window.addEventListener('scroll', onScroll)
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
