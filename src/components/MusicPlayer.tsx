@@ -4,7 +4,7 @@ import { tracks } from '../data/tracks'
 
 export default function MusicPlayer() {
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [isPlaying,    setIsPlaying]    = useState(true)
+  const [isPlaying,    setIsPlaying]    = useState(false)
   const [progress,     setProgress]     = useState(0)
   const [volume,       setVolume]       = useState(0.7)
   const [muted,        setMuted]        = useState(false)

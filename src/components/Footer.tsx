@@ -2,9 +2,7 @@ import { Twitter } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useLang } from '../context/LanguageContext'
 import { NAV_ITEMS } from '../data/navItems'
-
-// Replace with real Twitter/X URL once available
-const TWITTER_URL = 'https://x.com/FF14_Kanade2020'
+import { TWITTER_URL } from '../data/config'
 
 export default function Footer() {
   const { t } = useLang()

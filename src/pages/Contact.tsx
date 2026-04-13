@@ -2,9 +2,7 @@ import { useState } from 'react'
 import { Send, Twitter, Mail, MessageSquare, CheckCircle } from 'lucide-react'
 import { useLang } from '../context/LanguageContext'
 
-// Replace with real values once available
-const TWITTER_URL = 'https://x.com/KanadeFF14'
-const CONTACT_EMAIL = 'kanade.ff14@example.com'
+import { TWITTER_URL, CONTACT_EMAIL } from '../data/config'
 
 type FormState = 'idle' | 'submitting' | 'success' | 'error'
 

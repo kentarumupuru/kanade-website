@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { X, ChevronLeft, ChevronRight, ImageIcon } from 'lucide-react'
 import { useLang } from '../context/LanguageContext'
 
@@ -83,6 +83,16 @@ function Lightbox({
   const image = images[index]
   const caption = lang === 'ja' ? (image.captionJa ?? image.caption) : image.caption
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape')      onClose()
+      if (e.key === 'ArrowLeft')   onPrev()
+      if (e.key === 'ArrowRight')  onNext()
+    }
+    document.addEventListener('keydown', handler)
+    return () => document.removeEventListener('keydown', handler)
+  }, [onClose, onPrev, onNext])
+
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90"
@@ -110,22 +120,21 @@ function Lightbox({
         onClick={e => e.stopPropagation()}
       >
         {/* Real image with fallback */}
-        <img
-          src={image.src}
-          alt={image.alt}
-          className="max-w-full max-h-[70vh] object-contain rounded-xl shadow-2xl"
-          onError={e => {
-            const el = e.currentTarget
-            el.style.display = 'none'
-            el.nextElementSibling?.classList.remove('hidden')
-          }}
-        />
-        {/* Fallback placeholder */}
-        {/* hidden until JS removes the class; flex is the revealed layout — intentional pattern */}
-        {/* tailwind-disable-next-line cssConflict */}
-        <div className="hidden w-[600px] h-[400px] rounded-xl bg-gradient-to-br from-kanade-blush/20 to-kanade-lavender/20 items-center justify-center">
-          <ImageIcon size={48} className="text-kanade-cream/20" />
-        </div>
+        {(() => {
+          const [imgError, setImgError] = useState(false)
+          return imgError ? (
+            <div className="flex w-[600px] h-[400px] rounded-xl bg-gradient-to-br from-kanade-blush/20 to-kanade-lavender/20 items-center justify-center">
+              <ImageIcon size={48} className="text-kanade-cream/20" />
+            </div>
+          ) : (
+            <img
+              src={image.src}
+              alt={image.alt}
+              className="max-w-full max-h-[70vh] object-contain rounded-xl shadow-2xl"
+              onError={() => setImgError(true)}
+            />
+          )
+        })()}
 
         {caption && (
           <p className="text-center text-kanade-sand/60 text-sm mt-4 tracking-wide">{caption}</p>
