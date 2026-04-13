@@ -129,7 +129,7 @@ export default function Contact() {
           <ContactCard
             icon={<Twitter size={18} />}
             label="X / Twitter"
-            value="@KanadeFF14"
+            value="@FF14_Kanade2020"
             href={TWITTER_URL}
           />
           <ContactCard
