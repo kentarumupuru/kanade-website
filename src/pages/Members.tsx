@@ -2,33 +2,40 @@ import { useState } from 'react'
 import { Globe } from 'lucide-react'
 import { members, roleColors, type MemberRole } from '../data/members'
 import { useLang } from '../context/LanguageContext'
+import { useInView } from '../hooks/useInView'
 
 function PageHeader() {
   const { t } = useLang()
+  const { ref, inView } = useInView()
   return (
     <section className="pt-32 pb-12 px-6 text-center">
-      <p className="text-kanade-lavender/60 tracking-[0.4em] text-xs uppercase mb-4 font-sans">
-        {t('アンサンブル', 'The Ensemble')}
-      </p>
-      <h1 className="section-title">{t('メンバー', 'Our Members')}</h1>
-      <div className="section-divider" />
-      <p className="text-kanade-sand/50 max-w-xl mx-auto text-sm leading-relaxed">
-        {t(
-          'KANADEは15名の仲間で構成されています。ステージパフォーマーやバード奏者から、ハウジングアーティスト、MC、マネージャーまで多彩なメンバーが揃っています。',
-          'KANADE is made up of 15 dedicated individuals — from stage performers and Bards to housing artists, MCs, and behind-the-scenes managers.'
-        )}
-      </p>
+      <div ref={ref} className={`reveal-up${inView ? ' is-visible' : ''}`}>
+        <p className="text-kanade-lavender/60 tracking-[0.4em] text-xs uppercase mb-4 font-sans">
+          {t('アンサンブル', 'The Ensemble')}
+        </p>
+        <h1 className="section-title">{t('メンバー', 'Our Members')}</h1>
+        <div className="section-divider" />
+        <p className="text-kanade-sand/50 max-w-xl mx-auto text-sm leading-relaxed">
+          {t(
+            'KANADEは15名の仲間で構成されています。ステージパフォーマーやバード奏者から、ハウジングアーティスト、MC、マネージャーまで多彩なメンバーが揃っています。',
+            'KANADE is made up of 15 dedicated individuals — from stage performers and Bards to housing artists, MCs, and behind-the-scenes managers.'
+          )}
+        </p>
+      </div>
     </section>
   )
 }
 
-function MemberCard({ member, roleLabels }: { member: typeof members[0]; roleLabels: Record<MemberRole, string> }) {
+function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; roleLabels: Record<MemberRole, string>; index: number }) {
   const [flipped, setFlipped] = useState(false)
   const { t } = useLang()
+  const { ref, inView } = useInView({ threshold: 0.1 })
+  const delayClass = `reveal-delay-${Math.min((index % 4) + 1, 6)}`
 
   return (
     <div
-      className="cursor-pointer"
+      ref={ref}
+      className={`cursor-pointer reveal-scale ${delayClass}${inView ? ' is-visible' : ''}`}
       style={{ perspective: '1000px' }}
       onClick={() => setFlipped(v => !v)}
       role="button"
@@ -112,6 +119,7 @@ function MemberCard({ member, roleLabels }: { member: typeof members[0]; roleLab
 export default function Members() {
   const [activeRole, setActiveRole] = useState<MemberRole | 'all'>('all')
   const { t } = useLang()
+  const { ref: filtersRef, inView: filtersInView } = useInView()
 
   const roleFilters: { label: string; value: MemberRole | 'all' }[] = [
     { label: t('すべて',         'All'),        value: 'all' },
@@ -138,7 +146,10 @@ export default function Members() {
 
       <div className="max-w-6xl mx-auto px-6 pb-24">
         {/* Role filters */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
+        <div
+          ref={filtersRef}
+          className={`flex flex-wrap items-center justify-center gap-2 mb-12 reveal-fade${filtersInView ? ' is-visible' : ''}`}
+        >
           {roleFilters.map(({ label, value }) => (
             <button
               key={value}
@@ -160,8 +171,8 @@ export default function Members() {
 
         {/* Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-          {filtered.map(member => (
-            <MemberCard key={member.id} member={member} roleLabels={roleLabels} />
+          {filtered.map((member, i) => (
+            <MemberCard key={member.id} member={member} roleLabels={roleLabels} index={i} />
           ))}
         </div>
 

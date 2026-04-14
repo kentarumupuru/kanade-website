@@ -2,8 +2,7 @@ import { Link } from 'react-router-dom'
 import { Calendar, Users, ImageIcon, ChevronDown } from 'lucide-react'
 import { events } from '../data/events'
 import { useLang } from '../context/LanguageContext'
-
-const HERO_NOTES = ['♩', '♪', '♫', '♬'] as const
+import { useInView } from '../hooks/useInView'
 
 function HeroSection() {
   const { t } = useLang()
@@ -13,25 +12,6 @@ function HeroSection() {
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div className="w-[600px] h-[600px] rounded-full border border-kanade-lavender/10 animate-spin-slow" />
         <div className="absolute w-[400px] h-[400px] rounded-full border border-kanade-blush/8" style={{ animationDirection: 'reverse' }} />
-      </div>
-
-      {/* Floating musical notes */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {HERO_NOTES.map((note, i) => (
-          <span
-            key={i}
-            className="absolute text-kanade-lavender/20 font-serif select-none"
-            style={{
-              fontSize: `${1.5 + i * 0.5}rem`,
-              left:     `${15 + i * 20}%`,
-              top:      `${20 + (i % 2) * 40}%`,
-              animation: `float ${6 + i * 2}s ease-in-out infinite`,
-              animationDelay: `${i * 1.5}s`,
-            }}
-          >
-            {note}
-          </span>
-        ))}
       </div>
 
       {/* Main hero content */}
@@ -76,9 +56,13 @@ function HeroSection() {
 
 function Vibesbanner() {
   const { t } = useLang()
+  const { ref, inView } = useInView()
   return (
     <section className="py-16 px-6">
-      <div className="max-w-4xl mx-auto text-center">
+      <div
+        ref={ref}
+        className={`max-w-4xl mx-auto text-center reveal-fade${inView ? ' is-visible' : ''}`}
+      >
         <p className="font-serif text-3xl md:text-4xl font-light tracking-widest text-gradient">
           {t('一緒にバイブスを楽しもう', 'Enjoy the vibes with us')}
         </p>
@@ -90,16 +74,23 @@ function Vibesbanner() {
 function UpcomingEvents() {
   const { t, lang } = useLang()
   const upcoming = events.filter(e => e.status === 'upcoming').slice(0, 2)
+  const { ref: titleRef, inView: titleInView } = useInView()
+  const { ref: cardsRef, inView: cardsInView } = useInView({ threshold: 0.1 })
 
   return (
     <section className="py-16 px-6">
       <div className="max-w-5xl mx-auto">
-        <h2 className="section-title text-center">{t('開催予定イベント', 'Upcoming Events')}</h2>
-        <div className="section-divider" />
+        <div ref={titleRef} className={`reveal-up${titleInView ? ' is-visible' : ''}`}>
+          <h2 className="section-title text-center">{t('開催予定イベント', 'Upcoming Events')}</h2>
+          <div className="section-divider" />
+        </div>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-10">
-          {upcoming.map(event => (
-            <div key={event.id} className="card group">
+        <div ref={cardsRef} className="grid md:grid-cols-2 gap-6 mb-10">
+          {upcoming.map((event, i) => (
+            <div
+              key={event.id}
+              className={`card group reveal-up reveal-delay-${i + 1}${cardsInView ? ' is-visible' : ''}`}
+            >
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0 text-center glass rounded-xl px-4 py-3 min-w-[64px]">
                   <p className="text-kanade-blush font-serif text-2xl font-light leading-none">
@@ -128,7 +119,7 @@ function UpcomingEvents() {
           ))}
         </div>
 
-        <div className="text-center">
+        <div className={`text-center reveal-fade${cardsInView ? ' is-visible' : ''} reveal-delay-3`}>
           <Link to="/events" className="btn-ghost inline-flex items-center gap-2">
             <Calendar size={16} />
             {t('すべてのイベントを見る', 'View All Events')}
@@ -141,14 +132,20 @@ function UpcomingEvents() {
 
 function FeaturedMembers() {
   const { t } = useLang()
+  const { ref, inView } = useInView()
 
   return (
     <section className="py-16 px-6">
       <div className="max-w-5xl mx-auto">
-        <h2 className="section-title text-center">{t('KANADEについて', 'Meet KANADE')}</h2>
-        <div className="section-divider" />
+        <div className={`reveal-up${inView ? ' is-visible' : ''}`}>
+          <h2 className="section-title text-center">{t('KANADEについて', 'Meet KANADE')}</h2>
+          <div className="section-divider" />
+        </div>
 
-        <div className="flex justify-center mb-10">
+        <div
+          ref={ref}
+          className={`flex justify-center mb-10 reveal-scale reveal-delay-2${inView ? ' is-visible' : ''}`}
+        >
           <div className="card text-center group w-64">
             <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-kanade-blush/20 to-kanade-lavender/20
                             flex items-center justify-center mb-4 text-2xl font-serif
@@ -160,7 +157,7 @@ function FeaturedMembers() {
           </div>
         </div>
 
-        <div className="text-center">
+        <div className={`text-center reveal-fade reveal-delay-3${inView ? ' is-visible' : ''}`}>
           <Link to="/members" className="btn-ghost inline-flex items-center gap-2">
             <Users size={16} />
             {t('メンバーを見る', 'Meet the Members')}
@@ -173,6 +170,8 @@ function FeaturedMembers() {
 
 function GalleryTeaser() {
   const { t } = useLang()
+  const { ref: titleRef, inView: titleInView } = useInView()
+  const { ref: gridRef, inView: gridInView } = useInView({ threshold: 0.1 })
   const tiles = [
     'from-kanade-blush/30 to-kanade-lavender/30',
     'from-kanade-lavender/30 to-kanade-mist/30',
@@ -183,23 +182,26 @@ function GalleryTeaser() {
   return (
     <section className="py-16 px-6">
       <div className="max-w-5xl mx-auto">
-        <h2 className="section-title text-center">{t('ギャラリー', 'Gallery')}</h2>
-        <div className="section-divider" />
+        <div ref={titleRef} className={`reveal-up${titleInView ? ' is-visible' : ''}`}>
+          <h2 className="section-title text-center">{t('ギャラリー', 'Gallery')}</h2>
+          <div className="section-divider" />
+        </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
+        <div ref={gridRef} className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-10">
           {tiles.map((gradient, i) => (
             <div
               key={i}
               className={`aspect-square rounded-xl bg-gradient-to-br ${gradient}
                           flex items-center justify-center glass hover:scale-[1.02]
-                          transition-transform duration-300 cursor-pointer`}
+                          transition-transform duration-300 cursor-pointer
+                          reveal-scale reveal-delay-${i + 1}${gridInView ? ' is-visible' : ''}`}
             >
               <ImageIcon size={28} className="text-kanade-cream/20" />
             </div>
           ))}
         </div>
 
-        <div className="text-center">
+        <div className={`text-center reveal-fade reveal-delay-2${gridInView ? ' is-visible' : ''}`}>
           <Link to="/gallery" className="btn-ghost inline-flex items-center gap-2">
             <ImageIcon size={16} />
             {t('ギャラリーを見る', 'View Gallery')}

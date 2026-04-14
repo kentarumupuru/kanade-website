@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { X, ChevronLeft, ChevronRight, ImageIcon } from 'lucide-react'
 import { useLang } from '../context/LanguageContext'
+import { useInView } from '../hooks/useInView'
 
 export interface GalleryImage {
   id: number
@@ -161,10 +162,67 @@ function Lightbox({
   )
 }
 
+function GalleryTile({
+  image,
+  index,
+  caption,
+  onClick,
+}: {
+  image: GalleryImage
+  index: number
+  caption: string | undefined
+  onClick: () => void
+}) {
+  const { t } = useLang()
+  const { ref, inView } = useInView({ threshold: 0.08 })
+  const delayClass = `reveal-delay-${Math.min((index % 6) + 1, 6)}`
+
+  return (
+    <div
+      ref={ref}
+      className={`break-inside-avoid rounded-xl overflow-hidden cursor-pointer
+                 group relative glass hover:ring-1 hover:ring-kanade-lavender/30
+                 transition-all duration-300 hover:shadow-lg hover:shadow-kanade-lavender/10
+                 reveal-scale ${delayClass}${inView ? ' is-visible' : ''}`}
+      style={{ aspectRatio: index % 5 === 0 ? '1/1.3' : index % 3 === 0 ? '1/0.8' : '1/1' }}
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={e => e.key === 'Enter' && onClick()}
+      aria-label={t(`${caption}を表示`, `View ${image.alt}`)}
+    >
+      {/* Try real image, fall back to placeholder */}
+      <img
+        src={image.thumbnail}
+        alt={image.alt}
+        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        onError={e => {
+          const el = e.currentTarget
+          el.style.display = 'none'
+          el.nextElementSibling?.classList.remove('hidden')
+        }}
+      />
+      <div className="hidden w-full h-full">
+        <PlaceholderTile image={image} />
+      </div>
+
+      {/* Hover overlay */}
+      <div className="absolute inset-0 bg-kanade-deep/60 opacity-0 group-hover:opacity-100
+                      transition-opacity duration-300 flex items-end p-3">
+        {caption && (
+          <p className="text-kanade-cream/80 text-xs leading-snug">{caption}</p>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function Gallery() {
   const [activeCategory, setActiveCategory] = useState<GalleryImage['category'] | 'all'>('all')
   const [lightboxIndex,  setLightboxIndex]  = useState<number | null>(null)
   const { t, lang } = useLang()
+  const { ref: headerRef, inView: headerInView } = useInView()
+  const { ref: filtersRef, inView: filtersInView } = useInView()
 
   const categoryLabels: Record<GalleryImage['category'] | 'all', string> = {
     all:                 t('すべて',       'All'),
@@ -187,22 +245,27 @@ export default function Gallery() {
     <>
       {/* Header */}
       <section className="pt-32 pb-12 px-6 text-center">
-        <p className="text-kanade-lavender/60 tracking-[0.4em] text-xs uppercase mb-4 font-sans">
-          {t('思い出', 'Memories')}
-        </p>
-        <h1 className="section-title">{t('ギャラリー', 'Gallery')}</h1>
-        <div className="section-divider" />
-        <p className="text-kanade-sand/50 max-w-xl mx-auto text-sm leading-relaxed">
-          {t(
-            'KANADEの歩みを彩るスクリーンショット、パフォーマンスの瞬間、舞台裏の一幕をお届けします。',
-            'Screenshots, performance moments, and behind-the-scenes glimpses from KANADE\'s journey.'
-          )}
-        </p>
+        <div ref={headerRef} className={`reveal-up${headerInView ? ' is-visible' : ''}`}>
+          <p className="text-kanade-lavender/60 tracking-[0.4em] text-xs uppercase mb-4 font-sans">
+            {t('思い出', 'Memories')}
+          </p>
+          <h1 className="section-title">{t('ギャラリー', 'Gallery')}</h1>
+          <div className="section-divider" />
+          <p className="text-kanade-sand/50 max-w-xl mx-auto text-sm leading-relaxed">
+            {t(
+              'KANADEの歩みを彩るスクリーンショット、パフォーマンスの瞬間、舞台裏の一幕をお届けします。',
+              'Screenshots, performance moments, and behind-the-scenes glimpses from KANADE\'s journey.'
+            )}
+          </p>
+        </div>
       </section>
 
       <div className="max-w-6xl mx-auto px-6 pb-24">
         {/* Category filters */}
-        <div className="flex flex-wrap justify-center gap-2 mb-10">
+        <div
+          ref={filtersRef}
+          className={`flex flex-wrap justify-center gap-2 mb-10 reveal-fade${filtersInView ? ' is-visible' : ''}`}
+        >
           {(Object.keys(categoryLabels) as (GalleryImage['category'] | 'all')[]).map(cat => (
             <button
               key={cat}
@@ -222,41 +285,13 @@ export default function Gallery() {
           {filtered.map((image, i) => {
             const caption = lang === 'ja' ? (image.captionJa ?? image.caption) : image.caption
             return (
-              <div
+              <GalleryTile
                 key={image.id}
-                className="break-inside-avoid rounded-xl overflow-hidden cursor-pointer
-                           group relative aspect-square glass hover:ring-1 hover:ring-kanade-lavender/30
-                           transition-all duration-300 hover:shadow-lg hover:shadow-kanade-lavender/10"
-                style={{ aspectRatio: i % 5 === 0 ? '1/1.3' : i % 3 === 0 ? '1/0.8' : '1/1' }}
+                image={image}
+                index={i}
+                caption={caption}
                 onClick={() => openLightbox(i)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={e => e.key === 'Enter' && openLightbox(i)}
-                aria-label={t(`${caption}を表示`, `View ${image.alt}`)}
-              >
-                {/* Try real image, fall back to placeholder */}
-                <img
-                  src={image.thumbnail}
-                  alt={image.alt}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  onError={e => {
-                    const el = e.currentTarget
-                    el.style.display = 'none'
-                    el.nextElementSibling?.classList.remove('hidden')
-                  }}
-                />
-                <div className="hidden w-full h-full">
-                  <PlaceholderTile image={image} />
-                </div>
-
-                {/* Hover overlay */}
-                <div className="absolute inset-0 bg-kanade-deep/60 opacity-0 group-hover:opacity-100
-                                transition-opacity duration-300 flex items-end p-3">
-                  {caption && (
-                    <p className="text-kanade-cream/80 text-xs leading-snug">{caption}</p>
-                  )}
-                </div>
-              </div>
+              />
             )
           })}
         </div>

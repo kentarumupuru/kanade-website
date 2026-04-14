@@ -2,33 +2,42 @@ import { useState } from 'react'
 import { Calendar, Clock, MapPin, ExternalLink, Tag } from 'lucide-react'
 import { events, type Event } from '../data/events'
 import { useLang } from '../context/LanguageContext'
+import { useInView } from '../hooks/useInView'
 
 function PageHeader() {
   const { t } = useLang()
+  const { ref, inView } = useInView()
   return (
     <section className="pt-32 pb-12 px-6 text-center">
-      <p className="text-kanade-lavender/60 tracking-[0.4em] text-xs uppercase mb-4 font-sans">
-        {t('スケジュール', 'Schedule')}
-      </p>
-      <h1 className="section-title">{t('イベント', 'Events')}</h1>
-      <div className="section-divider" />
-      <p className="text-kanade-sand/50 max-w-xl mx-auto text-sm leading-relaxed">
-        {t(
-          'エオルゼア各地でのライブパフォーマンス、コンサート、特別公演にぜひご参加ください。特に記載がない限り、すべてのイベントはTonberryサーバーのゲーム内で開催されます。',
-          'Join us for live performances, concerts, and special occasions across Eorzea. All events are held in-game on the Tonberry server unless otherwise noted.'
-        )}
-      </p>
+      <div ref={ref} className={`reveal-up${inView ? ' is-visible' : ''}`}>
+        <p className="text-kanade-lavender/60 tracking-[0.4em] text-xs uppercase mb-4 font-sans">
+          {t('スケジュール', 'Schedule')}
+        </p>
+        <h1 className="section-title">{t('イベント', 'Events')}</h1>
+        <div className="section-divider" />
+        <p className="text-kanade-sand/50 max-w-xl mx-auto text-sm leading-relaxed">
+          {t(
+            'エオルゼア各地でのライブパフォーマンス、コンサート、特別公演にぜひご参加ください。特に記載がない限り、すべてのイベントはTonberryサーバーのゲーム内で開催されます。',
+            'Join us for live performances, concerts, and special occasions across Eorzea. All events are held in-game on the Tonberry server unless otherwise noted.'
+          )}
+        </p>
+      </div>
     </section>
   )
 }
 
-function EventCard({ event }: { event: Event }) {
+function EventCard({ event, index }: { event: Event; index: number }) {
   const { t, lang } = useLang()
+  const { ref, inView } = useInView({ threshold: 0.1 })
   const date = new Date(event.date)
   const isPast = event.status === 'past'
+  const delayClass = `reveal-delay-${Math.min(index % 4 + 1, 6)}`
 
   return (
-    <article className={`card group relative overflow-hidden ${isPast ? 'opacity-60' : ''}`}>
+    <article
+      ref={ref}
+      className={`card group relative overflow-hidden ${isPast ? 'opacity-60' : ''} reveal-up ${delayClass}${inView ? ' is-visible' : ''}`}
+    >
       {/* Status ribbon */}
       {!isPast && (
         <div className="absolute top-4 right-4 flex items-center gap-1.5">
@@ -123,6 +132,7 @@ type Filter = 'all' | 'upcoming' | 'past'
 export default function Events() {
   const [filter, setFilter] = useState<Filter>('all')
   const { t } = useLang()
+  const { ref: filtersRef, inView: filtersInView } = useInView()
 
   const filtered = filter === 'all' ? events : events.filter(e => e.status === filter)
   const upcoming = events.filter(e => e.status === 'upcoming')
@@ -140,7 +150,10 @@ export default function Events() {
 
       <div className="max-w-3xl mx-auto px-6 pb-24">
         {/* Filter tabs */}
-        <div className="flex items-center justify-center gap-2 mb-10">
+        <div
+          ref={filtersRef}
+          className={`flex items-center justify-center gap-2 mb-10 reveal-fade${filtersInView ? ' is-visible' : ''}`}
+        >
           {(['all', 'upcoming', 'past'] as Filter[]).map(f => (
             <button
               key={f}
@@ -165,7 +178,7 @@ export default function Events() {
               </p>
             </div>
           ) : (
-            filtered.map(event => <EventCard key={event.id} event={event} />)
+            filtered.map((event, i) => <EventCard key={event.id} event={event} index={i} />)
           )}
         </div>
 

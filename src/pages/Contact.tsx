@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Send, Twitter, Mail, MessageSquare, CheckCircle } from 'lucide-react'
 import { useLang } from '../context/LanguageContext'
+import { useInView } from '../hooks/useInView'
 
 import { TWITTER_URL, CONTACT_EMAIL } from '../data/config'
 
@@ -55,6 +56,9 @@ export default function Contact() {
   const [status, setStatus] = useState<FormState>('idle')
   const [errors, setErrors] = useState<Partial<FormData>>({})
   const { t } = useLang()
+  const { ref: headerRef, inView: headerInView } = useInView()
+  const { ref: leftRef,   inView: leftInView }   = useInView({ threshold: 0.1 })
+  const { ref: rightRef,  inView: rightInView }  = useInView({ threshold: 0.1 })
 
   const validate = (): boolean => {
     const next: Partial<FormData> = {}
@@ -106,22 +110,27 @@ export default function Contact() {
     <>
       {/* Header */}
       <section className="pt-32 pb-12 px-6 text-center">
-        <p className="text-kanade-lavender/60 tracking-[0.4em] text-xs uppercase mb-4 font-sans">
-          {t('お問い合わせ', 'Get in Touch')}
-        </p>
-        <h1 className="section-title">{t('コンタクト', 'Contact')}</h1>
-        <div className="section-divider" />
-        <p className="text-kanade-sand/50 max-w-xl mx-auto text-sm leading-relaxed">
-          {t(
-            'コラボのご相談、ご質問、または気軽なご挨拶など、お気軽にご連絡ください。',
-            'Want to collaborate, ask a question, or just say hello? We\'d love to hear from you.'
-          )}
-        </p>
+        <div ref={headerRef} className={`reveal-up${headerInView ? ' is-visible' : ''}`}>
+          <p className="text-kanade-lavender/60 tracking-[0.4em] text-xs uppercase mb-4 font-sans">
+            {t('お問い合わせ', 'Get in Touch')}
+          </p>
+          <h1 className="section-title">{t('コンタクト', 'Contact')}</h1>
+          <div className="section-divider" />
+          <p className="text-kanade-sand/50 max-w-xl mx-auto text-sm leading-relaxed">
+            {t(
+              'コラボのご相談、ご質問、または気軽なご挨拶など、お気軽にご連絡ください。',
+              'Want to collaborate, ask a question, or just say hello? We\'d love to hear from you.'
+            )}
+          </p>
+        </div>
       </section>
 
       <div className="max-w-5xl mx-auto px-6 pb-24 grid md:grid-cols-[1fr_1.6fr] gap-10">
         {/* Left — contact info */}
-        <div className="flex flex-col gap-4">
+        <div
+          ref={leftRef}
+          className={`flex flex-col gap-4 reveal-left${leftInView ? ' is-visible' : ''}`}
+        >
           <h2 className="font-serif text-xl text-kanade-cream/80 font-light mb-2">
             {t('連絡先', 'Reach Us')}
           </h2>
@@ -155,7 +164,10 @@ export default function Contact() {
         </div>
 
         {/* Right — form */}
-        <div className="card">
+        <div
+          ref={rightRef}
+          className={`card reveal-right${rightInView ? ' is-visible' : ''}`}
+        >
           {status === 'success' ? (
             <div className="flex flex-col items-center justify-center py-12 text-center gap-4">
               <div className="w-14 h-14 rounded-full bg-gradient-to-br from-kanade-blush/30 to-kanade-lavender/30
