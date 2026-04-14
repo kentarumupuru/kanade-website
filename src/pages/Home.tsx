@@ -8,8 +8,14 @@ function HeroSection() {
   const { t } = useLang()
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center text-center px-6">
-      {/* Decorative rings */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      {/* Decorative rings — masked so they fade before reaching the button row */}
+      <div
+        className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        style={{
+          maskImage: 'radial-gradient(ellipse at 50% 40%, black 30%, transparent 72%)',
+          WebkitMaskImage: 'radial-gradient(ellipse at 50% 40%, black 30%, transparent 72%)',
+        }}
+      >
         <div className="w-[600px] h-[600px] rounded-full border border-kanade-lavender/10 animate-spin-slow" />
         <div className="absolute w-[400px] h-[400px] rounded-full border border-kanade-blush/8" style={{ animationDirection: 'reverse' }} />
       </div>
