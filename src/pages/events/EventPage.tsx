@@ -1,8 +1,12 @@
 import { useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
+
+const BASE = import.meta.env.BASE_URL
 import {
   Calendar, Clock, MapPin, ExternalLink, Tag,
-  ArrowLeft, Twitter, Youtube, ChevronLeft, ChevronRight, X, Users,
+  ArrowLeft, ChevronLeft, ChevronRight, X, Users,
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  Twitter as TwitterIcon, Youtube as YoutubeIcon,
 } from 'lucide-react'
 import { getEventBySlug } from '../../data/events'
 import { members, roleColors } from '../../data/members'
@@ -95,8 +99,8 @@ export default function EventDetail() {
     .map(id => members.find(m => m.id === id))
     .filter(Boolean) as typeof members
 
-  const posterImages = [event.bannerImage, event.posterImage].filter(Boolean) as string[]
-  const screenshotSrcs = (event.screenshots ?? []).map(s => s.src)
+  const posterImages = [event.bannerImage, event.posterImage].filter(Boolean).map(p => `${BASE}${p}`)
+  const screenshotSrcs = (event.screenshots ?? []).map(s => `${BASE}${s.src}`)
 
   return (
     <>
@@ -113,7 +117,7 @@ export default function EventDetail() {
         {event.bannerImage ? (
           <>
             <img
-              src={event.bannerImage}
+              src={`${BASE}${event.bannerImage}`}
               alt={event.title}
               className="w-full h-full object-cover object-center"
             />
@@ -212,7 +216,7 @@ export default function EventDetail() {
                       rel="noopener noreferrer"
                       className="btn-primary inline-flex items-center gap-2 text-xs py-2 px-5"
                     >
-                      <Youtube size={13} />
+                      <YoutubeIcon size={13} />
                       {t('配信を見る', 'Watch Stream')}
                     </a>
                   )}
@@ -235,7 +239,7 @@ export default function EventDetail() {
                       className="glass inline-flex items-center gap-2 text-xs py-2 px-5 rounded-full
                                  text-kanade-sand/60 hover:text-kanade-sand transition-colors"
                     >
-                      <Twitter size={13} />
+                      <TwitterIcon size={13} />
                       {t('Xで見る', 'View on X')}
                     </a>
                   )}
@@ -294,7 +298,7 @@ export default function EventDetail() {
                 {eventMembers.map(member => (
                   <Link
                     key={member.id}
-                    to="/members"
+                    to={`/members#member-${member.id}`}
                     className={`glass rounded-xl p-3 bg-gradient-to-br ${member.color} hover:opacity-80 transition-opacity`}
                   >
                     <p className="font-serif text-sm font-light text-kanade-cream">{member.name}</p>

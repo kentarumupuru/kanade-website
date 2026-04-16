@@ -35,6 +35,7 @@ function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; 
   return (
     <div
       ref={ref}
+      id={`member-${member.id}`}
       className={`cursor-pointer reveal-scale ${delayClass}${inView ? ' is-visible' : ''}`}
       style={{ perspective: '1000px' }}
       onClick={() => setFlipped(v => !v)}

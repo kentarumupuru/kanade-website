@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+
+const BASE = import.meta.env.BASE_URL
 import { Calendar, Clock, MapPin, ExternalLink, Tag, X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { events, type Event } from '../data/events'
 import { useLang } from '../context/LanguageContext'
@@ -101,7 +103,7 @@ function EventCard({ event, index }: { event: Event; index: number }) {
     <>
       {showPoster && (event.posterImage || event.bannerImage) && (
         <PosterLightbox
-          images={[event.bannerImage, event.posterImage].filter(Boolean) as string[]}
+          images={[event.bannerImage, event.posterImage].filter(Boolean).map(p => `${BASE}${p}`)}
           onClose={() => setShowPoster(false)}
         />
       )}
@@ -113,7 +115,7 @@ function EventCard({ event, index }: { event: Event; index: number }) {
         {event.bannerImage && (
           <div className="relative -mx-6 -mt-6 mb-5 overflow-hidden rounded-t-2xl h-44">
             <img
-              src={event.bannerImage}
+              src={`${BASE}${event.bannerImage}`}
               alt={event.title}
               className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
             />
