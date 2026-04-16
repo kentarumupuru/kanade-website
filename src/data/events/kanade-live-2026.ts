@@ -1,0 +1,28 @@
+import type { Event } from './types'
+
+export const kanadeLive2026: Event = {
+  id: 5,
+  slug: 'kanade-live-2026',
+  title: 'OsakanaCafe リニューアルオープンイベント — KANADE LIVE 2026',
+  date: '2026-04-18',
+  time: '21:00 JST',
+  venue: 'Goblet 19-11',
+  world: 'Mana — Titan',
+  description: 'OsakanaCafe のリニューアルオープンを祝う特別ライブイベント。ゲスト演奏者：The Masin、HIGHLANDER MISFITS、奏語りRAM.、エルちゃん。',
+  fullDescription: `OsakanaCafe のリニューアルオープンを記念した特別ライブイベント「KANADE LIVE 2026」を開催します。
+
+ゲスト演奏者として The Masin、HIGHLANDER MISFITS、奏語りRAM.、エルちゃん をお迎えし、素晴らしい音楽をお届けします。
+
+配信: アフロ畑うっしー
+MC: ミルカちゃん
+
+YouTubeにてライブ配信も行います。ぜひご参加ください！`,
+  streamLink: 'https://www.youtube.com/live/-U6Q7QsHoru?si=-7OF1_QFTkCU0YJk',
+  twitterLink: 'https://twitter.com/search?q=%23KANADE_LIVE2026',
+  status: 'upcoming',
+  tags: ['Live', 'Concert', 'Special Event', 'OsakanaCafe'],
+  bannerImage: '/kanade-live-2026-banner.jpg',
+  posterImage: '/kanade-live-2026-poster.jpg',
+  memberIds: [],
+  screenshots: [],
+}

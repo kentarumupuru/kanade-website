@@ -93,9 +93,10 @@ function UpcomingEvents() {
 
         <div ref={cardsRef} className="grid md:grid-cols-2 gap-6 mb-10">
           {upcoming.map((event, i) => (
-            <div
+            <Link
               key={event.id}
-              className={`card group reveal-up reveal-delay-${i + 1}${cardsInView ? ' is-visible' : ''}`}
+              to={`/events/${event.slug}`}
+              className={`card group reveal-up reveal-delay-${i + 1}${cardsInView ? ' is-visible' : ''} block cursor-pointer`}
             >
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0 text-center glass rounded-xl px-4 py-3 min-w-[64px]">
@@ -121,7 +122,7 @@ function UpcomingEvents() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 

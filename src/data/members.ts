@@ -8,6 +8,7 @@ export interface Member {
   world: string
   bio: string
   color: string
+  eventIds?: number[]
 }
 
 export const members: Member[] = [
