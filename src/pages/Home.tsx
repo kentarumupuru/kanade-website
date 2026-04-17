@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useSEO } from '../hooks/useSEO'
 import { Calendar, Users, ImageIcon, ChevronDown } from 'lucide-react'
 import { events } from '../data/events'
 import { useLang } from '../context/LanguageContext'
@@ -27,7 +28,7 @@ function HeroSection() {
         </p>
 
         <h1 className="mb-4 flex justify-center">
-          <img src={`${import.meta.env.BASE_URL}titlelogo.png`} alt="KANADE" className="w-auto max-w-xs sm:max-w-sm md:max-w-md" />
+          <img src={`${import.meta.env.BASE_URL}logos/titlelogo.png`} alt="KANADE" className="w-auto max-w-xs sm:max-w-sm md:max-w-md" />
         </h1>
 
         <div className="w-32 h-px mx-auto mb-6" style={{ background: 'linear-gradient(90deg, transparent, #c3aed6, transparent)' }} />
@@ -220,6 +221,7 @@ function GalleryTeaser() {
 }
 
 export default function Home() {
+  useSEO({ title: 'KANADE | Performing Group', description: 'Meet KANADE Performing Group!', url: '/' })
   return (
     <>
       <HeroSection />

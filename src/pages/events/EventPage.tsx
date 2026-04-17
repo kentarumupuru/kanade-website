@@ -4,71 +4,16 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 const BASE = import.meta.env.BASE_URL
 import {
   Calendar, Clock, MapPin, ExternalLink, Tag,
-  ArrowLeft, ChevronLeft, ChevronRight, X, Users,
+  ArrowLeft, Users,
   // eslint-disable-next-line @typescript-eslint/no-deprecated
   Twitter as TwitterIcon, Youtube as YoutubeIcon,
 } from 'lucide-react'
 import { getEventBySlug } from '../../data/events'
+import { useSEO } from '../../hooks/useSEO'
 import { members, roleColors } from '../../data/members'
 import { useLang } from '../../context/LanguageContext'
 import { useInView } from '../../hooks/useInView'
-
-function Lightbox({ images, startIndex, onClose }: { images: string[]; startIndex: number; onClose: () => void }) {
-  const [index, setIndex] = useState(startIndex)
-  const hasPrev = index > 0
-  const hasNext = index < images.length - 1
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
-      onClick={onClose}
-    >
-      <button
-        onClick={onClose}
-        className="absolute top-4 right-4 glass rounded-full p-2 text-kanade-sand/70 hover:text-kanade-sand transition-colors"
-        aria-label="Close"
-      >
-        <X size={20} />
-      </button>
-      {hasPrev && (
-        <button
-          onClick={e => { e.stopPropagation(); setIndex(i => i - 1) }}
-          className="absolute left-4 glass rounded-full p-2 text-kanade-sand/70 hover:text-kanade-sand transition-colors"
-          aria-label="Previous"
-        >
-          <ChevronLeft size={24} />
-        </button>
-      )}
-      <img
-        src={images[index]}
-        alt={`Image ${index + 1}`}
-        className="max-h-[90vh] max-w-[90vw] rounded-xl shadow-2xl object-contain"
-        onClick={e => e.stopPropagation()}
-      />
-      {hasNext && (
-        <button
-          onClick={e => { e.stopPropagation(); setIndex(i => i + 1) }}
-          className="absolute right-4 glass rounded-full p-2 text-kanade-sand/70 hover:text-kanade-sand transition-colors"
-          aria-label="Next"
-        >
-          <ChevronRight size={24} />
-        </button>
-      )}
-      {images.length > 1 && (
-        <div className="absolute bottom-4 flex gap-2" onClick={e => e.stopPropagation()}>
-          {images.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setIndex(i)}
-              className={`w-2 h-2 rounded-full transition-all duration-200 ${i === index ? 'bg-kanade-blush scale-125' : 'bg-kanade-sand/40 hover:bg-kanade-sand/70'}`}
-              aria-label={`Image ${i + 1}`}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
+import Lightbox from '../../components/Lightbox'
 
 export default function EventDetail() {
   const { slug } = useParams<{ slug: string }>()
@@ -79,6 +24,14 @@ export default function EventDetail() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
 
   const event = slug ? getEventBySlug(slug) : undefined
+
+  const BASE_URL = 'https://wolfie0420.github.io/kanade-website'
+  useSEO({
+    title: event ? `${event.title} — KANADE` : 'Event Details — KANADE',
+    description: event ? event.description : 'Event Details',
+    image: event?.bannerImage ? `${BASE_URL}/${event.bannerImage}` : undefined,
+    url: `/events/${slug}`,
+  })
 
   if (!event) {
     return (
@@ -102,8 +55,20 @@ export default function EventDetail() {
   const posterImages = [event.bannerImage, event.posterImage].filter(Boolean).map(p => `${BASE}${p}`)
   const screenshotSrcs = (event.screenshots ?? []).map(s => `${BASE}${s.src}`)
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: event.title,
+    startDate: `${event.date}T${event.time.replace(' JST', '+09:00')}`,
+    location: { '@type': 'Place', name: `${event.venue}, ${event.world}` },
+    description: event.description,
+    organizer: { '@type': 'Organization', name: 'KANADE', url: 'https://wolfie0420.github.io/kanade-website/' },
+    ...(event.bannerImage && { image: `${BASE_URL}/${event.bannerImage}` }),
+  }
+
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       {lightboxIndex !== null && (
         <Lightbox
           images={[...posterImages, ...screenshotSrcs]}
@@ -129,8 +94,8 @@ export default function EventDetail() {
 
         {/* Back button */}
         <button
-          onClick={() => navigate(-1)}
-          className="absolute top-6 left-6 glass rounded-full px-4 py-2 flex items-center gap-2 text-xs text-kanade-sand/70 hover:text-kanade-sand transition-colors"
+          onClick={() => navigate('/events')}
+          className="absolute top-20 left-6 z-10 glass rounded-full px-4 py-2 flex items-center gap-2 text-xs text-kanade-sand/70 hover:text-kanade-sand transition-colors"
         >
           <ArrowLeft size={14} />
           {t('戻る', 'Back')}
@@ -318,7 +283,7 @@ export default function EventDetail() {
                 {t('スクリーンショット', 'Screenshots')}
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                {event.screenshots!.map((shot, i) => (
+                {event.screenshots?.map((shot, i) => (
                   <button
                     key={shot.src}
                     onClick={() => setLightboxIndex(posterImages.length + i)}

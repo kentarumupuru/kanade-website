@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useSEO } from '../hooks/useSEO'
 
 const BASE = import.meta.env.BASE_URL
-import { Calendar, Clock, MapPin, ExternalLink, Tag, X, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Calendar, Clock, MapPin, ExternalLink, Tag } from 'lucide-react'
 import { events, type Event } from '../data/events'
 import { useLang } from '../context/LanguageContext'
 import { useInView } from '../hooks/useInView'
+import Lightbox from '../components/Lightbox'
 
 function PageHeader() {
   const { t } = useLang()
@@ -29,66 +31,6 @@ function PageHeader() {
   )
 }
 
-function PosterLightbox({ images, onClose }: { images: string[]; onClose: () => void }) {
-  const [index, setIndex] = useState(0)
-  const hasPrev = index > 0
-  const hasNext = index < images.length - 1
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
-      onClick={onClose}
-    >
-      <button
-        onClick={onClose}
-        className="absolute top-4 right-4 glass rounded-full p-2 text-kanade-sand/70 hover:text-kanade-sand transition-colors"
-        aria-label="Close"
-      >
-        <X size={20} />
-      </button>
-
-      {hasPrev && (
-        <button
-          onClick={e => { e.stopPropagation(); setIndex(i => i - 1) }}
-          className="absolute left-4 glass rounded-full p-2 text-kanade-sand/70 hover:text-kanade-sand transition-colors"
-          aria-label="Previous"
-        >
-          <ChevronLeft size={24} />
-        </button>
-      )}
-
-      <img
-        src={images[index]}
-        alt={`Event image ${index + 1}`}
-        className="max-h-[90vh] max-w-[90vw] rounded-xl shadow-2xl object-contain"
-        onClick={e => e.stopPropagation()}
-      />
-
-      {hasNext && (
-        <button
-          onClick={e => { e.stopPropagation(); setIndex(i => i + 1) }}
-          className="absolute right-4 glass rounded-full p-2 text-kanade-sand/70 hover:text-kanade-sand transition-colors"
-          aria-label="Next"
-        >
-          <ChevronRight size={24} />
-        </button>
-      )}
-
-      {images.length > 1 && (
-        <div className="absolute bottom-4 flex gap-2" onClick={e => e.stopPropagation()}>
-          {images.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setIndex(i)}
-              className={`w-2 h-2 rounded-full transition-all duration-200 ${i === index ? 'bg-kanade-blush scale-125' : 'bg-kanade-sand/40 hover:bg-kanade-sand/70'}`}
-              aria-label={`Go to image ${i + 1}`}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
 
 function EventCard({ event, index }: { event: Event; index: number }) {
   const { t, lang } = useLang()
@@ -102,8 +44,9 @@ function EventCard({ event, index }: { event: Event; index: number }) {
   return (
     <>
       {showPoster && (event.posterImage || event.bannerImage) && (
-        <PosterLightbox
+        <Lightbox
           images={[event.bannerImage, event.posterImage].filter(Boolean).map(p => `${BASE}${p}`)}
+          startIndex={0}
           onClose={() => setShowPoster(false)}
         />
       )}
@@ -224,6 +167,7 @@ function EventCard({ event, index }: { event: Event; index: number }) {
 type Filter = 'all' | 'upcoming' | 'past'
 
 export default function Events() {
+  useSEO({ title: 'Events — KANADE', description: 'Live performances across Eorzea', url: '/events' })
   const [filter, setFilter] = useState<Filter>('all')
   const { t } = useLang()
   const { ref: filtersRef, inView: filtersInView } = useInView()

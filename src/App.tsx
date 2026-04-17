@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { HelmetProvider } from 'react-helmet-async'
 import { LanguageProvider } from './context/LanguageContext'
 import Layout from './components/Layout'
 import Home        from './pages/Home'
@@ -10,6 +11,7 @@ import Contact     from './pages/Contact'
 
 export default function App() {
   return (
+    <HelmetProvider>
     <LanguageProvider>
     <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
@@ -24,5 +26,6 @@ export default function App() {
       </Routes>
     </BrowserRouter>
     </LanguageProvider>
+    </HelmetProvider>
   )
 }

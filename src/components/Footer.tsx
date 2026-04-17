@@ -13,7 +13,7 @@ export default function Footer() {
     <footer className="relative z-10 border-t border-white/5 py-10 px-6 mt-20 pb-28">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="text-center md:text-left">
-          <img src={`${import.meta.env.BASE_URL}titlelogo.png`} alt="KANADE" className="h-9 w-auto" />
+          <img src={`${import.meta.env.BASE_URL}logos/titlelogo.png`} alt="KANADE" className="h-9 w-auto" />
           <p className="text-kanade-sand/40 text-xs tracking-widest mt-1 uppercase">
             {t('パフォーミンググループ・ファイナルファンタジーXIV', 'Performing Group · Final Fantasy XIV')}
           </p>

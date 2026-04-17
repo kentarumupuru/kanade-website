@@ -35,12 +35,12 @@ export default function Navbar() {
           onClick={() => setMenuOpen(false)}
         >
           <img
-            src={`${import.meta.env.BASE_URL}logo.png`}
+            src={`${import.meta.env.BASE_URL}logos/logo.png`}
             alt="KANADE logo"
             className="w-9 h-9 rounded-full object-cover"
             onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
           />
-          <img src={`${import.meta.env.BASE_URL}titlelogo.png`} alt="KANADE" className="h-10 w-auto" />
+          <img src={`${import.meta.env.BASE_URL}logos/titlelogo.png`} alt="KANADE" className="h-10 w-auto" />
         </Link>
 
         {/* Center — desktop nav links */}

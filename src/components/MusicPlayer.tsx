@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Music } from 'lucide-react'
 import { tracks } from '../data/tracks'
 
@@ -9,23 +9,10 @@ export default function MusicPlayer() {
   const [volume,       setVolume]       = useState(0.7)
   const [muted,        setMuted]        = useState(false)
   const [showVolume,   setShowVolume]   = useState(false)
-  const audioRef    = useRef<HTMLAudioElement | null>(null)
-  const intervalRef = useRef<number>(0)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const current = tracks[currentIndex]
 
-  const stopProgress = useCallback(() => clearInterval(intervalRef.current), [])
-
-  const startProgress = useCallback(() => {
-    stopProgress()
-    intervalRef.current = window.setInterval(() => {
-      const audio = audioRef.current
-      if (!audio || !audio.duration) return
-      setProgress((audio.currentTime / audio.duration) * 100)
-    }, 250)
-  }, [stopProgress])
-
-  // Effect 1: load new src when track changes, reset progress
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
@@ -33,19 +20,25 @@ export default function MusicPlayer() {
     setProgress(0)
   }, [currentIndex, current.src])
 
-  // Effect 2: sync play/pause state to the audio element
   useEffect(() => {
     const audio = audioRef.current
     if (!audio || !current.src) return
     if (isPlaying) {
       audio.play().catch(() => setIsPlaying(false))
-      startProgress()
     } else {
       audio.pause()
-      stopProgress()
     }
-    return stopProgress
-  }, [isPlaying, current.src, startProgress, stopProgress])
+  }, [isPlaying, current.src])
+
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio) return
+    const onTimeUpdate = () => {
+      if (audio.duration) setProgress((audio.currentTime / audio.duration) * 100)
+    }
+    audio.addEventListener('timeupdate', onTimeUpdate)
+    return () => audio.removeEventListener('timeupdate', onTimeUpdate)
+  }, [])
 
   useEffect(() => {
     const audio = audioRef.current

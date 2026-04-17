@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
+import { useSEO } from '../hooks/useSEO'
 import { Globe } from 'lucide-react'
 import { members, roleColors, type MemberRole } from '../data/members'
 import { useLang } from '../context/LanguageContext'
@@ -118,24 +119,31 @@ function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; 
 }
 
 export default function Members() {
+  useSEO({ title: 'Members — KANADE', description: 'Meet our members', url: '/members' })
   const [activeRole, setActiveRole] = useState<MemberRole | 'all'>('all')
   const { t } = useLang()
   const { ref: filtersRef, inView: filtersInView } = useInView()
 
   const roleFilters: { label: string; value: MemberRole | 'all' }[] = [
     { label: t('すべて',         'All'),        value: 'all' },
-    { label: t('パフォーマー',   'Performers'), value: 'Performer' },
-    { label: t('ハウジング',     'Housing'),    value: 'Housing' },
+    { label: t('楽器演奏',       'Performers'), value: 'Performer' },
+    { label: t('ハウジングガー', 'Housing'),    value: 'Housing' },
     { label: 'MC',                              value: 'MC' },
     { label: t('マネージャー',   'Managers'),   value: 'Manager' },
   ]
 
-  const roleLabels: Record<MemberRole, string> = {
-    Performer: t('パフォーマー', 'Performer'),
-    Housing:   t('ハウジング',   'Housing'),
+  const roleLabels = useMemo<Record<MemberRole, string>>(() => ({
+    Performer: t('楽器演奏',       'Performer'),
+    Housing:   t('ハウジングガー', 'Housing'),
     Manager:   t('マネージャー', 'Manager'),
     MC:        'MC',
-  }
+  }), [t])
+
+  const roleCounts = useMemo(() =>
+    (['Performer', 'Housing', 'MC', 'Manager'] as MemberRole[]).reduce<Record<MemberRole, number>>(
+      (acc, role) => ({ ...acc, [role]: members.filter(m => m.role === role).length }),
+      {} as Record<MemberRole, number>
+    ), [])
 
   const filtered: typeof members = activeRole === 'all'
     ? members
@@ -163,7 +171,7 @@ export default function Members() {
               {label}
               {value !== 'all' && (
                 <span className="ml-1.5 opacity-60">
-                  ({members.filter(m => m.role === value).length})
+                  ({roleCounts[value as MemberRole]})
                 </span>
               )}
             </button>

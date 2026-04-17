@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://wolfie0420.github.io/kanade-website/sitemap.xml

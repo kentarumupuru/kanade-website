@@ -1,11 +1,12 @@
 import { useState } from 'react'
+import { useSEO } from '../hooks/useSEO'
 import { Send, Twitter, Mail, MessageSquare, CheckCircle } from 'lucide-react'
 import { useLang } from '../context/LanguageContext'
 import { useInView } from '../hooks/useInView'
 
 import { TWITTER_URL, CONTACT_EMAIL } from '../data/config'
 
-type FormState = 'idle' | 'submitting' | 'success' | 'error'
+type FormState = 'idle' | 'success'
 
 interface FormData {
   name: string
@@ -52,6 +53,7 @@ function ContactCard({
 }
 
 export default function Contact() {
+  useSEO({ title: 'Contact — KANADE', description: 'Get in touch with KANADE', url: '/contact' })
   const [form,   setForm]   = useState<FormData>(EMPTY_FORM)
   const [status, setStatus] = useState<FormState>('idle')
   const [errors, setErrors] = useState<Partial<FormData>>({})
@@ -79,23 +81,12 @@ export default function Contact() {
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!validate()) return
-
-    setStatus('submitting')
-    try {
-      // TODO: replace with real endpoint, e.g. Formspree or EmailJS
-      // const res = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-      //   body: JSON.stringify(form),
-      // })
-      // if (!res.ok) throw new Error('Send failed')
-      throw new Error('No endpoint configured')
-    } catch {
-      setStatus('error')
-    }
+    const body = `${t('お名前', 'Name')}: ${form.name}\n${t('メールアドレス', 'Email')}: ${form.email}\n\n${form.message}`
+    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(form.subject)}&body=${encodeURIComponent(body)}`
+    setStatus('success')
   }
 
   const fieldClass = (field: keyof FormData) =>
@@ -267,28 +258,12 @@ export default function Contact() {
                 {errors.message && <p className="text-kanade-rose/80 text-xs mt-1">{errors.message}</p>}
               </div>
 
-              {status === 'error' && (
-                <p className="text-kanade-rose/80 text-sm text-center">
-                  {t('送信に失敗しました。後ほど再試行してください。', 'Failed to send. Please try again later.')}
-                </p>
-              )}
-
               <button
                 type="submit"
-                disabled={status === 'submitting'}
-                className="btn-primary self-end inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary self-end inline-flex items-center gap-2"
               >
-                {status === 'submitting' ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    {t('送信中…', 'Sending…')}
-                  </>
-                ) : (
-                  <>
-                    {t('送信する', 'Send Message')}
-                    <Send size={14} />
-                  </>
-                )}
+                {t('送信する', 'Send Message')}
+                <Send size={14} />
               </button>
             </form>
           )}

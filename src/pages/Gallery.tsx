@@ -1,54 +1,10 @@
-import { useState, useEffect } from 'react'
-import { X, ChevronLeft, ChevronRight, ImageIcon } from 'lucide-react'
+import { useState } from 'react'
+import { useSEO } from '../hooks/useSEO'
+import { ImageIcon } from 'lucide-react'
 import { useLang } from '../context/LanguageContext'
 import { useInView } from '../hooks/useInView'
-
-export interface GalleryImage {
-  id: number
-  src: string
-  thumbnail: string
-  alt: string
-  caption?: string
-  captionJa?: string
-  category: 'performance' | 'venue' | 'group' | 'behind-the-scenes'
-}
-
-// Placeholder gallery data — replace src/thumbnail with real image paths in public/gallery/
-export const galleryImages: GalleryImage[] = Array.from({ length: 12 }, (_, i) => ({
-  id: i + 1,
-  src: `${import.meta.env.BASE_URL}gallery/image-${i + 1}.jpg`,
-  thumbnail: `${import.meta.env.BASE_URL}gallery/thumb-${i + 1}.jpg`,
-  alt: `KANADE performance photo ${i + 1}`,
-  caption: [
-    'Spring Bloom Concert — Shirogane',
-    'Moonlit Serenade rehearsal',
-    'Housing setup by Kokoro & Mio',
-    'Cherry Blossom Opening night',
-    'Behind the curtain',
-    'Backstage preparations',
-    'Group gathering at the Goblet',
-    'Mana & Himawari duet',
-    'Lavender Beds venue',
-    'Pre-show lineup',
-    'Audience view from the stage',
-    'Post-show celebration',
-  ][i],
-  captionJa: [
-    'スプリングブルームコンサート — 白銀',
-    '月光セレナーデ リハーサル',
-    'こころ＆みおによるハウジングセットアップ',
-    'さくら開幕ナイト',
-    '舞台裏にて',
-    '開演前の準備',
-    'ゴブレットでのグループ集合',
-    'マナ＆ひまわりのデュエット',
-    'ラベンダーベッズ会場',
-    '開演前の整列',
-    'ステージからの客席',
-    '公演後のお祝い',
-  ][i],
-  category: (['performance', 'venue', 'group', 'behind-the-scenes'] as const)[i % 4],
-}))
+import Lightbox from '../components/Lightbox'
+import { galleryImages, type GalleryImage } from '../data/gallery'
 
 function PlaceholderTile({ image }: { image: GalleryImage }) {
   const gradients = [
@@ -67,100 +23,6 @@ function PlaceholderTile({ image }: { image: GalleryImage }) {
   )
 }
 
-function LightboxImage({ image }: { image: GalleryImage }) {
-  const [imgError, setImgError] = useState(false)
-  if (imgError) {
-    return (
-      <div className="flex w-[600px] h-[400px] rounded-xl bg-gradient-to-br from-kanade-blush/20 to-kanade-lavender/20 items-center justify-center">
-        <ImageIcon size={48} className="text-kanade-cream/20" />
-      </div>
-    )
-  }
-  return (
-    <img
-      src={image.src}
-      alt={image.alt}
-      className="max-w-full max-h-[70vh] object-contain rounded-xl shadow-2xl"
-      onError={() => setImgError(true)}
-    />
-  )
-}
-
-function Lightbox({
-  images,
-  index,
-  onClose,
-  onPrev,
-  onNext,
-}: {
-  images: GalleryImage[]
-  index: number
-  onClose: () => void
-  onPrev: () => void
-  onNext: () => void
-}) {
-  const { t, lang } = useLang()
-  const image = images[index]
-  const caption = lang === 'ja' ? (image.captionJa ?? image.caption) : image.caption
-
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape')      onClose()
-      if (e.key === 'ArrowLeft')   onPrev()
-      if (e.key === 'ArrowRight')  onNext()
-    }
-    document.addEventListener('keydown', handler)
-    return () => document.removeEventListener('keydown', handler)
-  }, [onClose, onPrev, onNext])
-
-  return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90"
-      onClick={onClose}
-    >
-      <button
-        onClick={onClose}
-        className="absolute top-6 right-6 text-white/60 hover:text-white transition-colors"
-        aria-label={t('閉じる', 'Close')}
-      >
-        <X size={28} />
-      </button>
-
-      <button
-        onClick={e => { e.stopPropagation(); onPrev() }}
-        className="absolute left-4 md:left-10 text-white/60 hover:text-white transition-colors
-                   glass rounded-full p-3"
-        aria-label={t('前の画像', 'Previous image')}
-      >
-        <ChevronLeft size={24} />
-      </button>
-
-      <div
-        className="relative max-w-4xl max-h-[80vh] mx-16"
-        onClick={e => e.stopPropagation()}
-      >
-        <LightboxImage image={image} />
-
-        {caption && (
-          <p className="text-center text-kanade-sand/60 text-sm mt-4 tracking-wide">{caption}</p>
-        )}
-
-        <p className="text-center text-kanade-sand/30 text-xs mt-2">
-          {index + 1} / {images.length}
-        </p>
-      </div>
-
-      <button
-        onClick={e => { e.stopPropagation(); onNext() }}
-        className="absolute right-4 md:right-10 text-white/60 hover:text-white transition-colors
-                   glass rounded-full p-3"
-        aria-label={t('次の画像', 'Next image')}
-      >
-        <ChevronRight size={24} />
-      </button>
-    </div>
-  )
-}
 
 function GalleryTile({
   image,
@@ -218,6 +80,7 @@ function GalleryTile({
 }
 
 export default function Gallery() {
+  useSEO({ title: 'Gallery — KANADE', description: 'Screenshots from our events', url: '/gallery' })
   const [activeCategory, setActiveCategory] = useState<GalleryImage['category'] | 'all'>('all')
   const [lightboxIndex,  setLightboxIndex]  = useState<number | null>(null)
   const { t, lang } = useLang()
@@ -236,10 +99,7 @@ export default function Gallery() {
     ? galleryImages
     : galleryImages.filter(img => img.category === activeCategory)
 
-  const openLightbox  = (index: number) => setLightboxIndex(index)
   const closeLightbox = () => setLightboxIndex(null)
-  const prevImage = () => setLightboxIndex(i => i !== null ? (i - 1 + filtered.length) % filtered.length : null)
-  const nextImage = () => setLightboxIndex(i => i !== null ? (i + 1) % filtered.length : null)
 
   return (
     <>
@@ -290,7 +150,7 @@ export default function Gallery() {
                 image={image}
                 index={i}
                 caption={caption}
-                onClick={() => openLightbox(i)}
+                onClick={() => setLightboxIndex(i)}
               />
             )
           })}
@@ -312,14 +172,11 @@ export default function Gallery() {
         </div>
       </div>
 
-      {/* Lightbox */}
       {lightboxIndex !== null && (
         <Lightbox
-          images={filtered}
-          index={lightboxIndex}
+          images={filtered.map(img => img.src)}
+          startIndex={lightboxIndex}
           onClose={closeLightbox}
-          onPrev={prevImage}
-          onNext={nextImage}
         />
       )}
     </>
