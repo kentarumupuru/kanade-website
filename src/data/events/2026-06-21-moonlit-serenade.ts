@@ -12,7 +12,6 @@ export const moonlitSerenade2026: Event = {
   fullDescription: `A special midsummer night's performance under the stars.
 
 Intimate and ethereal, this show celebrates the summer solstice with enchanting melodies. Limited capacity — arrive early to secure your spot for this magical evening.`,
-  ticketLink: '#',
   tags: ['Seasonal', 'Intimate', 'Summer'],
   memberIds: [],
   screenshots: [],

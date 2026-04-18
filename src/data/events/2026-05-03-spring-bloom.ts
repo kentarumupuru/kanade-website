@@ -12,7 +12,6 @@ export const springBloom2026: Event = {
   fullDescription: `Join KANADE for an evening of music and dance as we celebrate the arrival of spring in Eorzea.
 
 Featuring original choreography and live Bard performances, this concert marks the beginning of our spring season. Come dressed in your finest spring attire and enjoy an evening of breathtaking performances.`,
-  ticketLink: '#',
   tags: ['Concert', 'Dance', 'Live Music'],
   memberIds: [],
   screenshots: [],
