@@ -30,9 +30,13 @@ export function getEventById(id: number) {
   return events.find(e => e.id === id)
 }
 
-/** Returns true if the event date is in the past (date < today). */
-export function isEventPast(event: { date: string }): boolean {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  return new Date(event.date) < today
+/** Returns true if the event's date+time (JST) is in the past. Falls back to end-of-day if time is unparseable. */
+export function isEventPast(event: { date: string; time: string }): boolean {
+  const timeMatch = event.time.match(/(\d{1,2}):(\d{2})/)
+  const hours = timeMatch ? parseInt(timeMatch[1], 10) : 23
+  const minutes = timeMatch ? parseInt(timeMatch[2], 10) : 59
+  const [year, month, day] = event.date.split('-').map(Number)
+  // Use Date.UTC to avoid local timezone mixing; treat time as JST (UTC+9)
+  const eventUtcMs = Date.UTC(year, month - 1, day, hours - 9, minutes)
+  return eventUtcMs <= Date.now()
 }

@@ -43,7 +43,7 @@ function EventBanner({ event, onViewPoster }: { event: Event; onViewPoster: () =
         src={`${BASE}${event.bannerImage}`}
         alt={event.title}
         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        style={{ objectPosition: '50% 40%' }}
+        style={{ objectPosition: event.bannerPosition ?? '50% 40%' }}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-kanade-charcoal/90" />
       {event.posterImage && (

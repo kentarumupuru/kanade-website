@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { useSEO } from '../hooks/useSEO'
 import { revealDelayClass } from '../utils/animations'
 import { Calendar, Users, ImageIcon, ChevronDown } from 'lucide-react'
-import { events } from '../data/events'
+import { events, isEventPast } from '../data/events'
 import { useLang } from '../context/LanguageContext'
 import { useInView } from '../hooks/useInView'
 
@@ -81,7 +81,7 @@ function VibesBanner() {
 
 function UpcomingEvents() {
   const { t, lang } = useLang()
-  const upcoming = events.filter(e => e.status === 'upcoming').slice(0, 2)
+  const upcoming = events.filter(e => !isEventPast(e)).slice(0, 2)
   const { ref: titleRef, inView: titleInView } = useInView()
   const { ref: cardsRef, inView: cardsInView } = useInView({ threshold: 0.1 })
 

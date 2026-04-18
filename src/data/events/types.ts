@@ -21,6 +21,7 @@ export interface Event {
   status: EventStatus
   tags: string[]
   bannerImage?: string
+  bannerPosition?: string
   posterImage?: string
   memberIds?: number[]
   screenshots?: EventScreenshot[]

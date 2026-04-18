@@ -83,7 +83,7 @@ export default function EventDetail() {
             <img
               src={`${BASE}${event.bannerImage}`}
               alt={event.title}
-              className="w-full h-full object-cover" style={{ objectPosition: '50% 40%' }}
+              className="w-full h-full object-cover" style={{ objectPosition: event.bannerPosition ?? '50% 40%' }}
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-kanade-charcoal" />
           </>
