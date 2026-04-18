@@ -10,10 +10,24 @@ interface LanguageContextValue {
 
 const LanguageContext = createContext<LanguageContextValue | null>(null)
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLang] = useState<Lang>('ja')
+const STORAGE_KEY = 'kanade-lang'
 
-  const toggle = useCallback(() => setLang(l => (l === 'ja' ? 'en' : 'ja')), [])
+function getInitialLang(): Lang {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (stored === 'ja' || stored === 'en') return stored
+  } catch {}
+  return 'ja'
+}
+
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
+  const [lang, setLang] = useState<Lang>(getInitialLang)
+
+  const toggle = useCallback(() => setLang(l => {
+    const next = l === 'ja' ? 'en' : 'ja'
+    try { localStorage.setItem(STORAGE_KEY, next) } catch {}
+    return next
+  }), [])
   const t = useCallback((ja: string, en: string) => (lang === 'ja' ? ja : en), [lang])
   const value = useMemo(() => ({ lang, toggle, t }), [lang, toggle, t])
 
