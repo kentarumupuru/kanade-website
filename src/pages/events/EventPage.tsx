@@ -5,10 +5,10 @@ const BASE = import.meta.env.BASE_URL
 import {
   Calendar, Clock, MapPin, ExternalLink, Tag,
   ArrowLeft, Users,
-  // eslint-disable-next-line @typescript-eslint/no-deprecated
-  Twitter as TwitterIcon, Youtube as YoutubeIcon,
+  XIcon, Youtube,
 } from 'lucide-react'
-import { getEventBySlug } from '../../data/events'
+import { getEventBySlug, isEventPast } from '../../data/events'
+import { SITE_URL } from '../../data/config'
 import { useSEO } from '../../hooks/useSEO'
 import { members, roleColors } from '../../data/members'
 import { useLang } from '../../context/LanguageContext'
@@ -25,11 +25,10 @@ export default function EventDetail() {
 
   const event = slug ? getEventBySlug(slug) : undefined
 
-  const BASE_URL = 'https://wolfie0420.github.io/kanade-website'
   useSEO({
     title: event ? `${event.title} — KANADE` : 'Event Details — KANADE',
     description: event ? event.description : 'Event Details',
-    image: event?.bannerImage ? `${BASE_URL}/${event.bannerImage}` : undefined,
+    image: event?.bannerImage ? `${SITE_URL}/${event.bannerImage}` : undefined,
     url: `/events/${slug}`,
   })
 
@@ -45,7 +44,7 @@ export default function EventDetail() {
     )
   }
 
-  const isPast = event.status === 'past'
+  const isPast = isEventPast(event)
   const date = new Date(event.date)
 
   const eventMembers = (event.memberIds ?? [])
@@ -63,7 +62,7 @@ export default function EventDetail() {
     location: { '@type': 'Place', name: `${event.venue}, ${event.world}` },
     description: event.description,
     organizer: { '@type': 'Organization', name: 'KANADE', url: 'https://wolfie0420.github.io/kanade-website/' },
-    ...(event.bannerImage && { image: `${BASE_URL}/${event.bannerImage}` }),
+    ...(event.bannerImage && { image: `${SITE_URL}/${event.bannerImage}` }),
   }
 
   return (
@@ -78,13 +77,13 @@ export default function EventDetail() {
       )}
 
       {/* Hero banner */}
-      <div className="relative w-full h-64 md:h-96 overflow-hidden">
+      <div className="relative w-full h-80 md:h-[34rem] overflow-hidden">
         {event.bannerImage ? (
           <>
             <img
               src={`${BASE}${event.bannerImage}`}
               alt={event.title}
-              className="w-full h-full object-cover object-center"
+              className="w-full h-full object-cover" style={{ objectPosition: '50% 40%' }}
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-kanade-charcoal" />
           </>
@@ -181,7 +180,7 @@ export default function EventDetail() {
                       rel="noopener noreferrer"
                       className="btn-primary inline-flex items-center gap-2 text-xs py-2 px-5"
                     >
-                      <YoutubeIcon size={13} />
+                      <Youtube size={13} />
                       {t('配信を見る', 'Watch Stream')}
                     </a>
                   )}
@@ -204,7 +203,7 @@ export default function EventDetail() {
                       className="glass inline-flex items-center gap-2 text-xs py-2 px-5 rounded-full
                                  text-kanade-sand/60 hover:text-kanade-sand transition-colors"
                     >
-                      <TwitterIcon size={13} />
+                      <XIcon size={13} />
                       {t('Xで見る', 'View on X')}
                     </a>
                   )}

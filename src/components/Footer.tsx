@@ -42,8 +42,11 @@ export default function Footer() {
       </div>
 
       <p className="text-center text-kanade-sand/25 text-xs mt-8 tracking-widest">
-        © {new Date().getFullYear()} KANADE Performing Group.{' '}
+        © 2020 KANADE Performing Group.{' '}
         {t('全著作権所有。', 'All rights reserved.')}
+      </p>
+      <p className="text-center text-kanade-sand/20 text-xs mt-1 tracking-widest">
+        {t('デザイン：kentaru mupuru', 'Designed by kentaru mupuru')}
       </p>
     </footer>
   )

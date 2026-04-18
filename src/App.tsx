@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
 import { LanguageProvider } from './context/LanguageContext'
 import Layout from './components/Layout'
@@ -22,6 +22,7 @@ export default function App() {
           <Route path="members"             element={<Members />}     />
           <Route path="gallery"             element={<Gallery />}     />
           <Route path="contact"             element={<Contact />}     />
+          <Route path="*"                   element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
     </BrowserRouter>

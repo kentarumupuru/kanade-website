@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
+import { SITE_URL } from '../data/config'
 
-const BASE_URL = 'https://wolfie0420.github.io/kanade-website'
-const DEFAULT_IMAGE = `${BASE_URL}/logos/logo.png`
+const DEFAULT_IMAGE = `${SITE_URL}/logos/logo.png`
 
 interface SEOProps {
   title: string
@@ -12,7 +12,7 @@ interface SEOProps {
 
 export function useSEO({ title, description, image = DEFAULT_IMAGE, url }: SEOProps) {
   const fullTitle = title.includes('KANADE') ? title : `${title} — KANADE`
-  const fullUrl = url ? `${BASE_URL}${url}` : BASE_URL
+  const fullUrl = url ? `${SITE_URL}${url}` : SITE_URL
 
   useEffect(() => {
     document.title = fullTitle

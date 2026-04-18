@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useSEO } from '../hooks/useSEO'
+import { revealDelayClass } from '../utils/animations'
 import { ImageIcon } from 'lucide-react'
 import { useLang } from '../context/LanguageContext'
 import { useInView } from '../hooks/useInView'
@@ -37,7 +38,7 @@ function GalleryTile({
 }) {
   const { t } = useLang()
   const { ref, inView } = useInView({ threshold: 0.08 })
-  const delayClass = `reveal-delay-${Math.min((index % 6) + 1, 6)}`
+  const delayClass = revealDelayClass(index)
 
   return (
     <div

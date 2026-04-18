@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useSEO } from '../hooks/useSEO'
+import { revealDelayClass } from '../utils/animations'
 import { Calendar, Users, ImageIcon, ChevronDown } from 'lucide-react'
 import { events } from '../data/events'
 import { useLang } from '../context/LanguageContext'
@@ -61,7 +62,7 @@ function HeroSection() {
   )
 }
 
-function Vibesbanner() {
+function VibesBanner() {
   const { t } = useLang()
   const { ref, inView } = useInView()
   return (
@@ -97,7 +98,7 @@ function UpcomingEvents() {
             <Link
               key={event.id}
               to={`/events/${event.slug}`}
-              className={`card group reveal-up reveal-delay-${i + 1}${cardsInView ? ' is-visible' : ''} block cursor-pointer`}
+              className={`card group reveal-up ${revealDelayClass(i)}${cardsInView ? ' is-visible' : ''} block cursor-pointer`}
             >
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0 text-center glass rounded-xl px-4 py-3 min-w-[64px]">
@@ -225,7 +226,7 @@ export default function Home() {
   return (
     <>
       <HeroSection />
-      <Vibesbanner />
+      <VibesBanner />
       <UpcomingEvents />
       <FeaturedMembers />
       <GalleryTeaser />

@@ -66,7 +66,7 @@ export default function Contact() {
     const next: Partial<FormData> = {}
     if (!form.name.trim())                       next.name    = t('お名前は必須です',         'Name is required')
     if (!form.email.trim())                      next.email   = t('メールアドレスは必須です',  'Email is required')
-    else if (!/\S+@\S+\.\S+/.test(form.email))  next.email   = t('有効なメールアドレスを入力してください', 'Enter a valid email')
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))  next.email   = t('有効なメールアドレスを入力してください', 'Enter a valid email')
     if (!form.subject.trim())                    next.subject = t('件名は必須です',           'Subject is required')
     if (!form.message.trim())                    next.message = t('メッセージは必須です',      'Message is required')
     setErrors(next)

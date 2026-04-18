@@ -24,7 +24,7 @@ export default function MusicPlayer() {
     const audio = audioRef.current
     if (!audio || !current.src) return
     if (isPlaying) {
-      audio.play().catch(() => setIsPlaying(false))
+      audio.play().catch((err: unknown) => { console.warn('Audio playback failed:', err); setIsPlaying(false) })
     } else {
       audio.pause()
     }
