@@ -80,6 +80,7 @@ export default function Navbar() {
             className="text-kanade-sand/80 hover:text-kanade-blush transition-colors"
             onClick={() => setMenuOpen(v => !v)}
             aria-label={t('メニューを開く', 'Toggle menu')}
+          aria-expanded={menuOpen}
           >
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>

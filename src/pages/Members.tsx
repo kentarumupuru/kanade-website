@@ -55,7 +55,7 @@ function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; 
       onClick={() => setFlipped(v => !v)}
       role="button"
       tabIndex={0}
-      onKeyDown={e => e.key === 'Enter' && setFlipped(v => !v)}
+      onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setFlipped(v => !v)}
       aria-label={`${member.name} — ${t('クリックして紹介を読む', 'click to read bio')}`}
     >
       <div
