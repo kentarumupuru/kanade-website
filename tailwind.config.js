@@ -66,12 +66,6 @@ export default {
           from: { opacity: '1' },
           to:   { opacity: '0' },
         },
-        kenBurns: {
-          '0%':   { transform: 'scale(1.0) translate(0%, 0%)' },
-          '33%':  { transform: 'scale(1.08) translate(-1.5%, -1%)' },
-          '66%':  { transform: 'scale(1.05) translate(1.5%, 0.5%)' },
-          '100%': { transform: 'scale(1.1) translate(-0.5%, -1.5%)' },
-        },
       },
       backdropBlur: {
         xs: '2px',
