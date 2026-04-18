@@ -1,5 +1,3 @@
-export type EventStatus = 'upcoming' | 'past'
-
 export interface EventScreenshot {
   src: string
   caption?: string
@@ -18,7 +16,6 @@ export interface Event {
   ticketLink?: string
   twitterLink?: string
   streamLink?: string
-  status: EventStatus
   tags: string[]
   bannerImage?: string
   bannerPosition?: string

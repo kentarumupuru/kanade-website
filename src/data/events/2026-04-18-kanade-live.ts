@@ -19,7 +19,6 @@ MC: ミルカちゃん
 YouTubeにてライブ配信も行います。ぜひご参加ください！`,
   streamLink: 'https://www.youtube.com/watch?v=-U6Q7QSHORU',
   twitterLink: 'https://x.com/FF14_Kanade2020/status/2041712636287709238',
-  status: 'upcoming',
   tags: ['Live', 'Concert', 'Special Event', 'OsakanaCafe'],
   bannerImage: 'events/4.18.2026-kanade-live-2026/banner.jpg',
   bannerPosition: '50% 20%',

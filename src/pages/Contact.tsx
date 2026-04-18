@@ -166,12 +166,12 @@ export default function Contact() {
                 <CheckCircle size={28} className="text-kanade-blush" />
               </div>
               <h3 className="font-serif text-xl text-kanade-cream font-light">
-                {t('送信完了！', 'Message Sent!')}
+                {t('メールクライアントが開きます', 'Your email client should open')}
               </h3>
               <p className="text-kanade-sand/50 text-sm max-w-xs">
                 {t(
-                  'お問い合わせいただきありがとうございます。できる限り早くご返信いたします。',
-                  'Thank you for reaching out. We\'ll get back to you as soon as possible.'
+                  'メールアプリが起動しない場合は、直接 kanade.ff14@gmail.com までご連絡ください。',
+                  'If your email client didn\'t open, please contact us directly at kanade.ff14@gmail.com'
                 )}
               </p>
               <button

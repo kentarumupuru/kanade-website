@@ -12,7 +12,6 @@ export const valentinesGala2026: Event = {
   fullDescription: `A romantic evening of performances dedicated to love and connection, featuring duets and heartfelt musical pieces.
 
 The Valentine's Eve Gala was one of our most beloved events, bringing together the community for an evening filled with emotion and beautiful performances.`,
-  status: 'past',
   tags: ['Seasonal', 'Gala', 'Special'],
   memberIds: [],
   screenshots: [],

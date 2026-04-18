@@ -18,13 +18,16 @@ export default function MusicPlayer() {
     if (!audio) return
     audio.src = current.src ?? ''
     setProgress(0)
-  }, [currentIndex, current.src])
+    if (isPlaying && current.src) {
+      audio.play().catch(() => setIsPlaying(false))
+    }
+  }, [currentIndex]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const audio = audioRef.current
     if (!audio || !current.src) return
     if (isPlaying) {
-      audio.play().catch((err: unknown) => { console.warn('Audio playback failed:', err); setIsPlaying(false) })
+      audio.play().catch(() => setIsPlaying(false))
     } else {
       audio.pause()
     }

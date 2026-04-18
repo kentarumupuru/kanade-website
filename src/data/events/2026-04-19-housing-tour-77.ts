@@ -32,7 +32,6 @@ SS撮影自由（#ハウジングツアー）
 
 入場の際にCWLSをお渡しします。`,
   twitterLink: 'https://x.com/MShikhu/status/2044200671105429798',
-  status: 'upcoming',
   tags: ['Housing Tour', 'Community', 'Elemental', 'ハウジングツアー'],
   bannerImage: 'events/4.19.2026-housing-tour-77/poster2.jpg',
   posterImage: 'events/4.19.2026-housing-tour-77/poster1.jpg',

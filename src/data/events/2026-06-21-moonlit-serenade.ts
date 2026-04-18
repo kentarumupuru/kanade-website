@@ -13,7 +13,6 @@ export const moonlitSerenade2026: Event = {
 
 Intimate and ethereal, this show celebrates the summer solstice with enchanting melodies. Limited capacity — arrive early to secure your spot for this magical evening.`,
   ticketLink: '#',
-  status: 'upcoming',
   tags: ['Seasonal', 'Intimate', 'Summer'],
   memberIds: [],
   screenshots: [],

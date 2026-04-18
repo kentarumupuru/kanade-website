@@ -1,4 +1,4 @@
-export type { Event, EventScreenshot, EventStatus } from './types'
+export type { Event, EventScreenshot } from './types'
 
 import { kanadeLive2026 } from './2026-04-18-kanade-live'
 import { housingTour77 } from './2026-04-19-housing-tour-77'

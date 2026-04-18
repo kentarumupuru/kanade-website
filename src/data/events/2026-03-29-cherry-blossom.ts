@@ -12,7 +12,6 @@ export const cherryBlossom2026: Event = {
   fullDescription: `Our debut performance of the season welcomed over 80 attendees for a magical evening of dance and song among the falling petals.
 
 The Cherry Blossom Opening marked the start of KANADE's 2026 season and set the tone for a wonderful year of performances ahead.`,
-  status: 'past',
   tags: ['Season Opener', 'Dance', 'Special'],
   memberIds: [],
   screenshots: [],

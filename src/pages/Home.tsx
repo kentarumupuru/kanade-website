@@ -3,6 +3,7 @@ import { useSEO } from '../hooks/useSEO'
 import { revealDelayClass } from '../utils/animations'
 import { Calendar, Users, ImageIcon, ChevronDown } from 'lucide-react'
 import { events, isEventPast } from '../data/events'
+import { members } from '../data/members'
 import { useLang } from '../context/LanguageContext'
 import { useInView } from '../hooks/useInView'
 
@@ -140,8 +141,9 @@ function UpcomingEvents() {
 }
 
 function FeaturedMembers() {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const { ref, inView } = useInView()
+  const representative = members.find(m => m.roles.includes('Representative'))
 
   return (
     <section className="py-16 px-6">
@@ -151,20 +153,26 @@ function FeaturedMembers() {
           <div className="section-divider" />
         </div>
 
-        <div
-          ref={ref}
-          className={`flex justify-center mb-10 reveal-scale reveal-delay-2${inView ? ' is-visible' : ''}`}
-        >
-          <div className="card text-center group w-64">
-            <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-kanade-blush/20 to-kanade-lavender/20
-                            flex items-center justify-center mb-4 text-2xl font-serif
-                            text-kanade-cream/60 group-hover:scale-110 transition-transform duration-300">
-              S
+        {representative && (
+          <div
+            ref={ref}
+            className={`flex justify-center mb-10 reveal-scale reveal-delay-2${inView ? ' is-visible' : ''}`}
+          >
+            <div className="card text-center group w-64">
+              <div className={`w-20 h-20 mx-auto rounded-full bg-gradient-to-br ${representative.color}
+                              flex items-center justify-center mb-4 text-2xl font-serif
+                              text-kanade-cream/60 group-hover:scale-110 transition-transform duration-300`}>
+                {representative.name.charAt(0)}
+              </div>
+              <h3 className="font-serif text-lg text-kanade-cream font-light">
+                {lang === 'ja' ? representative.nameJa : representative.name}
+              </h3>
+              <p className="text-kanade-lavender/70 text-xs tracking-widest uppercase mt-1">
+                {t('団長', 'Guild Leader')}
+              </p>
             </div>
-            <h3 className="font-serif text-lg text-kanade-cream font-light">Shia Crawford</h3>
-            <p className="text-kanade-lavender/70 text-xs tracking-widest uppercase mt-1">{t('団長', 'Guild Leader')}</p>
           </div>
-        </div>
+        )}
 
         <div className={`text-center reveal-fade reveal-delay-3${inView ? ' is-visible' : ''}`}>
           <Link to="/members" className="btn-ghost inline-flex items-center gap-2">
