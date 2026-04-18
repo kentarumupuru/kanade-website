@@ -148,7 +148,7 @@ export default function Members() {
 
   const roleFilters: { label: string; value: MemberRole | 'all' }[] = [
     { label: t('すべて',         'All'),            value: 'all' },
-    { label: t('代表',           'Representative'), value: 'Representative' },
+    { label: t('団長',           'Representative'), value: 'Representative' },
     { label: t('楽器演奏',       'Performers'),     value: 'Performer' },
     { label: t('ハウジング',     'Housing'),        value: 'Housing' },
     { label: 'MC',                                  value: 'MC' },
@@ -162,7 +162,7 @@ export default function Members() {
     Manager:        t('マネージャー', 'Manager'),
     MC:             'MC',
     Streamer:       t('ストリーマー', 'Streamer'),
-    Representative: t('代表',         'Representative'),
+    Representative: t('団長',         'Representative'),
   }), [t])
 
   const allRoles: MemberRole[] = ['Representative', 'Performer', 'Housing', 'MC', 'Manager', 'Streamer']

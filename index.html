@@ -28,9 +28,12 @@
           var decoded = l.search.slice(1).split('&').map(function (s) {
             return s.replace(/~and~/g, '&')
           })
+          var path = decoded.shift()
+          // Re-prefix the base path (/kanade-website) so BrowserRouter basename matches
+          var base = l.pathname.replace(/\/$/, '')
           window.history.replaceState(
             null, null,
-            decoded.shift() + (decoded.length || l.hash ? '?' + decoded.join('&') + l.hash : '')
+            base + path + (decoded.length || l.hash ? '?' + decoded.join('&') + l.hash : '')
           )
         }
       }(window.location))
