@@ -267,9 +267,13 @@ export default function EventDetail() {
                     className={`glass rounded-xl p-3 bg-gradient-to-br ${member.color} hover:opacity-80 transition-opacity`}
                   >
                     <p className="font-serif text-sm font-light text-kanade-cream">{member.name}</p>
-                    <span className={`text-xs border rounded-full px-2 py-0.5 mt-1 inline-block ${roleColors[member.role]}`}>
-                      {member.role}
-                    </span>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {member.roles.map(role => (
+                        <span key={role} className={`text-xs border rounded-full px-2 py-0.5 inline-block ${roleColors[role]}`}>
+                          {role}
+                        </span>
+                      ))}
+                    </div>
                   </Link>
                 ))}
               </div>

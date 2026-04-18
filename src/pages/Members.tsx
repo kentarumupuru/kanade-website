@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import { useSEO } from '../hooks/useSEO'
 import { Globe } from 'lucide-react'
 import { members, roleColors, type MemberRole } from '../data/members'
@@ -18,8 +19,8 @@ function PageHeader() {
         <div className="section-divider" />
         <p className="text-kanade-sand/50 max-w-xl mx-auto text-sm leading-relaxed">
           {t(
-            'KANADEは15名の仲間で構成されています。ステージパフォーマーやバード奏者から、ハウジングアーティスト、MC、マネージャーまで多彩なメンバーが揃っています。',
-            'KANADE is made up of 15 dedicated individuals — from stage performers and Bards to housing artists, MCs, and behind-the-scenes managers.'
+            'KANADEは15名の仲間で構成されています。ステージパフォーマーやバード奏者から、ハウジングアーティスト、MC、マネージャー、ストリーマーまで多彩なメンバーが揃っています。',
+            'KANADE is made up of 15 dedicated individuals — from stage performers and Bards to housing artists, MCs, managers, and streamers.'
           )}
         </p>
       </div>
@@ -32,6 +33,18 @@ function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; 
   const { t } = useLang()
   const { ref, inView } = useInView({ threshold: 0.1 })
   const delayClass = `reveal-delay-${Math.min((index % 4) + 1, 6)}`
+
+  const nameNode = member.link
+    ? (
+      <Link
+        to={member.link}
+        className="font-serif text-lg text-kanade-cream font-light mb-1 hover:text-kanade-lavender transition-colors duration-200 underline underline-offset-4 decoration-kanade-lavender/40"
+        onClick={e => e.stopPropagation()}
+      >
+        {member.name}
+      </Link>
+    )
+    : <h3 className="font-serif text-lg text-kanade-cream font-light mb-1">{member.name}</h3>
 
   return (
     <div
@@ -51,7 +64,7 @@ function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; 
           transformStyle: 'preserve-3d',
           transition: 'transform 0.5s',
           transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-          minHeight: '240px',
+          minHeight: '260px',
         }}
       >
         {/* Front */}
@@ -74,11 +87,16 @@ function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; 
             {member.name[0]}
           </div>
 
-          <h3 className="font-serif text-lg text-kanade-cream font-light mb-1">{member.name}</h3>
+          {nameNode}
 
-          <span className={`text-xs px-3 py-1 rounded-full border font-sans tracking-widest uppercase ${roleColors[member.role]}`}>
-            {roleLabels[member.role]}
-          </span>
+          {/* Role badges */}
+          <div className="flex flex-wrap justify-center gap-1 mt-1">
+            {member.roles.map(role => (
+              <span key={role} className={`text-xs px-2.5 py-0.5 rounded-full border font-sans tracking-widest uppercase ${roleColors[role]}`}>
+                {roleLabels[role]}
+              </span>
+            ))}
+          </div>
 
           <p className="text-kanade-lavender/60 text-xs tracking-wider mt-2">{member.job}</p>
 
@@ -104,11 +122,15 @@ function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; 
             visibility: flipped ? 'visible' : 'hidden',
           }}
         >
-          <span className={`self-start text-xs px-3 py-1 rounded-full border mb-3 ${roleColors[member.role]}`}>
-            {roleLabels[member.role]}
-          </span>
+          <div className="flex flex-wrap gap-1 mb-3">
+            {member.roles.map(role => (
+              <span key={role} className={`text-xs px-2.5 py-0.5 rounded-full border ${roleColors[role]}`}>
+                {roleLabels[role]}
+              </span>
+            ))}
+          </div>
           <h3 className="font-serif text-lg text-kanade-cream font-light mb-3">{member.name}</h3>
-          <p className="text-kanade-sand/60 text-sm leading-relaxed flex-1">{member.bio}</p>
+          <p className="text-kanade-sand/60 text-sm leading-relaxed flex-1">{t(member.bioJa, member.bio)}</p>
           <p className="text-kanade-sand/30 text-xs mt-4">
             {t('クリックして戻る', 'Click to flip back')}
           </p>
@@ -125,29 +147,35 @@ export default function Members() {
   const { ref: filtersRef, inView: filtersInView } = useInView()
 
   const roleFilters: { label: string; value: MemberRole | 'all' }[] = [
-    { label: t('すべて',         'All'),        value: 'all' },
-    { label: t('楽器演奏',       'Performers'), value: 'Performer' },
-    { label: t('ハウジングガー', 'Housing'),    value: 'Housing' },
-    { label: 'MC',                              value: 'MC' },
-    { label: t('マネージャー',   'Managers'),   value: 'Manager' },
+    { label: t('すべて',         'All'),            value: 'all' },
+    { label: t('代表',           'Representative'), value: 'Representative' },
+    { label: t('楽器演奏',       'Performers'),     value: 'Performer' },
+    { label: t('ハウジング',     'Housing'),        value: 'Housing' },
+    { label: 'MC',                                  value: 'MC' },
+    { label: t('マネージャー',   'Managers'),       value: 'Manager' },
+    { label: t('ストリーマー',   'Streamers'),      value: 'Streamer' },
   ]
 
   const roleLabels = useMemo<Record<MemberRole, string>>(() => ({
-    Performer: t('楽器演奏',       'Performer'),
-    Housing:   t('ハウジングガー', 'Housing'),
-    Manager:   t('マネージャー', 'Manager'),
-    MC:        'MC',
+    Performer:      t('楽器演奏',     'Performer'),
+    Housing:        t('ハウジング',   'Housing'),
+    Manager:        t('マネージャー', 'Manager'),
+    MC:             'MC',
+    Streamer:       t('ストリーマー', 'Streamer'),
+    Representative: t('代表',         'Representative'),
   }), [t])
 
+  const allRoles: MemberRole[] = ['Representative', 'Performer', 'Housing', 'MC', 'Manager', 'Streamer']
+
   const roleCounts = useMemo(() =>
-    (['Performer', 'Housing', 'MC', 'Manager'] as MemberRole[]).reduce<Record<MemberRole, number>>(
-      (acc, role) => ({ ...acc, [role]: members.filter(m => m.role === role).length }),
+    allRoles.reduce<Record<MemberRole, number>>(
+      (acc, role) => ({ ...acc, [role]: members.filter(m => m.roles.includes(role)).length }),
       {} as Record<MemberRole, number>
     ), [])
 
-  const filtered: typeof members = activeRole === 'all'
+  const filtered = activeRole === 'all'
     ? members
-    : members.filter(m => m.role === activeRole)
+    : members.filter(m => m.roles.includes(activeRole))
 
   return (
     <>
@@ -187,7 +215,7 @@ export default function Members() {
 
         {/* Role legend */}
         <div className="flex flex-wrap justify-center gap-4 mt-12 pt-8 border-t border-white/5">
-          {(['Performer', 'Housing', 'MC', 'Manager'] as MemberRole[]).map(role => (
+          {allRoles.map(role => (
             <div key={role} className="flex items-center gap-2">
               <span className={`text-xs px-2.5 py-0.5 rounded-full border ${roleColors[role]}`}>
                 {roleLabels[role]}
