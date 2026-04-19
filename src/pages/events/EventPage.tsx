@@ -3,17 +3,18 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 
 const BASE = import.meta.env.BASE_URL
 import {
-  Calendar, Clock, MapPin, ExternalLink, Tag,
-  ArrowLeft, Users,
+  ExternalLink, ArrowLeft, Users,
   XIcon, Youtube,
 } from 'lucide-react'
 import { getEventBySlug, isEventPast } from '../../data/events'
-import { SITE_URL } from '../../data/config'
 import { useSEO } from '../../hooks/useSEO'
+import { SITE_URL } from '../../data/config'
 import { members, roleColors } from '../../data/members'
 import { useLang } from '../../context/LanguageContext'
 import { useInView } from '../../hooks/useInView'
 import Lightbox from '../../components/Lightbox'
+import { EventDateBlock, EventMeta, EventTags } from '../../components/events'
+import { buildEventJsonLd } from '../../utils/eventJsonLd'
 
 export default function EventDetail() {
   const { slug } = useParams<{ slug: string }>()
@@ -54,20 +55,9 @@ export default function EventDetail() {
   const posterImages = [event.bannerImage, event.posterImage].filter(Boolean).map(p => `${BASE}${p}`)
   const screenshotSrcs = (event.screenshots ?? []).map(s => `${BASE}${s.src}`)
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Event',
-    name: event.title,
-    startDate: `${event.date}T${event.time.replace(' JST', '+09:00')}`,
-    location: { '@type': 'Place', name: `${event.venue}, ${event.world}` },
-    description: event.description,
-    organizer: { '@type': 'Organization', name: 'KANADE', url: 'https://wolfie0420.github.io/kanade-website/' },
-    ...(event.bannerImage && { image: `${SITE_URL}/${event.bannerImage}` }),
-  }
-
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildEventJsonLd(event)) }} />
       {lightboxIndex !== null && (
         <Lightbox
           images={[...posterImages, ...screenshotSrcs]}
@@ -91,7 +81,6 @@ export default function EventDetail() {
           <div className="w-full h-full bg-gradient-to-br from-kanade-deep to-kanade-charcoal" />
         )}
 
-        {/* Back button */}
         <button
           onClick={() => navigate('/events')}
           className="absolute top-20 left-6 z-10 glass rounded-full px-4 py-2 flex items-center gap-2 text-xs text-kanade-sand/70 hover:text-kanade-sand transition-colors"
@@ -100,7 +89,6 @@ export default function EventDetail() {
           {t('戻る', 'Back')}
         </button>
 
-        {/* Status badge */}
         <div className="absolute top-6 right-6">
           {!isPast ? (
             <div className="glass rounded-full px-3 py-1.5 flex items-center gap-1.5">
@@ -124,54 +112,19 @@ export default function EventDetail() {
         <div ref={heroRef} className={`reveal-up${heroInView ? ' is-visible' : ''} mb-10`}>
           <div className="card">
             <div className="flex gap-5 flex-wrap sm:flex-nowrap">
-              {/* Date block */}
-              <div className="flex-shrink-0 text-center">
-                <div className="glass rounded-xl px-5 py-4 min-w-[80px]">
-                  <p className={`font-serif text-4xl font-light leading-none ${isPast ? 'text-kanade-sand/40' : 'text-kanade-blush'}`}>
-                    {date.getDate()}
-                  </p>
-                  <p className="text-kanade-sand/70 text-xs uppercase tracking-wider mt-1">
-                    {date.toLocaleString(lang === 'ja' ? 'ja' : 'en', { month: 'short' })}
-                  </p>
-                  <p className="text-kanade-sand/30 text-xs mt-0.5">{date.getFullYear()}</p>
-                </div>
-              </div>
+              <EventDateBlock date={date} isPast={isPast} isOngoing={false} lang={lang} />
 
-              {/* Info */}
               <div className="flex-1 min-w-0">
                 <h1 className="font-serif text-2xl md:text-3xl font-light mb-3 leading-snug">
                   {event.title}
                 </h1>
 
-                <div className="flex flex-wrap gap-x-5 gap-y-1.5 mb-4">
-                  <span className="flex items-center gap-1.5 text-sm text-kanade-sand/70">
-                    <Clock size={13} className="text-kanade-lavender/80" />
-                    {event.time}
-                  </span>
-                  <span className="flex items-center gap-1.5 text-sm text-kanade-sand/70">
-                    <MapPin size={13} className="text-kanade-lavender/80" />
-                    {event.venue}
-                  </span>
-                  <span className="flex items-center gap-1.5 text-sm text-kanade-sand/70">
-                    <Calendar size={13} className="text-kanade-lavender/80" />
-                    {event.world}
-                  </span>
+                <EventMeta event={event} />
+
+                <div className="mb-5">
+                  <EventTags tags={event.tags} />
                 </div>
 
-                <div className="flex gap-2 flex-wrap mb-5">
-                  {event.tags.map(tag => (
-                    <span
-                      key={tag}
-                      className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full
-                                 border border-kanade-lavender/20 text-kanade-lavender/80"
-                    >
-                      <Tag size={10} />
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Action links */}
                 <div className="flex flex-wrap gap-3">
                   {event.streamLink && (
                     <a
@@ -214,7 +167,6 @@ export default function EventDetail() {
         </div>
 
         <div ref={bodyRef} className={`reveal-up reveal-delay-1${bodyInView ? ' is-visible' : ''} flex flex-col gap-8`}>
-          {/* Full description */}
           {event.fullDescription && (
             <div className="card">
               <h2 className="font-serif text-lg font-light mb-4 text-kanade-sand/80">
@@ -226,7 +178,6 @@ export default function EventDetail() {
             </div>
           )}
 
-          {/* Posters */}
           {posterImages.length > 0 && (
             <div className="card">
               <h2 className="font-serif text-lg font-light mb-4 text-kanade-sand/80">
@@ -251,7 +202,6 @@ export default function EventDetail() {
             </div>
           )}
 
-          {/* Members */}
           {eventMembers.length > 0 && (
             <div className="card">
               <h2 className="font-serif text-lg font-light mb-4 text-kanade-sand/80 flex items-center gap-2">
@@ -279,7 +229,6 @@ export default function EventDetail() {
             </div>
           )}
 
-          {/* Screenshots */}
           {(event.screenshots ?? []).length > 0 && (
             <div className="card">
               <h2 className="font-serif text-lg font-light mb-4 text-kanade-sand/80">

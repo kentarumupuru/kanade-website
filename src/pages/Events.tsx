@@ -1,38 +1,17 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Calendar, Clock, MapPin, ExternalLink, Tag } from 'lucide-react'
+import { Calendar, ExternalLink } from 'lucide-react'
 import { useSEO } from '../hooks/useSEO'
 import { events, isEventPast, isEventOngoing, type Event } from '../data/events'
 import { useLang } from '../context/LanguageContext'
 import { useInView } from '../hooks/useInView'
 import Lightbox from '../components/Lightbox'
 import { revealDelayClass } from '../utils/animations'
+import { StatusBadge, EventDateBlock, EventMeta, EventTags, EventsPageHeader } from '../components/events'
 
 const BASE = import.meta.env.BASE_URL
 
 type Filter = 'all' | 'upcoming' | 'ongoing' | 'past'
-
-function PageHeader() {
-  const { t } = useLang()
-  const { ref, inView } = useInView()
-  return (
-    <section className="pt-32 pb-12 px-6 text-center">
-      <div ref={ref} className={`reveal-up${inView ? ' is-visible' : ''}`}>
-        <p className="text-kanade-lavender/80 tracking-[0.4em] text-xs uppercase mb-4 font-sans">
-          {t('スケジュール', 'Schedule')}
-        </p>
-        <h1 className="section-title">{t('イベント', 'Events')}</h1>
-        <div className="section-divider" />
-        <p className="text-kanade-sand/70 max-w-xl mx-auto text-sm leading-relaxed">
-          {t(
-            'エオルゼア各地でのライブパフォーマンス、コンサート、特別公演にぜひご参加ください。特に記載がない限り、すべてのイベントはTonberryサーバーのゲーム内で開催されます。',
-            'Join us for live performances, concerts, and special occasions across Eorzea. All events are held in-game on the Tonberry server unless otherwise noted.'
-          )}
-        </p>
-      </div>
-    </section>
-  )
-}
 
 function EventBanner({ event, onViewPoster }: { event: Event; onViewPoster: () => void }) {
   const { t } = useLang()
@@ -54,97 +33,6 @@ function EventBanner({ event, onViewPoster }: { event: Event; onViewPoster: () =
           {t('ポスターを見る', 'View Poster')}
         </button>
       )}
-    </div>
-  )
-}
-
-function StatusBadge({ event }: { event: Event }) {
-  const { t } = useLang()
-  const ongoing = isEventOngoing(event)
-  const isPast  = !ongoing && isEventPast(event)
-
-  if (event.bannerImage) return null
-
-  if (ongoing) {
-    return (
-      <div className="absolute top-4 right-4 flex items-center gap-1.5">
-        <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-        <span className="text-emerald-400 text-xs tracking-widest uppercase">
-          {t('開催中', 'Ongoing')}
-        </span>
-      </div>
-    )
-  }
-
-  if (!isPast) {
-    return (
-      <div className="absolute top-4 right-4 flex items-center gap-1.5">
-        <div className="w-1.5 h-1.5 rounded-full bg-kanade-blush animate-pulse" />
-        <span className="text-kanade-blush text-xs tracking-widest uppercase">
-          {t('開催予定', 'Upcoming')}
-        </span>
-      </div>
-    )
-  }
-
-  return (
-    <div className="absolute top-4 right-4">
-      <span className="text-kanade-sand/40 text-xs tracking-widest uppercase">
-        {t('終了', 'Past')}
-      </span>
-    </div>
-  )
-}
-
-function EventDateBlock({ date, isPast, isOngoing, lang }: { date: Date; isPast: boolean; isOngoing: boolean; lang: string }) {
-  return (
-    <div className="flex-shrink-0 text-center">
-      <div className="glass rounded-xl px-4 py-3 min-w-[72px]">
-        <p className={`font-serif text-3xl font-light leading-none ${isPast ? 'text-kanade-sand/40' : isOngoing ? 'text-emerald-400' : 'text-kanade-blush'}`}>
-          {date.getDate()}
-        </p>
-        <p className="text-kanade-sand/70 text-xs uppercase tracking-wider mt-1">
-          {date.toLocaleString(lang === 'ja' ? 'ja' : 'en', { month: 'short' })}
-        </p>
-        <p className="text-kanade-sand/30 text-xs mt-0.5">
-          {date.getFullYear()}
-        </p>
-      </div>
-    </div>
-  )
-}
-
-function EventMeta({ event }: { event: Event }) {
-  return (
-    <div className="flex flex-wrap gap-x-4 gap-y-1 mb-3">
-      <span className="flex items-center gap-1.5 text-xs text-kanade-sand/70">
-        <Clock size={12} className="text-kanade-lavender/80" />
-        {event.time}
-      </span>
-      <span className="flex items-center gap-1.5 text-xs text-kanade-sand/70">
-        <MapPin size={12} className="text-kanade-lavender/80" />
-        {event.venue}
-      </span>
-      <span className="flex items-center gap-1.5 text-xs text-kanade-sand/70">
-        <Calendar size={12} className="text-kanade-lavender/80" />
-        {event.world}
-      </span>
-    </div>
-  )
-}
-
-function EventTags({ tags }: { tags: string[] }) {
-  return (
-    <div className="flex gap-2 flex-wrap">
-      {tags.map(tag => (
-        <span
-          key={tag}
-          className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border border-kanade-lavender/20 text-kanade-lavender/80"
-        >
-          <Tag size={10} />
-          {tag}
-        </span>
-      ))}
     </div>
   )
 }
@@ -224,7 +112,7 @@ export default function Events() {
 
   return (
     <>
-      <PageHeader />
+      <EventsPageHeader />
 
       <div className="max-w-3xl mx-auto px-6 pb-24">
         <div

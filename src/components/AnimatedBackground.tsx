@@ -88,27 +88,13 @@ export default function AnimatedBackground() {
           height: isMobile ? '100%' : '140%',
         }}
       >
-        {/*
-          All slides are always mounted so Ken Burns never restarts.
-          Opacity is driven by whether it's the current, the fading-in next, or hidden.
-        */}
         {SLIDES.map((slide, i) => {
-          let opacity = 0
-          let transitionDuration = `${FADE_DURATION}ms`
+          const isCurrentSettled = i === current && !fading
+          const isCurrentFading  = i === current && fading
+          const isFadingIn       = i === next && fading
 
-          if (i === current && !fading) {
-            // Settled: fully visible, no transition needed
-            opacity = 1
-            transitionDuration = '0ms'
-          } else if (i === current && fading) {
-            // Being replaced: stay visible while next fades in over it
-            opacity = 1
-            transitionDuration = '0ms'
-          } else if (i === next && fading) {
-            // Fading in on top
-            opacity = 1
-            transitionDuration = `${FADE_DURATION}ms`
-          }
+          const opacity = (isCurrentSettled || isCurrentFading || isFadingIn) ? 1 : 0
+          const transitionDuration = isFadingIn ? `${FADE_DURATION}ms` : '0ms'
 
           return (
             <div

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useSEO } from '../hooks/useSEO'
-import { Send, Twitter, Mail, MessageSquare, CheckCircle } from 'lucide-react'
+import { Send, XIcon, Mail, MessageSquare, CheckCircle } from 'lucide-react'
 import { useLang } from '../context/LanguageContext'
 import { useInView } from '../hooks/useInView'
 
@@ -52,6 +52,135 @@ function ContactCard({
   return content
 }
 
+function SuccessMessage({ onReset }: { onReset: () => void }) {
+  const { t } = useLang()
+  return (
+    <div className="flex flex-col items-center justify-center py-12 text-center gap-4">
+      <div className="w-14 h-14 rounded-full bg-gradient-to-br from-kanade-blush/30 to-kanade-lavender/30
+                      flex items-center justify-center">
+        <CheckCircle size={28} className="text-kanade-blush" />
+      </div>
+      <h3 className="font-serif text-xl text-kanade-cream font-light">
+        {t('メールクライアントが開きます', 'Your email client should open')}
+      </h3>
+      <p className="text-kanade-sand/70 text-sm max-w-xs">
+        {t(
+          'メールアプリが起動しない場合は、直接 kanade.ff14@gmail.com までご連絡ください。',
+          'If your email client didn\'t open, please contact us directly at kanade.ff14@gmail.com'
+        )}
+      </p>
+      <button onClick={onReset} className="btn-ghost mt-2">
+        {t('もう一件送る', 'Send Another')}
+      </button>
+    </div>
+  )
+}
+
+function ContactForm({
+  form,
+  errors,
+  onChange,
+  onSubmit,
+}: {
+  form: FormData
+  errors: Partial<FormData>
+  onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void
+  onSubmit: (e: React.FormEvent) => void
+}) {
+  const { t } = useLang()
+
+  const fieldClass = (field: keyof FormData) =>
+    `w-full glass rounded-xl px-4 py-3 text-sm text-kanade-cream placeholder-kanade-sand/30
+     border transition-all duration-200 outline-none
+     focus:border-kanade-lavender/60 focus:shadow-lg focus:shadow-kanade-lavender/10
+     ${errors[field]
+       ? 'border-kanade-rose/60 bg-kanade-rose/5'
+       : 'border-white/10 hover:border-white/20'}`
+
+  return (
+    <form onSubmit={onSubmit} noValidate className="flex flex-col gap-5">
+      <h2 className="font-serif text-xl text-kanade-cream/80 font-light mb-1">
+        {t('メッセージを送る', 'Send a Message')}
+      </h2>
+
+      <div>
+        <label className="block text-xs tracking-widest uppercase text-kanade-sand/70 mb-1.5">
+          {t('お名前', 'Name')}
+        </label>
+        <input
+          type="text"
+          name="name"
+          value={form.name}
+          onChange={onChange}
+          placeholder={t('お名前', 'Your name')}
+          className={fieldClass('name')}
+          autoComplete="name"
+        />
+        {errors.name && <p className="text-kanade-rose/80 text-xs mt-1">{errors.name}</p>}
+      </div>
+
+      <div>
+        <label className="block text-xs tracking-widest uppercase text-kanade-sand/70 mb-1.5">
+          {t('メールアドレス', 'Email')}
+        </label>
+        <input
+          type="email"
+          name="email"
+          value={form.email}
+          onChange={onChange}
+          placeholder="your@email.com"
+          className={fieldClass('email')}
+          autoComplete="email"
+        />
+        {errors.email && <p className="text-kanade-rose/80 text-xs mt-1">{errors.email}</p>}
+      </div>
+
+      <div>
+        <label className="block text-xs tracking-widest uppercase text-kanade-sand/70 mb-1.5">
+          {t('件名', 'Subject')}
+        </label>
+        <select
+          name="subject"
+          value={form.subject}
+          onChange={onChange}
+          className={`${fieldClass('subject')} appearance-none`}
+        >
+          <option value="" disabled>{t('トピックを選択…', 'Select a topic…')}</option>
+          <option value="Event Inquiry">{t('イベントのお問い合わせ', 'Event Inquiry')}</option>
+          <option value="Collaboration">{t('コラボレーション',       'Collaboration')}</option>
+          <option value="Fan Message">{t('ファンメッセージ',         'Fan Message')}</option>
+          <option value="General Question">{t('一般的なご質問',       'General Question')}</option>
+          <option value="Other">{t('その他',                         'Other')}</option>
+        </select>
+        {errors.subject && <p className="text-kanade-rose/80 text-xs mt-1">{errors.subject}</p>}
+      </div>
+
+      <div>
+        <label className="block text-xs tracking-widest uppercase text-kanade-sand/70 mb-1.5">
+          {t('メッセージ', 'Message')}
+        </label>
+        <textarea
+          name="message"
+          value={form.message}
+          onChange={onChange}
+          placeholder={t('メッセージをここに入力してください…', 'Write your message here…')}
+          rows={5}
+          className={`${fieldClass('message')} resize-none`}
+        />
+        {errors.message && <p className="text-kanade-rose/80 text-xs mt-1">{errors.message}</p>}
+      </div>
+
+      <button
+        type="submit"
+        className="btn-primary self-end inline-flex items-center gap-2"
+      >
+        {t('送信する', 'Send Message')}
+        <Send size={14} />
+      </button>
+    </form>
+  )
+}
+
 export default function Contact() {
   useSEO({ title: 'Contact — KANADE', description: 'Get in touch with KANADE', url: '/contact' })
   const [form,   setForm]   = useState<FormData>(EMPTY_FORM)
@@ -89,17 +218,8 @@ export default function Contact() {
     setStatus('success')
   }
 
-  const fieldClass = (field: keyof FormData) =>
-    `w-full glass rounded-xl px-4 py-3 text-sm text-kanade-cream placeholder-kanade-sand/30
-     border transition-all duration-200 outline-none
-     focus:border-kanade-lavender/60 focus:shadow-lg focus:shadow-kanade-lavender/10
-     ${errors[field]
-       ? 'border-kanade-rose/60 bg-kanade-rose/5'
-       : 'border-white/10 hover:border-white/20'}`
-
   return (
     <>
-      {/* Header */}
       <section className="pt-32 pb-12 px-6 text-center">
         <div ref={headerRef} className={`reveal-up${headerInView ? ' is-visible' : ''}`}>
           <p className="text-kanade-lavender/80 tracking-[0.4em] text-xs uppercase mb-4 font-sans">
@@ -117,7 +237,6 @@ export default function Contact() {
       </section>
 
       <div className="max-w-5xl mx-auto px-6 pb-24 grid md:grid-cols-[1fr_1.6fr] gap-10">
-        {/* Left — contact info */}
         <div
           ref={leftRef}
           className={`flex flex-col gap-4 reveal-left${leftInView ? ' is-visible' : ''}`}
@@ -127,7 +246,7 @@ export default function Contact() {
           </h2>
 
           <ContactCard
-            icon={<Twitter size={18} />}
+            icon={<XIcon size={18} />}
             label="X / Twitter"
             value="@FF14_Kanade2020"
             href={TWITTER_URL}
@@ -154,118 +273,19 @@ export default function Contact() {
           </div>
         </div>
 
-        {/* Right — form */}
         <div
           ref={rightRef}
           className={`card reveal-right${rightInView ? ' is-visible' : ''}`}
         >
           {status === 'success' ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-gradient-to-br from-kanade-blush/30 to-kanade-lavender/30
-                              flex items-center justify-center">
-                <CheckCircle size={28} className="text-kanade-blush" />
-              </div>
-              <h3 className="font-serif text-xl text-kanade-cream font-light">
-                {t('メールクライアントが開きます', 'Your email client should open')}
-              </h3>
-              <p className="text-kanade-sand/70 text-sm max-w-xs">
-                {t(
-                  'メールアプリが起動しない場合は、直接 kanade.ff14@gmail.com までご連絡ください。',
-                  'If your email client didn\'t open, please contact us directly at kanade.ff14@gmail.com'
-                )}
-              </p>
-              <button
-                onClick={() => setStatus('idle')}
-                className="btn-ghost mt-2"
-              >
-                {t('もう一件送る', 'Send Another')}
-              </button>
-            </div>
+            <SuccessMessage onReset={() => setStatus('idle')} />
           ) : (
-            <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
-              <h2 className="font-serif text-xl text-kanade-cream/80 font-light mb-1">
-                {t('メッセージを送る', 'Send a Message')}
-              </h2>
-
-              {/* Name */}
-              <div>
-                <label className="block text-xs tracking-widest uppercase text-kanade-sand/70 mb-1.5">
-                  {t('お名前', 'Name')}
-                </label>
-                <input
-                  type="text"
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  placeholder={t('お名前', 'Your name')}
-                  className={fieldClass('name')}
-                  autoComplete="name"
-                />
-                {errors.name && <p className="text-kanade-rose/80 text-xs mt-1">{errors.name}</p>}
-              </div>
-
-              {/* Email */}
-              <div>
-                <label className="block text-xs tracking-widest uppercase text-kanade-sand/70 mb-1.5">
-                  {t('メールアドレス', 'Email')}
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="your@email.com"
-                  className={fieldClass('email')}
-                  autoComplete="email"
-                />
-                {errors.email && <p className="text-kanade-rose/80 text-xs mt-1">{errors.email}</p>}
-              </div>
-
-              {/* Subject */}
-              <div>
-                <label className="block text-xs tracking-widest uppercase text-kanade-sand/70 mb-1.5">
-                  {t('件名', 'Subject')}
-                </label>
-                <select
-                  name="subject"
-                  value={form.subject}
-                  onChange={handleChange}
-                  className={`${fieldClass('subject')} appearance-none`}
-                >
-                  <option value="" disabled>{t('トピックを選択…', 'Select a topic…')}</option>
-                  <option value="Event Inquiry">{t('イベントのお問い合わせ', 'Event Inquiry')}</option>
-                  <option value="Collaboration">{t('コラボレーション',       'Collaboration')}</option>
-                  <option value="Fan Message">{t('ファンメッセージ',         'Fan Message')}</option>
-                  <option value="General Question">{t('一般的なご質問',       'General Question')}</option>
-                  <option value="Other">{t('その他',                         'Other')}</option>
-                </select>
-                {errors.subject && <p className="text-kanade-rose/80 text-xs mt-1">{errors.subject}</p>}
-              </div>
-
-              {/* Message */}
-              <div>
-                <label className="block text-xs tracking-widest uppercase text-kanade-sand/70 mb-1.5">
-                  {t('メッセージ', 'Message')}
-                </label>
-                <textarea
-                  name="message"
-                  value={form.message}
-                  onChange={handleChange}
-                  placeholder={t('メッセージをここに入力してください…', 'Write your message here…')}
-                  rows={5}
-                  className={`${fieldClass('message')} resize-none`}
-                />
-                {errors.message && <p className="text-kanade-rose/80 text-xs mt-1">{errors.message}</p>}
-              </div>
-
-              <button
-                type="submit"
-                className="btn-primary self-end inline-flex items-center gap-2"
-              >
-                {t('送信する', 'Send Message')}
-                <Send size={14} />
-              </button>
-            </form>
+            <ContactForm
+              form={form}
+              errors={errors}
+              onChange={handleChange}
+              onSubmit={handleSubmit}
+            />
           )}
         </div>
       </div>
