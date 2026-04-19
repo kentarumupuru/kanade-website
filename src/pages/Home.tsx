@@ -141,7 +141,7 @@ function UpcomingEvents() {
 }
 
 function FeaturedMembers() {
-  const { t, lang } = useLang()
+  const { t } = useLang()
   const { ref, inView } = useInView()
   const representative = members.find(m => m.roles.includes('Representative'))
 
@@ -165,7 +165,7 @@ function FeaturedMembers() {
                 {representative.name.charAt(0)}
               </div>
               <h3 className="font-serif text-lg text-kanade-cream font-light">
-                {lang === 'ja' ? representative.nameJa : representative.name}
+                {representative.name}
               </h3>
               <p className="text-kanade-lavender/85 text-xs tracking-widest uppercase mt-1">
                 {t('団長', 'Representative')}
