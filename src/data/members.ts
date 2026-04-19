@@ -6,6 +6,7 @@ export interface Member {
   nameJa: string
   roles: MemberRole[]
   job: string
+  twitterHandle?: string
   world: string
   bio: string
   bioJa: string
@@ -21,6 +22,7 @@ export const members: Member[] = [
     nameJa: 'シア・クロフォード',
     roles: ['Representative', 'Manager', 'MC'],
     job: 'Dancer',
+    twitterHandle: 'FF14_shia',
     world: 'Tonberry',
     bio: 'The heart and soul of KANADE. As founding Representative, Shia guides the group with vision, passion, and an unwavering dedication to every performance.',
     bioJa: 'KANADEの創設者であり団長。確かなビジョンと情熱で仲間を束ね、すべての舞台に全力を注ぐ。',
@@ -33,6 +35,7 @@ export const members: Member[] = [
     nameJa: 'ミヤ・シクフ',
     roles: ['Housing', 'Performer'],
     job: 'Bard',
+    twitterHandle: 'MShikhu',
     world: 'Tonberry',
     bio: 'A talented performer who also shapes the spaces KANADE calls home. Miya crafts immersive venues and delivers captivating on-stage moments with equal skill.',
     bioJa: '演奏とハウジングの二刀流。ステージでの表現力と会場づくりの両方で才能を発揮する。',
@@ -44,6 +47,7 @@ export const members: Member[] = [
     nameJa: 'レイト・ピノ',
     roles: ['Performer'],
     job: 'Dancer',
+    twitterHandle: 'ratepino_FF14',
     world: 'Tonberry',
     bio: 'Rate brings an infectious joy to every stage. Their expressive performances light up the audience and keep the energy soaring.',
     bioJa: '舞台に喜びをもたらすパフォーマー。表情豊かな演技で観客を魅了する。',
@@ -55,6 +59,7 @@ export const members: Member[] = [
     nameJa: 'ミルカ・フロリー',
     roles: ['MC', 'Performer'],
     job: 'White Mage',
+    twitterHandle: 'FloryMirka',
     world: 'Tonberry',
     bio: 'Mirka is equally at home commanding the mic between acts or dazzling the crowd with a performance. Her wit and warmth tie every show together.',
     bioJa: 'MCとパフォーマーを兼任。軽妙なトークとステージでの輝きで、公演全体を華やかに彩る。',
@@ -77,6 +82,7 @@ export const members: Member[] = [
     nameJa: 'ザ・マシン',
     roles: ['Performer'],
     job: 'Ninja',
+    twitterHandle: 'the_masin',
     world: 'Tonberry',
     bio: 'Sharp, dynamic, and always surprising — The MaSin brings an electrifying edge to the stage that keeps audiences on their feet.',
     bioJa: 'シャープでダイナミック、常に予想を超えるパフォーマンスで観客を興奮させる。',
@@ -154,6 +160,7 @@ export const members: Member[] = [
     nameJa: 'ラム・ミナカゼ',
     roles: ['Performer'],
     job: 'Dancer',
+    twitterHandle: 'RMinakaze',
     world: 'Tonberry',
     bio: 'Swift and spirited, Ram channels the energy of a fresh wind across the stage — uplifting and impossible to look away from.',
     bioJa: '舞台に新鮮な風を吹き込む躍動感あふれるパフォーマー。その勢いから目が離せない。',
@@ -165,6 +172,7 @@ export const members: Member[] = [
     nameJa: 'ウィレンス・ロワール',
     roles: ['Manager'],
     job: 'Group Manager',
+    twitterHandle: 'Willens_Loire',
     world: 'Tonberry',
     bio: 'The steady hand behind the scenes. Willens keeps KANADE running smoothly, coordinating events, schedules, and partnerships with calm efficiency.',
     bioJa: '舞台裏の要。イベント調整からスケジュール管理まで、KANADEの活動を支える冷静な司令塔。',

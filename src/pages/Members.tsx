@@ -2,6 +2,14 @@ import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useSEO } from '../hooks/useSEO'
 import { Globe } from 'lucide-react'
+
+function XLogo({ size = 11 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 1200 1227" fill="currentColor" aria-hidden="true">
+      <path d="M714.163 519.284 1160.89 0h-105.86L667.137 450.887 357.328 0H0l468.492 681.821L0 1226.37h105.866l409.625-476.152 327.181 476.152H1200L714.163 519.284ZM569.165 687.828l-47.468-67.894-377.686-540.24h162.604l304.797 435.991 47.468 67.894 396.2 566.721H892.476L569.165 687.828Z" />
+    </svg>
+  )
+}
 import { members, roleColors, type MemberRole } from '../data/members'
 import { useLang } from '../context/LanguageContext'
 import { useInView } from '../hooks/useInView'
@@ -98,7 +106,20 @@ function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; 
             ))}
           </div>
 
-          <p className="text-kanade-lavender/60 text-xs tracking-wider mt-2">{member.job}</p>
+          {member.twitterHandle ? (
+            <a
+              href={`https://x.com/${member.twitterHandle}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={e => e.stopPropagation()}
+              className="flex items-center gap-1 text-kanade-sand/50 hover:text-kanade-blush transition-colors duration-200 text-xs mt-2"
+            >
+              <XLogo size={11} />
+              @{member.twitterHandle}
+            </a>
+          ) : (
+            <p className="text-kanade-lavender/60 text-xs tracking-wider mt-2">{member.job}</p>
+          )}
 
           <div className="flex items-center gap-1 mt-3 text-kanade-sand/30">
             <Globe size={11} />
