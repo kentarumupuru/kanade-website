@@ -52,6 +52,14 @@ export default function MusicPlayer() {
   const togglePlay = () => setIsPlaying(v => !v)
 
   const skipTo = (dir: 'prev' | 'next') => {
+    if (dir === 'prev') {
+      const audio = audioRef.current
+      if (audio && audio.currentTime > 3) {
+        audio.currentTime = 0
+        setProgress(0)
+        return
+      }
+    }
     setCurrentIndex(i =>
       dir === 'next' ? (i + 1) % tracks.length : (i - 1 + tracks.length) % tracks.length,
     )
