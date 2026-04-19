@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Calendar, Clock, MapPin, ExternalLink, Tag } from 'lucide-react'
 import { useSEO } from '../hooks/useSEO'
-import { events, isEventPast, type Event } from '../data/events'
+import { events, isEventPast, isEventOngoing, type Event } from '../data/events'
 import { useLang } from '../context/LanguageContext'
 import { useInView } from '../hooks/useInView'
 import Lightbox from '../components/Lightbox'
@@ -10,7 +10,7 @@ import { revealDelayClass } from '../utils/animations'
 
 const BASE = import.meta.env.BASE_URL
 
-type Filter = 'all' | 'upcoming' | 'past'
+type Filter = 'all' | 'upcoming' | 'ongoing' | 'past'
 
 function PageHeader() {
   const { t } = useLang()
@@ -60,9 +60,21 @@ function EventBanner({ event, onViewPoster }: { event: Event; onViewPoster: () =
 
 function StatusBadge({ event }: { event: Event }) {
   const { t } = useLang()
-  const isPast = isEventPast(event)
+  const ongoing = isEventOngoing(event)
+  const isPast  = !ongoing && isEventPast(event)
 
   if (event.bannerImage) return null
+
+  if (ongoing) {
+    return (
+      <div className="absolute top-4 right-4 flex items-center gap-1.5">
+        <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+        <span className="text-emerald-400 text-xs tracking-widest uppercase">
+          {t('開催中', 'Ongoing')}
+        </span>
+      </div>
+    )
+  }
 
   if (!isPast) {
     return (
@@ -84,11 +96,11 @@ function StatusBadge({ event }: { event: Event }) {
   )
 }
 
-function EventDateBlock({ date, isPast, lang }: { date: Date; isPast: boolean; lang: string }) {
+function EventDateBlock({ date, isPast, isOngoing, lang }: { date: Date; isPast: boolean; isOngoing: boolean; lang: string }) {
   return (
     <div className="flex-shrink-0 text-center">
       <div className="glass rounded-xl px-4 py-3 min-w-[72px]">
-        <p className={`font-serif text-3xl font-light leading-none ${isPast ? 'text-kanade-sand/40' : 'text-kanade-blush'}`}>
+        <p className={`font-serif text-3xl font-light leading-none ${isPast ? 'text-kanade-sand/40' : isOngoing ? 'text-emerald-400' : 'text-kanade-blush'}`}>
           {date.getDate()}
         </p>
         <p className="text-kanade-sand/50 text-xs uppercase tracking-wider mt-1">
@@ -144,7 +156,8 @@ function EventCard({ event, index }: { event: Event; index: number }) {
   const [showPoster, setShowPoster] = useState(false)
 
   const date = new Date(event.date)
-  const isPast = isEventPast(event)
+  const ongoing = isEventOngoing(event)
+  const isPast = !ongoing && isEventPast(event)
   const posterImages = [event.bannerImage, event.posterImage].filter(Boolean).map(p => `${BASE}${p}`)
 
   return (
@@ -160,7 +173,7 @@ function EventCard({ event, index }: { event: Event; index: number }) {
         <StatusBadge event={event} />
 
         <div className="flex gap-5">
-          <EventDateBlock date={date} isPast={isPast} lang={lang} />
+          <EventDateBlock date={date} isPast={isPast} isOngoing={ongoing} lang={lang} />
 
           <div className="flex-1 min-w-0">
             <h2 className={`font-serif text-xl font-light mb-2 transition-colors duration-200 ${isPast ? '' : 'group-hover:text-kanade-blush'}`}>
@@ -193,14 +206,20 @@ export default function Events() {
   const { t } = useLang()
   const { ref: filtersRef, inView: filtersInView } = useInView()
 
-  const upcoming = events.filter(e => !isEventPast(e))
-  const past = events.filter(e => isEventPast(e))
-  const filtered = filter === 'all' ? events : filter === 'upcoming' ? upcoming : past
+  const ongoing  = events.filter(e => isEventOngoing(e))
+  const upcoming = events.filter(e => !isEventPast(e) && !isEventOngoing(e))
+  const past     = events.filter(e => isEventPast(e))
+  const filtered =
+    filter === 'all'      ? events :
+    filter === 'upcoming' ? upcoming :
+    filter === 'ongoing'  ? ongoing :
+    past
 
   const filterLabels: Record<Filter, string> = {
-    all:      t(`すべて (${events.length})`,     `All (${events.length})`),
-    upcoming: t(`開催予定 (${upcoming.length})`, `Upcoming (${upcoming.length})`),
-    past:     t(`終了済み (${past.length})`,      `Past (${past.length})`),
+    all:      t(`すべて (${events.length})`,       `All (${events.length})`),
+    upcoming: t(`開催予定 (${upcoming.length})`,   `Upcoming (${upcoming.length})`),
+    ongoing:  t(`開催中 (${ongoing.length})`,      `Ongoing (${ongoing.length})`),
+    past:     t(`終了済み (${past.length})`,        `Past (${past.length})`),
   }
 
   return (
@@ -212,7 +231,7 @@ export default function Events() {
           ref={filtersRef}
           className={`flex items-center justify-center gap-2 mb-10 reveal-fade${filtersInView ? ' is-visible' : ''}`}
         >
-          {(['all', 'upcoming', 'past'] as Filter[]).map(f => (
+          {(['all', 'upcoming', 'ongoing', 'past'] as Filter[]).map(f => (
             <button
               key={f}
               onClick={() => setFilter(f)}

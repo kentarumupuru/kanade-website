@@ -6,6 +6,7 @@ export const housingTour77: Event = {
   title: '第77回 ハウジングツアー in エレメンタル',
   date: '2026-04-19',
   time: '21:00〜23:15 JST (開場 20:45)',
+  endTime: '23:15',
   venue: 'Goblet Ward 30, Plot 35 「忘れられた禁書庫」',
   world: 'Elemental DC — Gungnir',
   description: '第77回ハウジングツアー in エレメンタル。劇団KANADEがウェルカム演奏で参加！複数のCWLSに分かれて素敵なハウスを巡ります。予約不要・参加費無料。',

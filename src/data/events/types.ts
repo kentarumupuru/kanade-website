@@ -9,6 +9,7 @@ export interface Event {
   title: string
   date: string
   time: string
+  endTime?: string
   venue: string
   world: string
   description: string

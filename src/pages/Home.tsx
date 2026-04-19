@@ -168,7 +168,7 @@ function FeaturedMembers() {
                 {lang === 'ja' ? representative.nameJa : representative.name}
               </h3>
               <p className="text-kanade-lavender/70 text-xs tracking-widest uppercase mt-1">
-                {t('団長', 'Guild Leader')}
+                {t('団長', 'Representative')}
               </p>
             </div>
           </div>
