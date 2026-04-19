@@ -20,12 +20,12 @@ function PageHeader() {
   return (
     <section className="pt-32 pb-12 px-6 text-center">
       <div ref={ref} className={`reveal-up${inView ? ' is-visible' : ''}`}>
-        <p className="text-kanade-lavender/60 tracking-[0.4em] text-xs uppercase mb-4 font-sans">
+        <p className="text-kanade-lavender/80 tracking-[0.4em] text-xs uppercase mb-4 font-sans">
           {t('アンサンブル', 'The Ensemble')}
         </p>
         <h1 className="section-title">{t('メンバー', 'Our Members')}</h1>
         <div className="section-divider" />
-        <p className="text-kanade-sand/50 max-w-xl mx-auto text-sm leading-relaxed">
+        <p className="text-kanade-sand/70 max-w-xl mx-auto text-sm leading-relaxed">
           {t(
             'KANADEは15名の仲間で構成されています。ステージパフォーマーやバード奏者から、ハウジングアーティスト、MC、マネージャー、ストリーマーまで多彩なメンバーが揃っています。',
             'KANADE is made up of 15 dedicated individuals — from stage performers and Bards to housing artists, MCs, managers, and streamers.'
@@ -112,13 +112,13 @@ function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; 
               target="_blank"
               rel="noopener noreferrer"
               onClick={e => e.stopPropagation()}
-              className="flex items-center gap-1 text-kanade-sand/50 hover:text-kanade-blush transition-colors duration-200 text-xs mt-2"
+              className="flex items-center gap-1 text-kanade-sand/70 hover:text-kanade-blush transition-colors duration-200 text-xs mt-2"
             >
               <XLogo size={11} />
               @{member.twitterHandle}
             </a>
           ) : (
-            <p className="text-kanade-lavender/60 text-xs tracking-wider mt-2">{member.job}</p>
+            <p className="text-kanade-lavender/80 text-xs tracking-wider mt-2">{member.job}</p>
           )}
 
           <div className="flex items-center gap-1 mt-3 text-kanade-sand/30">
@@ -151,7 +151,7 @@ function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; 
             ))}
           </div>
           <h3 className="font-serif text-lg text-kanade-cream font-light mb-3">{member.name}</h3>
-          <p className="text-kanade-sand/60 text-sm leading-relaxed flex-1">{t(member.bioJa, member.bio)}</p>
+          <p className="text-kanade-sand/75 text-sm leading-relaxed flex-1">{t(member.bioJa, member.bio)}</p>
           <p className="text-kanade-sand/30 text-xs mt-4">
             {t('クリックして戻る', 'Click to flip back')}
           </p>
@@ -215,7 +215,7 @@ export default function Members() {
               className={`px-5 py-2 rounded-full text-xs tracking-widest uppercase font-sans transition-all duration-200
                 ${activeRole === value
                   ? 'bg-gradient-to-r from-kanade-rose to-kanade-lavender text-white shadow-lg shadow-kanade-rose/20'
-                  : 'glass text-kanade-sand/50 hover:text-kanade-sand/80'}`}
+                  : 'glass text-kanade-sand/70 hover:text-kanade-sand/80'}`}
             >
               {label}
               {value !== 'all' && (

@@ -19,7 +19,7 @@ export default function Footer() {
           </p>
         </div>
 
-        <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs tracking-wide uppercase text-kanade-sand/50 md:gap-x-6 md:tracking-widest">
+        <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs tracking-wide uppercase text-kanade-sand/70 md:gap-x-6 md:tracking-widest">
           {navItems.map(({ label, to }) => (
             <Link key={to} to={to} className="hover:text-kanade-blush transition-colors whitespace-nowrap">
               {label}
@@ -32,7 +32,7 @@ export default function Footer() {
             href={TWITTER_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="glass rounded-full p-2.5 text-kanade-sand/50 hover:text-kanade-blush
+            className="glass rounded-full p-2.5 text-kanade-sand/70 hover:text-kanade-blush
                        hover:border-kanade-blush/30 transition-all duration-200"
             aria-label={t('KANADEをX/Twitterでフォロー', 'Follow KANADE on X / Twitter')}
           >

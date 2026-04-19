@@ -63,7 +63,7 @@ export default function Navbar() {
           <button
             onClick={toggle}
             className="glass rounded-full px-3 py-1.5 border border-white/10 text-xs tracking-widest
-                       text-kanade-sand/60 hover:text-kanade-blush hover:border-kanade-blush/30
+                       text-kanade-sand/75 hover:text-kanade-blush hover:border-kanade-blush/30
                        transition-all duration-200 font-sans select-none"
             aria-label="言語切り替え / Toggle language"
           >
@@ -113,7 +113,7 @@ export default function Navbar() {
           <button
             onClick={toggle}
             className="glass rounded-full px-4 py-2 border border-white/10 text-xs tracking-widest
-                       text-kanade-sand/60 hover:text-kanade-blush transition-all duration-200 font-sans"
+                       text-kanade-sand/75 hover:text-kanade-blush transition-all duration-200 font-sans"
           >
             {lang === 'ja' ? 'EN' : 'JP'}
           </button>

@@ -35,7 +35,7 @@ export default function EventDetail() {
   if (!event) {
     return (
       <div className="pt-40 pb-24 text-center">
-        <p className="text-kanade-sand/50 mb-6">{t('イベントが見つかりません。', 'Event not found.')}</p>
+        <p className="text-kanade-sand/70 mb-6">{t('イベントが見つかりません。', 'Event not found.')}</p>
         <Link to="/events" className="btn-primary inline-flex items-center gap-2 text-xs py-2 px-5">
           <ArrowLeft size={14} />
           {t('イベント一覧へ', 'Back to Events')}
@@ -130,7 +130,7 @@ export default function EventDetail() {
                   <p className={`font-serif text-4xl font-light leading-none ${isPast ? 'text-kanade-sand/40' : 'text-kanade-blush'}`}>
                     {date.getDate()}
                   </p>
-                  <p className="text-kanade-sand/50 text-xs uppercase tracking-wider mt-1">
+                  <p className="text-kanade-sand/70 text-xs uppercase tracking-wider mt-1">
                     {date.toLocaleString(lang === 'ja' ? 'ja' : 'en', { month: 'short' })}
                   </p>
                   <p className="text-kanade-sand/30 text-xs mt-0.5">{date.getFullYear()}</p>
@@ -144,16 +144,16 @@ export default function EventDetail() {
                 </h1>
 
                 <div className="flex flex-wrap gap-x-5 gap-y-1.5 mb-4">
-                  <span className="flex items-center gap-1.5 text-sm text-kanade-sand/50">
-                    <Clock size={13} className="text-kanade-lavender/60" />
+                  <span className="flex items-center gap-1.5 text-sm text-kanade-sand/70">
+                    <Clock size={13} className="text-kanade-lavender/80" />
                     {event.time}
                   </span>
-                  <span className="flex items-center gap-1.5 text-sm text-kanade-sand/50">
-                    <MapPin size={13} className="text-kanade-lavender/60" />
+                  <span className="flex items-center gap-1.5 text-sm text-kanade-sand/70">
+                    <MapPin size={13} className="text-kanade-lavender/80" />
                     {event.venue}
                   </span>
-                  <span className="flex items-center gap-1.5 text-sm text-kanade-sand/50">
-                    <Calendar size={13} className="text-kanade-lavender/60" />
+                  <span className="flex items-center gap-1.5 text-sm text-kanade-sand/70">
+                    <Calendar size={13} className="text-kanade-lavender/80" />
                     {event.world}
                   </span>
                 </div>
@@ -163,7 +163,7 @@ export default function EventDetail() {
                     <span
                       key={tag}
                       className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full
-                                 border border-kanade-lavender/20 text-kanade-lavender/60"
+                                 border border-kanade-lavender/20 text-kanade-lavender/80"
                     >
                       <Tag size={10} />
                       {tag}
@@ -201,7 +201,7 @@ export default function EventDetail() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="glass inline-flex items-center gap-2 text-xs py-2 px-5 rounded-full
-                                 text-kanade-sand/60 hover:text-kanade-sand transition-colors"
+                                 text-kanade-sand/75 hover:text-kanade-sand transition-colors"
                     >
                       <XIcon size={13} />
                       {t('Xで見る', 'View on X')}
@@ -220,7 +220,7 @@ export default function EventDetail() {
               <h2 className="font-serif text-lg font-light mb-4 text-kanade-sand/80">
                 {t('イベント詳細', 'About this Event')}
               </h2>
-              <div className="text-kanade-sand/60 text-sm leading-relaxed whitespace-pre-line">
+              <div className="text-kanade-sand/75 text-sm leading-relaxed whitespace-pre-line">
                 {event.fullDescription}
               </div>
             </div>
@@ -255,7 +255,7 @@ export default function EventDetail() {
           {eventMembers.length > 0 && (
             <div className="card">
               <h2 className="font-serif text-lg font-light mb-4 text-kanade-sand/80 flex items-center gap-2">
-                <Users size={16} className="text-kanade-lavender/60" />
+                <Users size={16} className="text-kanade-lavender/80" />
                 {t('出演メンバー', 'Featured Members')}
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">

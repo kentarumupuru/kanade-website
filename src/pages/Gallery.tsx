@@ -107,12 +107,12 @@ export default function Gallery() {
       {/* Header */}
       <section className="pt-32 pb-12 px-6 text-center">
         <div ref={headerRef} className={`reveal-up${headerInView ? ' is-visible' : ''}`}>
-          <p className="text-kanade-lavender/60 tracking-[0.4em] text-xs uppercase mb-4 font-sans">
+          <p className="text-kanade-lavender/80 tracking-[0.4em] text-xs uppercase mb-4 font-sans">
             {t('思い出', 'Memories')}
           </p>
           <h1 className="section-title">{t('ギャラリー', 'Gallery')}</h1>
           <div className="section-divider" />
-          <p className="text-kanade-sand/50 max-w-xl mx-auto text-sm leading-relaxed">
+          <p className="text-kanade-sand/70 max-w-xl mx-auto text-sm leading-relaxed">
             {t(
               'KANADEの歩みを彩るスクリーンショット、パフォーマンスの瞬間、舞台裏の一幕をお届けします。',
               'Screenshots, performance moments, and behind-the-scenes glimpses from KANADE\'s journey.'
@@ -134,7 +134,7 @@ export default function Gallery() {
               className={`px-5 py-2 rounded-full text-xs tracking-widest uppercase font-sans transition-all duration-200
                 ${activeCategory === cat
                   ? 'bg-gradient-to-r from-kanade-rose to-kanade-lavender text-white shadow-lg shadow-kanade-rose/20'
-                  : 'glass text-kanade-sand/50 hover:text-kanade-sand/80'}`}
+                  : 'glass text-kanade-sand/70 hover:text-kanade-sand/80'}`}
             >
               {categoryLabels[cat]}
             </button>

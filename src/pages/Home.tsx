@@ -25,7 +25,7 @@ function HeroSection() {
 
       {/* Main hero content */}
       <div className="relative animate-fade-in">
-        <p className="text-kanade-lavender/70 tracking-[0.5em] text-xs uppercase mb-6 font-sans">
+        <p className="text-kanade-lavender/85 tracking-[0.5em] text-xs uppercase mb-6 font-sans">
           {t('ファイナルファンタジーXIV・パフォーミンググループ', 'Final Fantasy XIV · Performing Group')}
         </p>
 
@@ -35,7 +35,7 @@ function HeroSection() {
 
         <div className="w-32 h-px mx-auto mb-6" style={{ background: 'linear-gradient(90deg, transparent, #c3aed6, transparent)' }} />
 
-        <p className="text-kanade-sand/60 font-sans font-light tracking-widest text-sm md:text-base max-w-md mx-auto mb-10 leading-relaxed">
+        <p className="text-kanade-sand/75 font-sans font-light tracking-widest text-sm md:text-base max-w-md mx-auto mb-10 leading-relaxed">
           {t(
             '音楽と動きが交わる場所。エオルゼアの舞台に美しさと温もりをもたらす、パフォーマー・アーティスト・職人たちのアンサンブル。',
             'Where music meets movement. An ensemble of performers, artists, and craftspeople bringing beauty and warmth to Eorzea\'s stages.'
@@ -106,7 +106,7 @@ function UpcomingEvents() {
                   <p className="text-kanade-blush font-serif text-2xl font-light leading-none">
                     {new Date(event.date).getDate()}
                   </p>
-                  <p className="text-kanade-sand/50 text-xs uppercase tracking-wider mt-0.5">
+                  <p className="text-kanade-sand/70 text-xs uppercase tracking-wider mt-0.5">
                     {new Date(event.date).toLocaleString(lang === 'ja' ? 'ja' : 'en', { month: 'short' })}
                   </p>
                 </div>
@@ -114,11 +114,11 @@ function UpcomingEvents() {
                   <h3 className="text-kanade-cream font-serif text-lg font-light group-hover:text-kanade-blush transition-colors">
                     {event.title}
                   </h3>
-                  <p className="text-kanade-sand/50 text-xs mt-1">{event.time} · {event.world}</p>
-                  <p className="text-kanade-sand/60 text-sm mt-2 line-clamp-2">{event.description}</p>
+                  <p className="text-kanade-sand/70 text-xs mt-1">{event.time} · {event.world}</p>
+                  <p className="text-kanade-sand/75 text-sm mt-2 line-clamp-2">{event.description}</p>
                   <div className="flex gap-2 mt-3 flex-wrap">
                     {event.tags.map(tag => (
-                      <span key={tag} className="text-xs px-2 py-0.5 rounded-full border border-kanade-lavender/30 text-kanade-lavender/70">
+                      <span key={tag} className="text-xs px-2 py-0.5 rounded-full border border-kanade-lavender/30 text-kanade-lavender/85">
                         {tag}
                       </span>
                     ))}
@@ -167,7 +167,7 @@ function FeaturedMembers() {
               <h3 className="font-serif text-lg text-kanade-cream font-light">
                 {lang === 'ja' ? representative.nameJa : representative.name}
               </h3>
-              <p className="text-kanade-lavender/70 text-xs tracking-widest uppercase mt-1">
+              <p className="text-kanade-lavender/85 text-xs tracking-widest uppercase mt-1">
                 {t('団長', 'Representative')}
               </p>
             </div>

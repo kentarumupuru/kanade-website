@@ -102,12 +102,12 @@ export default function Contact() {
       {/* Header */}
       <section className="pt-32 pb-12 px-6 text-center">
         <div ref={headerRef} className={`reveal-up${headerInView ? ' is-visible' : ''}`}>
-          <p className="text-kanade-lavender/60 tracking-[0.4em] text-xs uppercase mb-4 font-sans">
+          <p className="text-kanade-lavender/80 tracking-[0.4em] text-xs uppercase mb-4 font-sans">
             {t('お問い合わせ', 'Get in Touch')}
           </p>
           <h1 className="section-title">{t('コンタクト', 'Contact')}</h1>
           <div className="section-divider" />
-          <p className="text-kanade-sand/50 max-w-xl mx-auto text-sm leading-relaxed">
+          <p className="text-kanade-sand/70 max-w-xl mx-auto text-sm leading-relaxed">
             {t(
               'コラボのご相談、ご質問、または気軽なご挨拶など、お気軽にご連絡ください。',
               'Want to collaborate, ask a question, or just say hello? We\'d love to hear from you.'
@@ -145,7 +145,7 @@ export default function Contact() {
           />
 
           <div className="card mt-4">
-            <p className="text-kanade-sand/50 text-xs leading-relaxed">
+            <p className="text-kanade-sand/70 text-xs leading-relaxed">
               {t(
                 '通常2〜3日以内にご返信いたします。急ぎのイベントに関するお問い合わせは、X（旧Twitter）からご連絡いただくと最も早く対応できます。',
                 'We typically respond within 2–3 days. For urgent event inquiries, reaching us on X/Twitter is the fastest way to get a reply.'
@@ -168,7 +168,7 @@ export default function Contact() {
               <h3 className="font-serif text-xl text-kanade-cream font-light">
                 {t('メールクライアントが開きます', 'Your email client should open')}
               </h3>
-              <p className="text-kanade-sand/50 text-sm max-w-xs">
+              <p className="text-kanade-sand/70 text-sm max-w-xs">
                 {t(
                   'メールアプリが起動しない場合は、直接 kanade.ff14@gmail.com までご連絡ください。',
                   'If your email client didn\'t open, please contact us directly at kanade.ff14@gmail.com'
@@ -189,7 +189,7 @@ export default function Contact() {
 
               {/* Name */}
               <div>
-                <label className="block text-xs tracking-widest uppercase text-kanade-sand/50 mb-1.5">
+                <label className="block text-xs tracking-widest uppercase text-kanade-sand/70 mb-1.5">
                   {t('お名前', 'Name')}
                 </label>
                 <input
@@ -206,7 +206,7 @@ export default function Contact() {
 
               {/* Email */}
               <div>
-                <label className="block text-xs tracking-widest uppercase text-kanade-sand/50 mb-1.5">
+                <label className="block text-xs tracking-widest uppercase text-kanade-sand/70 mb-1.5">
                   {t('メールアドレス', 'Email')}
                 </label>
                 <input
@@ -223,7 +223,7 @@ export default function Contact() {
 
               {/* Subject */}
               <div>
-                <label className="block text-xs tracking-widest uppercase text-kanade-sand/50 mb-1.5">
+                <label className="block text-xs tracking-widest uppercase text-kanade-sand/70 mb-1.5">
                   {t('件名', 'Subject')}
                 </label>
                 <select
@@ -244,7 +244,7 @@ export default function Contact() {
 
               {/* Message */}
               <div>
-                <label className="block text-xs tracking-widest uppercase text-kanade-sand/50 mb-1.5">
+                <label className="block text-xs tracking-widest uppercase text-kanade-sand/70 mb-1.5">
                   {t('メッセージ', 'Message')}
                 </label>
                 <textarea

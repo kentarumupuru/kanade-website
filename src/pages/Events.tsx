@@ -18,12 +18,12 @@ function PageHeader() {
   return (
     <section className="pt-32 pb-12 px-6 text-center">
       <div ref={ref} className={`reveal-up${inView ? ' is-visible' : ''}`}>
-        <p className="text-kanade-lavender/60 tracking-[0.4em] text-xs uppercase mb-4 font-sans">
+        <p className="text-kanade-lavender/80 tracking-[0.4em] text-xs uppercase mb-4 font-sans">
           {t('スケジュール', 'Schedule')}
         </p>
         <h1 className="section-title">{t('イベント', 'Events')}</h1>
         <div className="section-divider" />
-        <p className="text-kanade-sand/50 max-w-xl mx-auto text-sm leading-relaxed">
+        <p className="text-kanade-sand/70 max-w-xl mx-auto text-sm leading-relaxed">
           {t(
             'エオルゼア各地でのライブパフォーマンス、コンサート、特別公演にぜひご参加ください。特に記載がない限り、すべてのイベントはTonberryサーバーのゲーム内で開催されます。',
             'Join us for live performances, concerts, and special occasions across Eorzea. All events are held in-game on the Tonberry server unless otherwise noted.'
@@ -103,7 +103,7 @@ function EventDateBlock({ date, isPast, isOngoing, lang }: { date: Date; isPast:
         <p className={`font-serif text-3xl font-light leading-none ${isPast ? 'text-kanade-sand/40' : isOngoing ? 'text-emerald-400' : 'text-kanade-blush'}`}>
           {date.getDate()}
         </p>
-        <p className="text-kanade-sand/50 text-xs uppercase tracking-wider mt-1">
+        <p className="text-kanade-sand/70 text-xs uppercase tracking-wider mt-1">
           {date.toLocaleString(lang === 'ja' ? 'ja' : 'en', { month: 'short' })}
         </p>
         <p className="text-kanade-sand/30 text-xs mt-0.5">
@@ -117,16 +117,16 @@ function EventDateBlock({ date, isPast, isOngoing, lang }: { date: Date; isPast:
 function EventMeta({ event }: { event: Event }) {
   return (
     <div className="flex flex-wrap gap-x-4 gap-y-1 mb-3">
-      <span className="flex items-center gap-1.5 text-xs text-kanade-sand/50">
-        <Clock size={12} className="text-kanade-lavender/60" />
+      <span className="flex items-center gap-1.5 text-xs text-kanade-sand/70">
+        <Clock size={12} className="text-kanade-lavender/80" />
         {event.time}
       </span>
-      <span className="flex items-center gap-1.5 text-xs text-kanade-sand/50">
-        <MapPin size={12} className="text-kanade-lavender/60" />
+      <span className="flex items-center gap-1.5 text-xs text-kanade-sand/70">
+        <MapPin size={12} className="text-kanade-lavender/80" />
         {event.venue}
       </span>
-      <span className="flex items-center gap-1.5 text-xs text-kanade-sand/50">
-        <Calendar size={12} className="text-kanade-lavender/60" />
+      <span className="flex items-center gap-1.5 text-xs text-kanade-sand/70">
+        <Calendar size={12} className="text-kanade-lavender/80" />
         {event.world}
       </span>
     </div>
@@ -139,7 +139,7 @@ function EventTags({ tags }: { tags: string[] }) {
       {tags.map(tag => (
         <span
           key={tag}
-          className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border border-kanade-lavender/20 text-kanade-lavender/60"
+          className="flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border border-kanade-lavender/20 text-kanade-lavender/80"
         >
           <Tag size={10} />
           {tag}
@@ -180,7 +180,7 @@ function EventCard({ event, index }: { event: Event; index: number }) {
               {event.title}
             </h2>
             <EventMeta event={event} />
-            <p className="text-kanade-sand/60 text-sm leading-relaxed mb-4">{event.description}</p>
+            <p className="text-kanade-sand/75 text-sm leading-relaxed mb-4">{event.description}</p>
             <div className="flex flex-col gap-3">
               <EventTags tags={event.tags} />
               <div className="flex justify-end">
@@ -238,7 +238,7 @@ export default function Events() {
               className={`px-5 py-2 rounded-full text-xs tracking-widest uppercase font-sans transition-all duration-200
                 ${filter === f
                   ? 'bg-gradient-to-r from-kanade-rose to-kanade-lavender text-white shadow-lg shadow-kanade-rose/20'
-                  : 'glass text-kanade-sand/50 hover:text-kanade-sand/80'}`}
+                  : 'glass text-kanade-sand/70 hover:text-kanade-sand/80'}`}
             >
               {filterLabels[f]}
             </button>

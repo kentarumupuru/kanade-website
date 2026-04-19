@@ -83,7 +83,7 @@ export default function MusicPlayer() {
       <Music size={13} className="text-kanade-blush/70 flex-shrink-0" />
 
       {/* Track title + artist — hidden on small screens */}
-      <span className="hidden lg:block text-kanade-sand/50 text-xs truncate max-w-[100px]">
+      <span className="hidden lg:block text-kanade-sand/70 text-xs truncate max-w-[100px]">
         {current.title}
       </span>
       <span className="hidden lg:block text-kanade-sand/30 text-xs whitespace-nowrap flex-shrink-0">
@@ -93,7 +93,7 @@ export default function MusicPlayer() {
       {/* Prev */}
       <button
         onClick={() => skipTo('prev')}
-        className="text-kanade-sand/50 hover:text-kanade-blush transition-colors"
+        className="text-kanade-sand/70 hover:text-kanade-blush transition-colors"
         aria-label="Previous track"
       >
         <SkipBack size={13} />
@@ -115,7 +115,7 @@ export default function MusicPlayer() {
       {/* Next */}
       <button
         onClick={() => skipTo('next')}
-        className="text-kanade-sand/50 hover:text-kanade-blush transition-colors"
+        className="text-kanade-sand/70 hover:text-kanade-blush transition-colors"
         aria-label="Next track"
       >
         <SkipForward size={13} />
@@ -139,7 +139,7 @@ export default function MusicPlayer() {
       <div className="relative">
         <button
           onClick={() => setShowVolume(v => !v)}
-          className="text-kanade-sand/50 hover:text-kanade-blush transition-colors"
+          className="text-kanade-sand/70 hover:text-kanade-blush transition-colors"
           aria-label={muted ? 'Unmute' : 'Mute'}
         >
           {muted || volume === 0
@@ -152,7 +152,7 @@ export default function MusicPlayer() {
           <div className="absolute top-full right-0 mt-2 glass-strong rounded-xl px-3 py-2 flex items-center gap-2 shadow-xl z-50">
             <button
               onClick={() => setMuted(v => !v)}
-              className="text-kanade-sand/60 hover:text-kanade-blush transition-colors"
+              className="text-kanade-sand/75 hover:text-kanade-blush transition-colors"
             >
               {muted ? <VolumeX size={12} /> : <Volume2 size={12} />}
             </button>
