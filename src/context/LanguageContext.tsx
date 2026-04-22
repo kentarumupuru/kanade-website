@@ -16,7 +16,7 @@ function getInitialLang(): Lang {
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (stored === 'ja' || stored === 'en') return stored
-  } catch {}
+  } catch { /* localStorage unavailable (private browsing) */ }
   return 'ja'
 }
 
@@ -25,7 +25,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   const toggle = useCallback(() => setLang(l => {
     const next = l === 'ja' ? 'en' : 'ja'
-    try { localStorage.setItem(STORAGE_KEY, next) } catch {}
+    try { localStorage.setItem(STORAGE_KEY, next) } catch { /* intentional */ }
     return next
   }), [])
   const t = useCallback((ja: string, en: string) => (lang === 'ja' ? ja : en), [lang])

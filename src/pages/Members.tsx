@@ -161,6 +161,8 @@ function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; 
   )
 }
 
+const ALL_ROLES: MemberRole[] = ['Representative', 'Performer', 'Housing', 'MC', 'Manager', 'Streamer']
+
 export default function Members() {
   useSEO({ title: 'Members — KANADE', description: 'Meet our members', url: '/members' })
   const [activeRole, setActiveRole] = useState<MemberRole | 'all'>('all')
@@ -186,10 +188,8 @@ export default function Members() {
     Representative: t('団長',         'Representative'),
   }), [t])
 
-  const allRoles: MemberRole[] = ['Representative', 'Performer', 'Housing', 'MC', 'Manager', 'Streamer']
-
   const roleCounts = useMemo(() =>
-    allRoles.reduce<Record<MemberRole, number>>(
+    ALL_ROLES.reduce<Record<MemberRole, number>>(
       (acc, role) => ({ ...acc, [role]: members.filter(m => m.roles.includes(role)).length }),
       {} as Record<MemberRole, number>
     ), [])
@@ -236,7 +236,7 @@ export default function Members() {
 
         {/* Role legend */}
         <div className="flex flex-wrap justify-center gap-4 mt-12 pt-8 border-t border-white/5">
-          {allRoles.map(role => (
+          {ALL_ROLES.map(role => (
             <div key={role} className="flex items-center gap-2">
               <span className={`text-xs px-2.5 py-0.5 rounded-full border ${roleColors[role]}`}>
                 {roleLabels[role]}

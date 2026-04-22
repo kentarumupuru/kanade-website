@@ -75,8 +75,11 @@ export default function MusicPlayer() {
     setProgress(ratio * 100)
   }
 
+  if (!current) return null
+
   return (
     <div className="flex items-center gap-2">
+      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
       <audio ref={audioRef} onEnded={() => skipTo('next')} loop={tracks.length === 1} />
 
       {/* Music icon — always visible */}
@@ -123,6 +126,7 @@ export default function MusicPlayer() {
 
       {/* Progress bar — hidden on small screens */}
       <div
+        role="presentation"
         className="hidden md:block w-20 lg:w-28 h-0.5 bg-white/10 rounded-full cursor-pointer group"
         onClick={seek}
       >

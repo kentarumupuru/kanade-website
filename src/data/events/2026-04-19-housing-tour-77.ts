@@ -1,3 +1,4 @@
+/* eslint-disable no-irregular-whitespace */
 import type { Event } from './types'
 
 export const housingTour77: Event = {

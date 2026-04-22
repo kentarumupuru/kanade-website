@@ -143,7 +143,7 @@ function ContactForm({
           name="subject"
           value={form.subject}
           onChange={onChange}
-          className={`${fieldClass('subject')} appearance-none`}
+          className={`${fieldClass('subject')} appearance-none [&>option]:bg-kanade-deep [&>option]:text-kanade-cream`}
         >
           <option value="" disabled>{t('トピックを選択…', 'Select a topic…')}</option>
           <option value="Event Inquiry">{t('イベントのお問い合わせ', 'Event Inquiry')}</option>

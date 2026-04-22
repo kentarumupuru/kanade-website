@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useLang } from '../context/LanguageContext'
 
@@ -12,8 +12,8 @@ export default function Lightbox({ images, startIndex, onClose }: LightboxProps)
   const [index, setIndex] = useState(startIndex)
   const { t } = useLang()
 
-  const prev = () => setIndex(i => (i - 1 + images.length) % images.length)
-  const next = () => setIndex(i => (i + 1) % images.length)
+  const prev = useCallback(() => setIndex(i => (i - 1 + images.length) % images.length), [images.length])
+  const next = useCallback(() => setIndex(i => (i + 1) % images.length), [images.length])
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -23,10 +23,11 @@ export default function Lightbox({ images, startIndex, onClose }: LightboxProps)
     }
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
-  }, [onClose])
+  }, [onClose, prev, next])
 
   return (
     <div
+      role="presentation"
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
       onClick={onClose}
     >
@@ -50,7 +51,8 @@ export default function Lightbox({ images, startIndex, onClose }: LightboxProps)
 
       <img
         src={images[index]}
-        alt={`Image ${index + 1}`}
+        alt={`${index + 1} / ${images.length}`}
+        role="presentation"
         className="max-h-[90vh] max-w-[90vw] rounded-xl shadow-2xl object-contain"
         onClick={e => e.stopPropagation()}
       />
@@ -66,7 +68,7 @@ export default function Lightbox({ images, startIndex, onClose }: LightboxProps)
       )}
 
       {images.length > 1 && (
-        <div className="absolute bottom-4 flex gap-2" onClick={e => e.stopPropagation()}>
+        <div role="presentation" className="absolute bottom-4 flex gap-2" onClick={e => e.stopPropagation()}>
           {images.map((_, i) => (
             <button
               key={i}
