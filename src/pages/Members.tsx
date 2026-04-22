@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import { useSEO } from '../hooks/useSEO'
 import { Globe } from 'lucide-react'
 
+const BASE = import.meta.env.BASE_URL
+
 function XLogo({ size = 11 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 1200 1227" fill="currentColor" aria-hidden="true">
@@ -90,7 +92,7 @@ function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; 
           {member.image ? (
             <div className="w-full h-52 rounded-xl overflow-hidden mb-4">
               <img
-                src={member.image}
+                src={`${BASE}${member.image}`}
                 alt={member.name}
                 className="w-full h-full object-cover"
                 style={{ objectPosition: member.imagePosition ?? '50% 20%' }}
