@@ -72,7 +72,7 @@ function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; 
           transformStyle: 'preserve-3d',
           transition: 'transform 0.5s',
           transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-          minHeight: '260px',
+          minHeight: '320px',
         }}
       >
         {/* Front */}
@@ -87,13 +87,24 @@ function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; 
           }}
         >
           {/* Avatar */}
-          <div
-            className={`w-20 h-20 rounded-full bg-gradient-to-br ${member.color}
-                        flex items-center justify-center mb-4 text-3xl font-serif text-kanade-cream/60
-                        border border-white/10 shadow-lg`}
-          >
-            {member.name[0]}
-          </div>
+          {member.image ? (
+            <div className="w-full h-52 rounded-xl overflow-hidden mb-4">
+              <img
+                src={member.image}
+                alt={member.name}
+                className="w-full h-full object-cover"
+                style={{ objectPosition: member.imagePosition ?? '50% 20%' }}
+              />
+            </div>
+          ) : (
+            <div
+              className={`w-20 h-20 rounded-full bg-gradient-to-br ${member.color}
+                          flex items-center justify-center mb-4 text-3xl font-serif text-kanade-cream/60
+                          border border-white/10 shadow-lg`}
+            >
+              {member.name[0]}
+            </div>
+          )}
 
           {nameNode}
 
