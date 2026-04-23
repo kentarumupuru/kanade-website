@@ -2,8 +2,7 @@ import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useSEO } from '../hooks/useSEO'
 import { Globe } from 'lucide-react'
-
-const BASE = import.meta.env.BASE_URL
+import { BASE_URL as BASE } from '../data/config'
 
 function XLogo({ size = 11 }: { size?: number }) {
   return (
@@ -54,7 +53,7 @@ function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; 
         {member.name}
       </Link>
     )
-    : <h3 className="font-serif text-lg text-kanade-cream font-light mb-1">{member.name}</h3>
+    : <h2 className="font-serif text-lg text-kanade-cream font-light mb-1">{member.name}</h2>
 
   return (
     <div
@@ -94,6 +93,10 @@ function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; 
               <img
                 src={`${BASE}${member.image}`}
                 alt={member.name}
+                width={400}
+                height={208}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover"
                 style={{ objectPosition: member.imagePosition ?? '50% 20%' }}
               />
@@ -163,7 +166,7 @@ function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; 
               </span>
             ))}
           </div>
-          <h3 className="font-serif text-lg text-kanade-cream font-light mb-3">{member.name}</h3>
+          <h2 className="font-serif text-lg text-kanade-cream font-light mb-3">{member.name}</h2>
           <p className="text-kanade-sand/75 text-sm leading-relaxed flex-1">{t(member.bioJa, member.bio)}</p>
           <p className="text-kanade-sand/30 text-xs mt-4">
             {t('クリックして戻る', 'Click to flip back')}

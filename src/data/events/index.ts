@@ -60,3 +60,11 @@ export function isEventPast(event: { date: string; time: string; endTime?: strin
   if (end !== null) return now >= end
   return eventStartUtcMs(event) <= now
 }
+
+/** Returns upcoming (not past, not ongoing) events sorted by date ascending, optionally capped. */
+export function getUpcomingEvents(limit?: number) {
+  const upcoming = events
+    .filter(e => !isEventPast(e) && !isEventOngoing(e))
+    .sort((a, b) => eventStartUtcMs(a) - eventStartUtcMs(b))
+  return typeof limit === 'number' ? upcoming.slice(0, limit) : upcoming
+}

@@ -1,14 +1,13 @@
 import { useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-
-const BASE = import.meta.env.BASE_URL
 import {
   ExternalLink, ArrowLeft, Users,
   XIcon, Youtube,
 } from 'lucide-react'
 import { getEventBySlug, isEventPast } from '../../data/events'
 import { useSEO } from '../../hooks/useSEO'
-import { SITE_URL } from '../../data/config'
+import { useJsonLd } from '../../hooks/useJsonLd'
+import { SITE_URL, BASE_URL as BASE } from '../../data/config'
 import { members, roleColors } from '../../data/members'
 import { useLang } from '../../context/LanguageContext'
 import { useInView } from '../../hooks/useInView'
@@ -32,6 +31,8 @@ export default function EventDetail() {
     image: event?.bannerImage ? `${SITE_URL}/${event.bannerImage}` : undefined,
     url: `/events/${slug}`,
   })
+
+  useJsonLd(event ? buildEventJsonLd(event) : null, 'event-jsonld')
 
   if (!event) {
     return (
@@ -57,7 +58,6 @@ export default function EventDetail() {
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(buildEventJsonLd(event)) }} />
       {lightboxIndex !== null && (
         <Lightbox
           images={[...posterImages, ...screenshotSrcs]}
@@ -73,7 +73,12 @@ export default function EventDetail() {
             <img
               src={`${BASE}${event.bannerImage}`}
               alt={event.title}
-              className="w-full h-full object-cover" style={{ objectPosition: event.bannerPosition ?? '50% 40%' }}
+              width={1600}
+              height={900}
+              decoding="async"
+              fetchPriority="high"
+              className="w-full h-full object-cover"
+              style={{ objectPosition: event.bannerPosition ?? '50% 40%' }}
             />
             <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent to-kanade-charcoal" />
           </>
@@ -193,6 +198,8 @@ export default function EventDetail() {
                     <img
                       src={src}
                       alt={`Poster ${i + 1}`}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200 rounded-xl" />
@@ -244,6 +251,8 @@ export default function EventDetail() {
                     <img
                       src={shot.src}
                       alt={shot.caption ?? `Screenshot ${i + 1}`}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     {shot.caption && (

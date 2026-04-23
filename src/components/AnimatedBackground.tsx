@@ -2,19 +2,24 @@ import { useEffect, useRef, useState } from 'react'
 
 const SLIDES = [
   {
-    src: `${import.meta.env.BASE_URL}backgrounds/bg1.jpg`,
+    src: `${import.meta.env.BASE_URL}backgrounds/bg1.webp`,
     gradient: 'radial-gradient(ellipse at 30% 60%, #4a2060 0%, #1a1225 55%), radial-gradient(ellipse at 80% 20%, #2d1845 0%, transparent 60%)',
     accent:   'radial-gradient(ellipse at 60% 80%, rgba(212,120,138,0.35) 0%, transparent 55%)',
   },
   {
-    src: `${import.meta.env.BASE_URL}backgrounds/bg2.jpg`,
+    src: `${import.meta.env.BASE_URL}backgrounds/bg2.webp`,
     gradient: 'radial-gradient(ellipse at 70% 40%, #1e2d50 0%, #1a1225 55%), radial-gradient(ellipse at 20% 70%, #2d1f3d 0%, transparent 60%)',
     accent:   'radial-gradient(ellipse at 30% 30%, rgba(195,174,214,0.30) 0%, transparent 55%)',
   },
   {
-    src: `${import.meta.env.BASE_URL}backgrounds/bg3.jpg`,
+    src: `${import.meta.env.BASE_URL}backgrounds/bg3.webp`,
     gradient: 'radial-gradient(ellipse at 50% 30%, #2d1f3d 0%, #1a1225 55%), radial-gradient(ellipse at 80% 80%, #1e1535 0%, transparent 60%)',
     accent:   'radial-gradient(ellipse at 70% 60%, rgba(212,175,122,0.25) 0%, transparent 55%)',
+  },
+  {
+    src: `${import.meta.env.BASE_URL}backgrounds/bg4.webp`,
+    gradient: 'radial-gradient(ellipse at 40% 50%, #1f3044 0%, #1a1225 55%), radial-gradient(ellipse at 85% 25%, #23304a 0%, transparent 60%)',
+    accent:   'radial-gradient(ellipse at 25% 75%, rgba(160,196,214,0.28) 0%, transparent 55%)',
   },
 ]
 
@@ -22,15 +27,16 @@ const SLIDE_DURATION = 7000  // ms each slide is visible
 const FADE_DURATION  = 2000  // ms crossfade
 
 // Each slide has a different Ken Burns start offset so they look varied
-const KB_OFFSETS = ['-4s', '-8s', '-11s']
+const KB_OFFSETS = ['-4s', '-8s', '-11s', '-14s']
 
 export default function AnimatedBackground() {
   const [current,  setCurrent]  = useState(0)
   const [fading,   setFading]   = useState(false)
   const [next,     setNext]     = useState<number | null>(null)
   const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' && window.innerWidth < 768)
-  const parallaxRef = useRef<HTMLDivElement>(null)
-  const timerRef    = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const parallaxRef    = useRef<HTMLDivElement>(null)
+  const cycleTimerRef  = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const fadeTimerRef   = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     const mq = window.matchMedia('(max-width: 767px)')
@@ -41,12 +47,12 @@ export default function AnimatedBackground() {
 
   // Crossfade cycle
   useEffect(() => {
-    timerRef.current = setTimeout(() => {
+    cycleTimerRef.current = setTimeout(() => {
       const nextIdx = (current + 1) % SLIDES.length
       setNext(nextIdx)
       setFading(true)
 
-      setTimeout(() => {
+      fadeTimerRef.current = setTimeout(() => {
         setCurrent(nextIdx)
         requestAnimationFrame(() => {
           setNext(null)
@@ -56,7 +62,8 @@ export default function AnimatedBackground() {
     }, SLIDE_DURATION)
 
     return () => {
-      if (timerRef.current) clearTimeout(timerRef.current)
+      if (cycleTimerRef.current) clearTimeout(cycleTimerRef.current)
+      if (fadeTimerRef.current)  clearTimeout(fadeTimerRef.current)
     }
   }, [current])
 
@@ -110,7 +117,12 @@ export default function AnimatedBackground() {
               <img
                 src={slide.src}
                 alt=""
-                aria-hidden
+                aria-hidden="true"
+                width={1920}
+                height={1080}
+                decoding="async"
+                fetchPriority={i === 0 ? 'high' : 'low'}
+                loading={i === 0 ? 'eager' : 'lazy'}
                 className="absolute inset-0 w-full h-full object-cover"
                 style={{
                   animation: `kenBurns 12s ease-in-out infinite alternate`,

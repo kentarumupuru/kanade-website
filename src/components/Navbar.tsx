@@ -1,19 +1,15 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import MusicPlayer from './MusicPlayer'
 import { useLang } from '../context/LanguageContext'
-import { NAV_ITEMS } from '../data/navItems'
+import { useNavItems } from '../hooks/useNavItems'
 
 export default function Navbar() {
   const [scrolled,  setScrolled]  = useState(false)
   const [menuOpen,  setMenuOpen]  = useState(false)
   const { lang, toggle, t } = useLang()
-
-  const navItems = useMemo(
-    () => NAV_ITEMS.map(item => ({ label: t(item.labelJa, item.labelEn), to: item.to })),
-    [t],
-  )
+  const navItems = useNavItems()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40)
@@ -37,10 +33,22 @@ export default function Navbar() {
           <img
             src={`${import.meta.env.BASE_URL}logos/logo.png`}
             alt="KANADE logo"
+            width={36}
+            height={36}
+            decoding="async"
+            fetchPriority="high"
             className="w-9 h-9 rounded-full object-cover"
             onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
           />
-          <img src={`${import.meta.env.BASE_URL}logos/titlelogo.png`} alt="KANADE" className="h-10 w-auto" />
+          <img
+            src={`${import.meta.env.BASE_URL}logos/titlelogo.png`}
+            alt="KANADE"
+            width={180}
+            height={40}
+            decoding="async"
+            fetchPriority="high"
+            className="h-10 w-auto"
+          />
         </Link>
 
         {/* Center — desktop nav links */}

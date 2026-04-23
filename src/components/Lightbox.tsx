@@ -53,6 +53,7 @@ export default function Lightbox({ images, startIndex, onClose }: LightboxProps)
         src={images[index]}
         alt={`${index + 1} / ${images.length}`}
         role="presentation"
+        decoding="async"
         className="max-h-[90vh] max-w-[90vw] rounded-xl shadow-2xl object-contain"
         onClick={e => e.stopPropagation()}
       />
@@ -69,9 +70,9 @@ export default function Lightbox({ images, startIndex, onClose }: LightboxProps)
 
       {images.length > 1 && (
         <div role="presentation" className="absolute bottom-4 flex gap-2" onClick={e => e.stopPropagation()}>
-          {images.map((_, i) => (
+          {images.map((src, i) => (
             <button
-              key={i}
+              key={src}
               onClick={() => setIndex(i)}
               className={`w-2 h-2 rounded-full transition-all duration-200 ${
                 i === index ? 'bg-kanade-blush scale-125' : 'bg-kanade-sand/40 hover:bg-kanade-sand/70'

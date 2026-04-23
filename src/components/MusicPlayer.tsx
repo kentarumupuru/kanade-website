@@ -1,91 +1,35 @@
-import { useState, useRef, useEffect } from 'react'
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Music } from 'lucide-react'
 import { tracks } from '../data/tracks'
+import { useAudioPlayer } from '../hooks/useAudioPlayer'
 
 export default function MusicPlayer() {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [isPlaying,    setIsPlaying]    = useState(false)
-  const [progress,     setProgress]     = useState(0)
-  const [volume,       setVolume]       = useState(0.7)
-  const [muted,        setMuted]        = useState(false)
-  const [showVolume,   setShowVolume]   = useState(false)
-  const audioRef = useRef<HTMLAudioElement | null>(null)
-
-  const current = tracks[currentIndex]
-
-  useEffect(() => {
-    const audio = audioRef.current
-    if (!audio) return
-    audio.src = current.src ?? ''
-    setProgress(0)
-    if (isPlaying && current.src) {
-      audio.play().catch(() => setIsPlaying(false))
-    }
-  }, [currentIndex]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    const audio = audioRef.current
-    if (!audio || !current.src) return
-    if (isPlaying) {
-      audio.play().catch(() => setIsPlaying(false))
-    } else {
-      audio.pause()
-    }
-  }, [isPlaying, current.src])
-
-  useEffect(() => {
-    const audio = audioRef.current
-    if (!audio) return
-    const onTimeUpdate = () => {
-      if (audio.duration) setProgress((audio.currentTime / audio.duration) * 100)
-    }
-    audio.addEventListener('timeupdate', onTimeUpdate)
-    return () => audio.removeEventListener('timeupdate', onTimeUpdate)
-  }, [])
-
-  useEffect(() => {
-    const audio = audioRef.current
-    if (!audio) return
-    audio.volume = muted ? 0 : volume
-  }, [volume, muted])
-
-  const togglePlay = () => setIsPlaying(v => !v)
-
-  const skipTo = (dir: 'prev' | 'next') => {
-    if (dir === 'prev') {
-      const audio = audioRef.current
-      if (audio && audio.currentTime > 3) {
-        audio.currentTime = 0
-        setProgress(0)
-        return
-      }
-    }
-    setCurrentIndex(i =>
-      dir === 'next' ? (i + 1) % tracks.length : (i - 1 + tracks.length) % tracks.length,
-    )
-    setProgress(0)
-  }
-
-  const seek = (e: React.MouseEvent<HTMLDivElement>) => {
-    const audio = audioRef.current
-    if (!audio || !audio.duration) return
-    const rect  = e.currentTarget.getBoundingClientRect()
-    const ratio = (e.clientX - rect.left) / rect.width
-    audio.currentTime = ratio * audio.duration
-    setProgress(ratio * 100)
-  }
+  const {
+    audioRef,
+    current,
+    state,
+    togglePlay,
+    skipNext,
+    skipPrev,
+    seek,
+    setVolume,
+    toggleMute,
+    toggleVolumeUI,
+  } = useAudioPlayer(tracks)
 
   if (!current) return null
+
+  const onSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect()
+    seek((e.clientX - rect.left) / rect.width)
+  }
 
   return (
     <div className="flex items-center gap-2">
       {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-      <audio ref={audioRef} onEnded={() => skipTo('next')} loop={tracks.length === 1} />
+      <audio ref={audioRef} onEnded={skipNext} loop={tracks.length === 1} />
 
-      {/* Music icon — always visible */}
       <Music size={13} className="text-kanade-blush/70 flex-shrink-0" />
 
-      {/* Track title + artist — hidden on small screens */}
       <span className="hidden lg:block text-kanade-sand/70 text-xs truncate max-w-[100px]">
         {current.title}
       </span>
@@ -93,80 +37,74 @@ export default function MusicPlayer() {
         by {current.artist}
       </span>
 
-      {/* Prev */}
       <button
-        onClick={() => skipTo('prev')}
+        onClick={skipPrev}
         className="text-kanade-sand/70 hover:text-kanade-blush transition-colors"
         aria-label="Previous track"
       >
         <SkipBack size={13} />
       </button>
 
-      {/* Play / Pause */}
       <button
         onClick={togglePlay}
         className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0
                    transition-all duration-200 hover:scale-110 active:scale-95"
         style={{ background: 'linear-gradient(135deg, #d4788a, #c3aed6)' }}
-        aria-label={isPlaying ? 'Pause' : 'Play'}
+        aria-label={state.playing ? 'Pause' : 'Play'}
       >
-        {isPlaying
+        {state.playing
           ? <Pause size={10} className="text-white" />
           : <Play  size={10} className="text-white ml-px" />}
       </button>
 
-      {/* Next */}
       <button
-        onClick={() => skipTo('next')}
+        onClick={skipNext}
         className="text-kanade-sand/70 hover:text-kanade-blush transition-colors"
         aria-label="Next track"
       >
         <SkipForward size={13} />
       </button>
 
-      {/* Progress bar — hidden on small screens */}
       <div
         role="presentation"
         className="hidden md:block w-20 lg:w-28 h-0.5 bg-white/10 rounded-full cursor-pointer group"
-        onClick={seek}
+        onClick={onSeek}
       >
         <div
           className="h-full rounded-full"
           style={{
-            width: `${progress}%`,
+            width: `${state.progress}%`,
             background: 'linear-gradient(90deg, #d4788a, #c3aed6)',
           }}
         />
       </div>
 
-      {/* Volume toggle */}
       <div className="relative">
         <button
-          onClick={() => setShowVolume(v => !v)}
+          onClick={toggleVolumeUI}
           className="text-kanade-sand/70 hover:text-kanade-blush transition-colors"
-          aria-label={muted ? 'Unmute' : 'Mute'}
+          aria-label={state.muted ? 'Unmute' : 'Mute'}
         >
-          {muted || volume === 0
+          {state.muted || state.volume === 0
             ? <VolumeX size={13} />
             : <Volume2 size={13} />}
         </button>
 
-        {/* Volume popover */}
-        {showVolume && (
+        {state.showVolumeUI && (
           <div className="absolute top-full right-0 mt-2 glass-strong rounded-xl px-3 py-2 flex items-center gap-2 shadow-xl z-50">
             <button
-              onClick={() => setMuted(v => !v)}
+              onClick={toggleMute}
               className="text-kanade-sand/75 hover:text-kanade-blush transition-colors"
             >
-              {muted ? <VolumeX size={12} /> : <Volume2 size={12} />}
+              {state.muted ? <VolumeX size={12} /> : <Volume2 size={12} />}
             </button>
             <input
               type="range"
               min={0}
               max={1}
               step={0.01}
-              value={muted ? 0 : volume}
-              onChange={e => { setVolume(Number(e.target.value)); setMuted(false) }}
+              value={state.muted ? 0 : state.volume}
+              onChange={e => setVolume(Number(e.target.value))}
               className="w-16 accent-kanade-blush"
               aria-label="Volume"
             />

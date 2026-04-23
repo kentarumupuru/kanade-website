@@ -8,7 +8,7 @@ export interface GalleryImage {
   category: 'performance' | 'venue' | 'group' | 'behind-the-scenes'
 }
 
-const BASE = import.meta.env.BASE_URL
+import { BASE_URL as BASE } from './config'
 
 export const galleryImages: GalleryImage[] = [
   {

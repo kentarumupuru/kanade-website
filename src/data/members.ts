@@ -79,7 +79,7 @@ export const members: Member[] = [
     bio: 'A talented performer who also shapes the spaces KANADE calls home. Miya crafts immersive venues and delivers captivating on-stage moments with equal skill.',
     bioJa: '演奏とハウジングの二刀流。ステージでの表現力と会場づくりの両方で才能を発揮する。',
     color: 'from-kanade-lavender/20 to-kanade-blush/20',
-    image: '/members/Miya Shikhu/Miya Shikhu.jpg',
+    image: 'members/Miya Shikhu/Miya Shikhu.webp',
     imagePosition: '50% 20%',
   },
   // Performers (alphabetical)

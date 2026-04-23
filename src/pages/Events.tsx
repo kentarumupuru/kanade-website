@@ -8,8 +8,7 @@ import { useInView } from '../hooks/useInView'
 import Lightbox from '../components/Lightbox'
 import { revealDelayClass } from '../utils/animations'
 import { StatusBadge, EventDateBlock, EventMeta, EventTags, EventsPageHeader } from '../components/events'
-
-const BASE = import.meta.env.BASE_URL
+import { BASE_URL as BASE } from '../data/config'
 
 type Filter = 'all' | 'upcoming' | 'ongoing' | 'past'
 
@@ -21,6 +20,10 @@ function EventBanner({ event, onViewPoster }: { event: Event; onViewPoster: () =
       <img
         src={`${BASE}${event.bannerImage}`}
         alt={event.title}
+        width={800}
+        height={176}
+        loading="lazy"
+        decoding="async"
         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         style={{ objectPosition: event.bannerPosition ?? '50% 40%' }}
       />

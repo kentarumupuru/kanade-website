@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { useSEO } from '../hooks/useSEO'
 import { revealDelayClass } from '../utils/animations'
 import { Calendar, Users, ImageIcon, ChevronDown } from 'lucide-react'
-import { events, isEventPast } from '../data/events'
+import { getUpcomingEvents } from '../data/events'
 import { members } from '../data/members'
 import { useLang } from '../context/LanguageContext'
 import { useInView } from '../hooks/useInView'
@@ -30,7 +30,15 @@ function HeroSection() {
         </p>
 
         <h1 className="mb-4 flex justify-center">
-          <img src={`${import.meta.env.BASE_URL}logos/titlelogo.png`} alt="KANADE" className="w-auto max-w-xs sm:max-w-sm md:max-w-md" />
+          <img
+            src={`${import.meta.env.BASE_URL}logos/titlelogo.png`}
+            alt="KANADE"
+            width={448}
+            height={100}
+            decoding="async"
+            fetchPriority="high"
+            className="w-auto max-w-xs sm:max-w-sm md:max-w-md"
+          />
         </h1>
 
         <div className="w-32 h-px mx-auto mb-6" style={{ background: 'linear-gradient(90deg, transparent, #c3aed6, transparent)' }} />
@@ -82,7 +90,7 @@ function VibesBanner() {
 
 function UpcomingEvents() {
   const { t, lang } = useLang()
-  const upcoming = events.filter(e => !isEventPast(e)).slice(0, 2)
+  const upcoming = getUpcomingEvents(2)
   const { ref: titleRef, inView: titleInView } = useInView()
   const { ref: cardsRef, inView: cardsInView } = useInView({ threshold: 0.1 })
 
