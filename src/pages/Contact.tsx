@@ -115,6 +115,7 @@ function ContactForm({
           placeholder={t('お名前', 'Your name')}
           className={fieldClass('name')}
           autoComplete="name"
+          maxLength={100}
         />
         {errors.name && <p className="text-kanade-rose/80 text-xs mt-1">{errors.name}</p>}
       </div>
@@ -131,6 +132,7 @@ function ContactForm({
           placeholder="your@email.com"
           className={fieldClass('email')}
           autoComplete="email"
+          maxLength={254}
         />
         {errors.email && <p className="text-kanade-rose/80 text-xs mt-1">{errors.email}</p>}
       </div>
@@ -166,6 +168,7 @@ function ContactForm({
           placeholder={t('メッセージをここに入力してください…', 'Write your message here…')}
           rows={5}
           className={`${fieldClass('message')} resize-none`}
+          maxLength={2000}
         />
         {errors.message && <p className="text-kanade-rose/80 text-xs mt-1">{errors.message}</p>}
       </div>

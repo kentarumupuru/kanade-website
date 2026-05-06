@@ -90,6 +90,16 @@ export function useAudioPlayer(tracks: Track[]) {
     }
   }, [state.playing, current?.src])
 
+  // Unmount cleanup: stop playback and release the media resource.
+  useEffect(() => {
+    return () => {
+      const audio = audioRef.current
+      if (!audio) return
+      audio.pause()
+      audio.src = ''
+    }
+  }, [])
+
   // Progress tracking.
   useEffect(() => {
     const audio = audioRef.current

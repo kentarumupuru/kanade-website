@@ -26,12 +26,15 @@ export function getEventById(id: number) {
   return events.find(e => e.id === id)
 }
 
+// Japan Standard Time is UTC+9 with no daylight saving time.
+const JST_HOURS_AHEAD_OF_UTC = 9
+
 function eventStartUtcMs(event: { date: string; time: string }): number {
   const timeMatch = event.time.match(/(\d{1,2}):(\d{2})/)
   const hours = timeMatch ? parseInt(timeMatch[1], 10) : 23
   const minutes = timeMatch ? parseInt(timeMatch[2], 10) : 59
   const [year, month, day] = event.date.split('-').map(Number)
-  return Date.UTC(year, month - 1, day, hours - 9, minutes)
+  return Date.UTC(year, month - 1, day, hours - JST_HOURS_AHEAD_OF_UTC, minutes)
 }
 
 function eventEndUtcMs(event: { date: string; endTime?: string }): number | null {
@@ -41,7 +44,7 @@ function eventEndUtcMs(event: { date: string; endTime?: string }): number | null
   const hours = parseInt(timeMatch[1], 10)
   const minutes = parseInt(timeMatch[2], 10)
   const [year, month, day] = event.date.split('-').map(Number)
-  return Date.UTC(year, month - 1, day, hours - 9, minutes)
+  return Date.UTC(year, month - 1, day, hours - JST_HOURS_AHEAD_OF_UTC, minutes)
 }
 
 /** Returns true if the event is currently in progress (between start and end time). */

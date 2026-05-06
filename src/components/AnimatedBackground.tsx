@@ -47,14 +47,19 @@ export default function AnimatedBackground() {
 
   // Crossfade cycle
   useEffect(() => {
+    let live = true
+
     cycleTimerRef.current = setTimeout(() => {
+      if (!live) return
       const nextIdx = (current + 1) % SLIDES.length
       setNext(nextIdx)
       setFading(true)
 
       fadeTimerRef.current = setTimeout(() => {
+        if (!live) return
         setCurrent(nextIdx)
         requestAnimationFrame(() => {
+          if (!live) return
           setNext(null)
           setFading(false)
         })
@@ -62,6 +67,7 @@ export default function AnimatedBackground() {
     }, SLIDE_DURATION)
 
     return () => {
+      live = false
       if (cycleTimerRef.current) clearTimeout(cycleTimerRef.current)
       if (fadeTimerRef.current)  clearTimeout(fadeTimerRef.current)
     }
