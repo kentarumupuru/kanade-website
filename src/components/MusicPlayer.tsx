@@ -18,11 +18,6 @@ export default function MusicPlayer() {
 
   if (!current) return null
 
-  const onSeek = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect()
-    seek((e.clientX - rect.left) / rect.width)
-  }
-
   return (
     <div className="flex items-center gap-2">
       {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
@@ -65,19 +60,22 @@ export default function MusicPlayer() {
         <SkipForward size={13} />
       </button>
 
-      <div
-        role="presentation"
-        className="hidden md:block w-20 lg:w-28 h-0.5 bg-white/10 rounded-full cursor-pointer group"
-        onClick={onSeek}
-      >
-        <div
-          className="h-full rounded-full"
-          style={{
-            width: `${state.progress}%`,
-            background: 'linear-gradient(90deg, #d4788a, #c3aed6)',
-          }}
-        />
-      </div>
+      {state.error && (
+        <span className="text-kanade-rose/70 text-xs hidden sm:block" role="alert">
+          {state.error}
+        </span>
+      )}
+
+      <input
+        type="range"
+        min={0}
+        max={100}
+        step={0.1}
+        value={state.progress}
+        onChange={e => seek(Number(e.target.value) / 100)}
+        className="hidden md:block w-20 lg:w-28 accent-kanade-blush cursor-pointer"
+        aria-label="Seek"
+      />
 
       <div className="relative">
         <button

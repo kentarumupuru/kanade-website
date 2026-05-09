@@ -5,6 +5,8 @@ import { useSEO } from '../hooks/useSEO'
 import { events, isEventPast, isEventOngoing, type Event } from '../data/events'
 import { useLang } from '../context/LanguageContext'
 import { useInView } from '../hooks/useInView'
+
+const EVENT_CARD_INVIEW_OPTS = { threshold: 0.1 }
 import Lightbox from '../components/Lightbox'
 import { revealDelayClass } from '../utils/animations'
 import { StatusBadge, EventDateBlock, EventMeta, EventTags, EventsPageHeader } from '../components/events'
@@ -43,7 +45,7 @@ function EventBanner({ event, onViewPoster }: { event: Event; onViewPoster: () =
 function EventCard({ event, index }: { event: Event; index: number }) {
   const { t, lang } = useLang()
   const navigate = useNavigate()
-  const { ref, inView } = useInView({ threshold: 0.1 })
+  const { ref, inView } = useInView(EVENT_CARD_INVIEW_OPTS)
   const [showPoster, setShowPoster] = useState(false)
 
   const date = new Date(event.date)

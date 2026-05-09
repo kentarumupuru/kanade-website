@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSEO } from '../hooks/useSEO'
 import { revealDelayClass } from '../utils/animations'
 import { ImageIcon } from 'lucide-react'
@@ -24,6 +24,9 @@ function PlaceholderTile({ image }: { image: GalleryImage }) {
   )
 }
 
+const TILE_INVIEW_OPTS    = { threshold: 0.08 }
+const HEADER_INVIEW_OPTS  = {}
+const FILTERS_INVIEW_OPTS = {}
 
 function GalleryTile({
   image,
@@ -37,8 +40,9 @@ function GalleryTile({
   onClick: () => void
 }) {
   const { t } = useLang()
-  const { ref, inView } = useInView({ threshold: 0.08 })
+  const { ref, inView } = useInView(TILE_INVIEW_OPTS)
   const delayClass = revealDelayClass(index)
+  const [imgError, setImgError] = useState(false)
 
   return (
     <div
@@ -51,25 +55,22 @@ function GalleryTile({
       onClick={onClick}
       role="button"
       tabIndex={0}
-      onKeyDown={e => e.key === 'Enter' && onClick()}
+      onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && onClick()}
       aria-label={t(`${caption}を表示`, `View ${image.alt}`)}
     >
-      {/* Try real image, fall back to placeholder */}
-      <img
-        src={image.thumbnail}
-        alt={image.alt}
-        loading="lazy"
-        decoding="async"
-        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-        onError={e => {
-          const el = e.currentTarget
-          el.style.display = 'none'
-          el.nextElementSibling?.classList.remove('hidden')
-        }}
-      />
-      <div className="hidden w-full h-full">
-        <PlaceholderTile image={image} />
-      </div>
+      {imgError
+        ? <PlaceholderTile image={image} />
+        : (
+          <img
+            src={image.thumbnail}
+            alt={image.alt}
+            loading="lazy"
+            decoding="async"
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            onError={() => setImgError(true)}
+          />
+        )
+      }
 
       {/* Hover overlay */}
       <div className="absolute inset-0 bg-kanade-deep/60 opacity-0 group-hover:opacity-100
@@ -87,8 +88,8 @@ export default function Gallery() {
   const [activeCategory, setActiveCategory] = useState<GalleryImage['category'] | 'all'>('all')
   const [lightboxIndex,  setLightboxIndex]  = useState<number | null>(null)
   const { t, lang } = useLang()
-  const { ref: headerRef, inView: headerInView } = useInView()
-  const { ref: filtersRef, inView: filtersInView } = useInView()
+  const { ref: headerRef,  inView: headerInView  } = useInView(HEADER_INVIEW_OPTS)
+  const { ref: filtersRef, inView: filtersInView } = useInView(FILTERS_INVIEW_OPTS)
 
   const categoryLabels: Record<GalleryImage['category'] | 'all', string> = {
     all:                 t('すべて',       'All'),
@@ -101,6 +102,11 @@ export default function Gallery() {
   const filtered = activeCategory === 'all'
     ? galleryImages
     : galleryImages.filter(img => img.category === activeCategory)
+
+  // Close lightbox when category changes to prevent out-of-bounds index.
+  useEffect(() => {
+    setLightboxIndex(null)
+  }, [activeCategory])
 
   const closeLightbox = () => setLightboxIndex(null)
 
@@ -175,7 +181,7 @@ export default function Gallery() {
         </div>
       </div>
 
-      {lightboxIndex !== null && (
+      {lightboxIndex !== null && lightboxIndex < filtered.length && (
         <Lightbox
           images={filtered.map(img => img.src)}
           startIndex={lightboxIndex}

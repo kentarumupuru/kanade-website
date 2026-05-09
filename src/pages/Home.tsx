@@ -7,6 +7,8 @@ import { members } from '../data/members'
 import { useLang } from '../context/LanguageContext'
 import { useInView } from '../hooks/useInView'
 
+const INVIEW_OPTS_01 = { threshold: 0.1 }
+
 function HeroSection() {
   const { t } = useLang()
   return (
@@ -92,7 +94,7 @@ function UpcomingEvents() {
   const { t, lang } = useLang()
   const upcoming = getUpcomingEvents(2)
   const { ref: titleRef, inView: titleInView } = useInView()
-  const { ref: cardsRef, inView: cardsInView } = useInView({ threshold: 0.1 })
+  const { ref: cardsRef, inView: cardsInView } = useInView(INVIEW_OPTS_01)
 
   return (
     <section className="py-16 px-6">
@@ -196,7 +198,7 @@ function FeaturedMembers() {
 function GalleryTeaser() {
   const { t } = useLang()
   const { ref: titleRef, inView: titleInView } = useInView()
-  const { ref: gridRef, inView: gridInView } = useInView({ threshold: 0.1 })
+  const { ref: gridRef, inView: gridInView } = useInView(INVIEW_OPTS_01)
   const tiles = [
     'from-kanade-blush/30 to-kanade-lavender/30',
     'from-kanade-lavender/30 to-kanade-mist/30',

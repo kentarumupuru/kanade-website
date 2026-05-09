@@ -14,6 +14,9 @@ function XLogo({ size = 11 }: { size?: number }) {
 import { members, roleColors, type MemberRole } from '../data/members'
 import { useLang } from '../context/LanguageContext'
 import { useInView } from '../hooks/useInView'
+import { revealDelayClass } from '../utils/animations'
+
+const MEMBER_CARD_INVIEW_OPTS = { threshold: 0.1 }
 
 function PageHeader() {
   const { t } = useLang()
@@ -40,8 +43,8 @@ function PageHeader() {
 function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; roleLabels: Record<MemberRole, string>; index: number }) {
   const [flipped, setFlipped] = useState(false)
   const { t } = useLang()
-  const { ref, inView } = useInView({ threshold: 0.1 })
-  const delayClass = `reveal-delay-${Math.min((index % 4) + 1, 6)}`
+  const { ref, inView } = useInView(MEMBER_CARD_INVIEW_OPTS)
+  const delayClass = revealDelayClass(index)
 
   const nameNode = member.link
     ? (

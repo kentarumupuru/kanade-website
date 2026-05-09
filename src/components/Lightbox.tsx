@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useLang } from '../context/LanguageContext'
 
@@ -9,12 +9,24 @@ interface LightboxProps {
 }
 
 export default function Lightbox({ images, startIndex, onClose }: LightboxProps) {
-  const [index, setIndex] = useState(startIndex)
-  const { t } = useLang()
+  const [index, setIndex]        = useState(startIndex)
+  const { t }                    = useLang()
+  const closeRef                 = useRef<HTMLButtonElement>(null)
+  const previousFocusRef         = useRef<HTMLElement | null>(null)
 
   const prev = useCallback(() => setIndex(i => (i - 1 + images.length) % images.length), [images.length])
   const next = useCallback(() => setIndex(i => (i + 1) % images.length), [images.length])
 
+  // Save previously focused element, move focus into dialog on open, restore on close.
+  useEffect(() => {
+    previousFocusRef.current = document.activeElement as HTMLElement
+    closeRef.current?.focus()
+    return () => {
+      previousFocusRef.current?.focus()
+    }
+  }, [])
+
+  // Keyboard navigation.
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Escape')     onClose()
@@ -27,11 +39,14 @@ export default function Lightbox({ images, startIndex, onClose }: LightboxProps)
 
   return (
     <div
-      role="presentation"
+      role="dialog"
+      aria-modal="true"
+      aria-label={t('画像ビューアー', 'Image viewer')}
       className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
       onClick={onClose}
     >
       <button
+        ref={closeRef}
         onClick={onClose}
         className="absolute top-4 right-4 glass rounded-full p-2 text-white/60 hover:text-white transition-colors"
         aria-label={t('閉じる', 'Close')}
@@ -51,8 +66,7 @@ export default function Lightbox({ images, startIndex, onClose }: LightboxProps)
 
       <img
         src={images[index]}
-        alt={`${index + 1} / ${images.length}`}
-        role="presentation"
+        alt={t(`画像 ${index + 1} / ${images.length}`, `Image ${index + 1} of ${images.length}`)}
         decoding="async"
         className="max-h-[90vh] max-w-[90vw] rounded-xl shadow-2xl object-contain"
         onClick={e => e.stopPropagation()}
@@ -69,7 +83,10 @@ export default function Lightbox({ images, startIndex, onClose }: LightboxProps)
       )}
 
       {images.length > 1 && (
-        <div role="presentation" className="absolute bottom-4 flex gap-2" onClick={e => e.stopPropagation()}>
+        <div
+          className="absolute bottom-4 flex gap-2"
+          onClick={e => e.stopPropagation()}
+        >
           {images.map((src, i) => (
             <button
               key={src}
@@ -83,7 +100,7 @@ export default function Lightbox({ images, startIndex, onClose }: LightboxProps)
         </div>
       )}
 
-      <p className="absolute bottom-4 right-4 text-white/30 text-xs">
+      <p className="absolute bottom-4 right-4 text-white/30 text-xs" aria-hidden="true">
         {index + 1} / {images.length}
       </p>
     </div>

@@ -9,7 +9,7 @@ export function buildEventJsonLd(event: Event): object {
     startDate: `${event.date}T${event.time.replace(' JST', '+09:00')}`,
     location: { '@type': 'Place', name: `${event.venue}, ${event.world}` },
     description: event.description,
-    organizer: { '@type': 'Organization', name: 'KANADE', url: 'https://wolfie0420.github.io/kanade-website/' },
+    organizer: { '@type': 'Organization', name: 'KANADE', url: SITE_URL },
     ...(event.bannerImage && { image: `${SITE_URL}/${event.bannerImage}` }),
   }
 }

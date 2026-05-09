@@ -13,11 +13,13 @@ interface State {
   volume: number
   muted: boolean
   showVolumeUI: boolean
+  error: string | null
 }
 
 type Action =
   | { type: 'TOGGLE_PLAY' }
   | { type: 'PLAYBACK_FAILED' }
+  | { type: 'CLEAR_ERROR' }
   | { type: 'SKIP_NEXT'; total: number }
   | { type: 'SKIP_PREV'; total: number }
   | { type: 'RESET_PROGRESS' }
@@ -29,13 +31,15 @@ type Action =
 function reducer(state: State, action: Action): State {
   switch (action.type) {
     case 'TOGGLE_PLAY':
-      return { ...state, playing: !state.playing }
+      return { ...state, playing: !state.playing, error: null }
     case 'PLAYBACK_FAILED':
-      return { ...state, playing: false }
+      return { ...state, playing: false, error: 'Playback failed. Check your browser settings.' }
+    case 'CLEAR_ERROR':
+      return { ...state, error: null }
     case 'SKIP_NEXT':
-      return { ...state, index: (state.index + 1) % action.total, progress: 0 }
+      return { ...state, index: (state.index + 1) % action.total, progress: 0, error: null }
     case 'SKIP_PREV':
-      return { ...state, index: (state.index - 1 + action.total) % action.total, progress: 0 }
+      return { ...state, index: (state.index - 1 + action.total) % action.total, progress: 0, error: null }
     case 'RESET_PROGRESS':
       return { ...state, progress: 0 }
     case 'SET_PROGRESS':
@@ -58,6 +62,7 @@ const INITIAL: State = {
   volume: 0.7,
   muted: false,
   showVolumeUI: false,
+  error: null,
 }
 
 export function useAudioPlayer(tracks: Track[]) {
@@ -118,9 +123,9 @@ export function useAudioPlayer(tracks: Track[]) {
     audio.volume = state.muted ? 0 : state.volume
   }, [state.volume, state.muted])
 
-  const togglePlay = useCallback(() => dispatch({ type: 'TOGGLE_PLAY' }), [])
-  const skipNext = useCallback(() => dispatch({ type: 'SKIP_NEXT', total: tracks.length }), [tracks.length])
-  const skipPrev = useCallback(() => {
+  const togglePlay  = useCallback(() => dispatch({ type: 'TOGGLE_PLAY' }), [])
+  const skipNext    = useCallback(() => dispatch({ type: 'SKIP_NEXT', total: tracks.length }), [tracks.length])
+  const skipPrev    = useCallback(() => {
     const audio = audioRef.current
     if (audio && audio.currentTime > 3) {
       audio.currentTime = 0
@@ -129,14 +134,14 @@ export function useAudioPlayer(tracks: Track[]) {
     }
     dispatch({ type: 'SKIP_PREV', total: tracks.length })
   }, [tracks.length])
-  const seek = useCallback((ratio: number) => {
+  const seek        = useCallback((ratio: number) => {
     const audio = audioRef.current
     if (!audio || !audio.duration) return
     audio.currentTime = ratio * audio.duration
     dispatch({ type: 'SET_PROGRESS', value: ratio * 100 })
   }, [])
-  const setVolume = useCallback((value: number) => dispatch({ type: 'SET_VOLUME', value }), [])
-  const toggleMute = useCallback(() => dispatch({ type: 'TOGGLE_MUTE' }), [])
+  const setVolume      = useCallback((value: number) => dispatch({ type: 'SET_VOLUME', value }), [])
+  const toggleMute     = useCallback(() => dispatch({ type: 'TOGGLE_MUTE' }), [])
   const toggleVolumeUI = useCallback(() => dispatch({ type: 'TOGGLE_VOLUME_UI' }), [])
 
   return {
