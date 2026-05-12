@@ -6,27 +6,19 @@ import { useLang } from '../context/LanguageContext'
 import { useInView } from '../hooks/useInView'
 import Lightbox from '../components/Lightbox'
 import { galleryImages, type GalleryImage } from '../data/gallery'
+import { TILE_GRADIENTS } from '../data/constants'
+import { FilterButton } from '../components/FilterButton'
 
 function PlaceholderTile({ image }: { image: GalleryImage }) {
-  const gradients = [
-    'from-kanade-blush/30 to-kanade-lavender/30',
-    'from-kanade-lavender/30 to-kanade-mist/30',
-    'from-kanade-gold/20 to-kanade-blush/20',
-    'from-kanade-mist/30 to-kanade-lavender/20',
-    'from-kanade-rose/20 to-kanade-gold/20',
-    'from-kanade-lilac/20 to-kanade-blush/20',
-  ]
   return (
-    <div className={`w-full h-full bg-gradient-to-br ${gradients[image.id % gradients.length]}
+    <div className={`w-full h-full bg-gradient-to-br ${TILE_GRADIENTS[image.id % TILE_GRADIENTS.length]}
                      flex items-center justify-center`}>
       <ImageIcon size={32} className="text-kanade-cream/20" />
     </div>
   )
 }
 
-const TILE_INVIEW_OPTS    = { threshold: 0.08 }
-const HEADER_INVIEW_OPTS  = {}
-const FILTERS_INVIEW_OPTS = {}
+const TILE_INVIEW_OPTS = { threshold: 0.08 }
 
 function GalleryTile({
   image,
@@ -88,8 +80,8 @@ export default function Gallery() {
   const [activeCategory, setActiveCategory] = useState<GalleryImage['category'] | 'all'>('all')
   const [lightboxIndex,  setLightboxIndex]  = useState<number | null>(null)
   const { t, lang } = useLang()
-  const { ref: headerRef,  inView: headerInView  } = useInView(HEADER_INVIEW_OPTS)
-  const { ref: filtersRef, inView: filtersInView } = useInView(FILTERS_INVIEW_OPTS)
+  const { ref: headerRef,  inView: headerInView  } = useInView()
+  const { ref: filtersRef, inView: filtersInView } = useInView()
 
   const categoryLabels: Record<GalleryImage['category'] | 'all', string> = {
     all:                 t('すべて',       'All'),
@@ -136,16 +128,13 @@ export default function Gallery() {
           className={`flex flex-wrap justify-center gap-2 mb-10 reveal-fade${filtersInView ? ' is-visible' : ''}`}
         >
           {(Object.keys(categoryLabels) as (GalleryImage['category'] | 'all')[]).map(cat => (
-            <button
+            <FilterButton
               key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-5 py-2 rounded-full text-xs tracking-widest uppercase font-sans transition-all duration-200
-                ${activeCategory === cat
-                  ? 'bg-gradient-to-r from-kanade-rose to-kanade-lavender text-white shadow-lg shadow-kanade-rose/20'
-                  : 'glass text-kanade-sand/70 hover:text-kanade-sand/80'}`}
-            >
-              {categoryLabels[cat]}
-            </button>
+              value={cat}
+              label={categoryLabels[cat]}
+              isActive={activeCategory === cat}
+              onClick={v => setActiveCategory(v as GalleryImage['category'] | 'all')}
+            />
           ))}
         </div>
 

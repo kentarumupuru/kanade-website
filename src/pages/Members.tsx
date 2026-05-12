@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useSEO } from '../hooks/useSEO'
 import { Globe } from 'lucide-react'
@@ -11,12 +11,23 @@ function XLogo({ size = 11 }: { size?: number }) {
     </svg>
   )
 }
-import { members, roleColors, type MemberRole } from '../data/members'
+import { members, type MemberRole } from '../data/members'
 import { useLang } from '../context/LanguageContext'
 import { useInView } from '../hooks/useInView'
 import { revealDelayClass } from '../utils/animations'
+import { FilterButton } from '../components/FilterButton'
+import { RoleBadge } from '../components/RoleBadge'
 
 const MEMBER_CARD_INVIEW_OPTS = { threshold: 0.1 }
+
+const FLIP_DURATION = '0.5s'
+const CARD_MIN_HEIGHT = '320px'
+const CARD_FACE_STYLE: React.CSSProperties = {
+  background: 'rgba(255,255,255,0.05)',
+  boxShadow: '0 4px 24px rgba(0,0,0,0.2)',
+  backfaceVisibility: 'hidden',
+  WebkitBackfaceVisibility: 'hidden',
+}
 
 function PageHeader() {
   const { t } = useLang()
@@ -70,25 +81,22 @@ function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; 
       onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && setFlipped(v => !v)}
       aria-label={`${member.name} — ${t('クリックして紹介を読む', 'click to read bio')}`}
     >
+      <div aria-live="polite" className="sr-only">
+        {flipped ? t('カードが裏返りました。', 'Card flipped. Showing bio.') : ''}
+      </div>
       <div
         className="relative w-full"
         style={{
           transformStyle: 'preserve-3d',
-          transition: 'transform 0.5s',
+          transition: `transform ${FLIP_DURATION}`,
           transform: flipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-          minHeight: '320px',
+          minHeight: CARD_MIN_HEIGHT,
         }}
       >
         {/* Front */}
         <div
           className="absolute inset-0 rounded-2xl flex flex-col items-center justify-center text-center p-6 border border-white/8"
-          style={{
-            background: 'rgba(255,255,255,0.05)',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.2)',
-            backfaceVisibility: 'hidden',
-            WebkitBackfaceVisibility: 'hidden',
-            visibility: flipped ? 'hidden' : 'visible',
-          }}
+          style={{ ...CARD_FACE_STYLE, visibility: flipped ? 'hidden' : 'visible' }}
         >
           {/* Avatar */}
           {member.image ? (
@@ -119,9 +127,7 @@ function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; 
           {/* Role badges */}
           <div className="flex flex-wrap justify-center gap-1 mt-1">
             {member.roles.map(role => (
-              <span key={role} className={`text-xs px-2.5 py-0.5 rounded-full border font-sans tracking-widest uppercase ${roleColors[role]}`}>
-                {roleLabels[role]}
-              </span>
+              <RoleBadge key={role} role={role} label={roleLabels[role]} />
             ))}
           </div>
 
@@ -153,20 +159,11 @@ function MemberCard({ member, roleLabels, index }: { member: typeof members[0]; 
         {/* Back */}
         <div
           className="absolute inset-0 rounded-2xl flex flex-col justify-center p-6 border border-white/8"
-          style={{
-            background: 'rgba(255,255,255,0.05)',
-            boxShadow: '0 4px 24px rgba(0,0,0,0.2)',
-            backfaceVisibility: 'hidden',
-            WebkitBackfaceVisibility: 'hidden',
-            transform: 'rotateY(180deg)',
-            visibility: flipped ? 'visible' : 'hidden',
-          }}
+          style={{ ...CARD_FACE_STYLE, transform: 'rotateY(180deg)', visibility: flipped ? 'visible' : 'hidden' }}
         >
           <div className="flex flex-wrap gap-1 mb-3">
             {member.roles.map(role => (
-              <span key={role} className={`text-xs px-2.5 py-0.5 rounded-full border ${roleColors[role]}`}>
-                {roleLabels[role]}
-              </span>
+              <RoleBadge key={role} role={role} label={roleLabels[role]} />
             ))}
           </div>
           <h2 className="font-serif text-lg text-kanade-cream font-light mb-3">{member.name}</h2>
@@ -228,21 +225,14 @@ export default function Members() {
           className={`flex flex-wrap items-center justify-center gap-2 mb-12 reveal-fade${filtersInView ? ' is-visible' : ''}`}
         >
           {roleFilters.map(({ label, value }) => (
-            <button
+            <FilterButton
               key={value}
-              onClick={() => setActiveRole(value)}
-              className={`px-5 py-2 rounded-full text-xs tracking-widest uppercase font-sans transition-all duration-200
-                ${activeRole === value
-                  ? 'bg-gradient-to-r from-kanade-rose to-kanade-lavender text-white shadow-lg shadow-kanade-rose/20'
-                  : 'glass text-kanade-sand/70 hover:text-kanade-sand/80'}`}
-            >
-              {label}
-              {value !== 'all' && (
-                <span className="ml-1.5 opacity-60">
-                  ({roleCounts[value as MemberRole]})
-                </span>
-              )}
-            </button>
+              value={value}
+              label={label}
+              isActive={activeRole === value}
+              onClick={v => setActiveRole(v as MemberRole | 'all')}
+              count={value !== 'all' ? roleCounts[value as MemberRole] : undefined}
+            />
           ))}
         </div>
 
@@ -257,9 +247,7 @@ export default function Members() {
         <div className="flex flex-wrap justify-center gap-4 mt-12 pt-8 border-t border-white/5">
           {ALL_ROLES.map(role => (
             <div key={role} className="flex items-center gap-2">
-              <span className={`text-xs px-2.5 py-0.5 rounded-full border ${roleColors[role]}`}>
-                {roleLabels[role]}
-              </span>
+              <RoleBadge role={role} label={roleLabels[role]} />
             </div>
           ))}
         </div>

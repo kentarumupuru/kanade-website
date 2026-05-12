@@ -1,10 +1,7 @@
 import { useReducer, useRef, useEffect, useCallback } from 'react'
+import type { Track } from '../data/tracks'
 
-export interface Track {
-  title: string
-  artist: string
-  src?: string
-}
+export type { Track }
 
 interface State {
   index: number
@@ -55,11 +52,14 @@ function reducer(state: State, action: Action): State {
   }
 }
 
+const DEFAULT_VOLUME = 0.7
+const SEEK_BACK_THRESHOLD_S = 3
+
 const INITIAL: State = {
   index: 0,
   playing: false,
   progress: 0,
-  volume: 0.7,
+  volume: DEFAULT_VOLUME,
   muted: false,
   showVolumeUI: false,
   error: null,
@@ -127,7 +127,7 @@ export function useAudioPlayer(tracks: Track[]) {
   const skipNext    = useCallback(() => dispatch({ type: 'SKIP_NEXT', total: tracks.length }), [tracks.length])
   const skipPrev    = useCallback(() => {
     const audio = audioRef.current
-    if (audio && audio.currentTime > 3) {
+    if (audio && audio.currentTime > SEEK_BACK_THRESHOLD_S) {
       audio.currentTime = 0
       dispatch({ type: 'RESET_PROGRESS' })
       return

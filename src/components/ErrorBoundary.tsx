@@ -29,6 +29,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <p className="text-kanade-cream font-serif text-2xl mb-3">Something went wrong.</p>
             <p className="text-kanade-sand/70 text-sm mb-6">Please refresh the page to continue.</p>
             <button
+              type="button"
               onClick={() => window.location.reload()}
               className="px-6 py-2 rounded-full border border-kanade-rose/40 text-kanade-rose text-sm hover:bg-kanade-rose/10 transition-colors"
             >

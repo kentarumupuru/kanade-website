@@ -1,16 +1,17 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Calendar, ExternalLink } from 'lucide-react'
 import { useSEO } from '../hooks/useSEO'
 import { events, isEventPast, isEventOngoing, type Event } from '../data/events'
 import { useLang } from '../context/LanguageContext'
 import { useInView } from '../hooks/useInView'
-
-const EVENT_CARD_INVIEW_OPTS = { threshold: 0.1 }
 import Lightbox from '../components/Lightbox'
+import { FilterButton } from '../components/FilterButton'
 import { revealDelayClass } from '../utils/animations'
 import { StatusBadge, EventDateBlock, EventMeta, EventTags, EventsPageHeader } from '../components/events'
 import { BASE_URL as BASE } from '../data/config'
+
+const EVENT_CARD_INVIEW_OPTS = { threshold: 0.1 }
 
 type Filter = 'all' | 'upcoming' | 'ongoing' | 'past'
 
@@ -99,21 +100,25 @@ export default function Events() {
   const { t } = useLang()
   const { ref: filtersRef, inView: filtersInView } = useInView()
 
-  const ongoing  = events.filter(e => isEventOngoing(e))
-  const upcoming = events.filter(e => !isEventPast(e) && !isEventOngoing(e))
-  const past     = events.filter(e => isEventPast(e))
-  const filtered =
+  const { ongoing, upcoming, past } = useMemo(() => ({
+    ongoing:  events.filter(e => isEventOngoing(e)),
+    upcoming: events.filter(e => !isEventPast(e) && !isEventOngoing(e)),
+    past:     events.filter(e => isEventPast(e)),
+  }), [])
+
+  const filtered = useMemo(() => (
     filter === 'all'      ? events :
     filter === 'upcoming' ? upcoming :
     filter === 'ongoing'  ? ongoing :
     past
+  ), [filter, ongoing, upcoming, past])
 
-  const filterLabels: Record<Filter, string> = {
+  const filterLabels = useMemo((): Record<Filter, string> => ({
     all:      t(`すべて (${events.length})`,       `All (${events.length})`),
     upcoming: t(`開催予定 (${upcoming.length})`,   `Upcoming (${upcoming.length})`),
     ongoing:  t(`開催中 (${ongoing.length})`,      `Ongoing (${ongoing.length})`),
     past:     t(`終了済み (${past.length})`,        `Past (${past.length})`),
-  }
+  }), [t, ongoing.length, upcoming.length, past.length])
 
   return (
     <>
@@ -125,16 +130,13 @@ export default function Events() {
           className={`flex items-center justify-center gap-2 mb-10 reveal-fade${filtersInView ? ' is-visible' : ''}`}
         >
           {(['all', 'upcoming', 'ongoing', 'past'] as Filter[]).map(f => (
-            <button
+            <FilterButton
               key={f}
-              onClick={() => setFilter(f)}
-              className={`px-5 py-2 rounded-full text-xs tracking-widest uppercase font-sans transition-all duration-200
-                ${filter === f
-                  ? 'bg-gradient-to-r from-kanade-rose to-kanade-lavender text-white shadow-lg shadow-kanade-rose/20'
-                  : 'glass text-kanade-sand/70 hover:text-kanade-sand/80'}`}
-            >
-              {filterLabels[f]}
-            </button>
+              value={f}
+              label={filterLabels[f]}
+              isActive={filter === f}
+              onClick={v => setFilter(v as Filter)}
+            />
           ))}
         </div>
 

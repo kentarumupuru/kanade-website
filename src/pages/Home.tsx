@@ -1,13 +1,21 @@
 import { Link } from 'react-router-dom'
 import { useSEO } from '../hooks/useSEO'
+import { useJsonLd } from '../hooks/useJsonLd'
 import { revealDelayClass } from '../utils/animations'
 import { Calendar, Users, ImageIcon, ChevronDown } from 'lucide-react'
 import { getUpcomingEvents } from '../data/events'
 import { members } from '../data/members'
 import { useLang } from '../context/LanguageContext'
 import { useInView } from '../hooks/useInView'
+import { TILE_GRADIENTS } from '../data/constants'
+import { SITE_URL, TWITTER_URL } from '../data/config'
 
 const INVIEW_OPTS_01 = { threshold: 0.1 }
+
+const HERO_RING_OUTER = 'w-[600px] h-[600px]'
+const HERO_RING_INNER = 'w-[400px] h-[400px]'
+const HERO_DIVIDER_GRADIENT = 'linear-gradient(90deg, transparent, #c3aed6, transparent)'
+const HOME_UPCOMING_LIMIT = 2
 
 function HeroSection() {
   const { t } = useLang()
@@ -21,8 +29,8 @@ function HeroSection() {
           WebkitMaskImage: 'radial-gradient(ellipse at 50% 40%, black 30%, transparent 72%)',
         }}
       >
-        <div className="w-[600px] h-[600px] rounded-full border border-kanade-lavender/10 animate-spin-slow" />
-        <div className="absolute w-[400px] h-[400px] rounded-full border border-kanade-blush/8" style={{ animationDirection: 'reverse' }} />
+        <div className={`${HERO_RING_OUTER} rounded-full border border-kanade-lavender/10 animate-spin-slow`} />
+        <div className={`absolute ${HERO_RING_INNER} rounded-full border border-kanade-blush/8`} style={{ animationDirection: 'reverse' }} />
       </div>
 
       {/* Main hero content */}
@@ -43,7 +51,7 @@ function HeroSection() {
           />
         </h1>
 
-        <div className="w-32 h-px mx-auto mb-6" style={{ background: 'linear-gradient(90deg, transparent, #c3aed6, transparent)' }} />
+        <div className="w-32 h-px mx-auto mb-6" style={{ background: HERO_DIVIDER_GRADIENT }} />
 
         <p className="text-kanade-sand/75 font-sans font-light tracking-widest text-sm md:text-base max-w-md mx-auto mb-10 leading-relaxed">
           {t(
@@ -92,7 +100,7 @@ function VibesBanner() {
 
 function UpcomingEvents() {
   const { t, lang } = useLang()
-  const upcoming = getUpcomingEvents(2)
+  const upcoming = getUpcomingEvents(HOME_UPCOMING_LIMIT)
   const { ref: titleRef, inView: titleInView } = useInView()
   const { ref: cardsRef, inView: cardsInView } = useInView(INVIEW_OPTS_01)
 
@@ -199,12 +207,7 @@ function GalleryTeaser() {
   const { t } = useLang()
   const { ref: titleRef, inView: titleInView } = useInView()
   const { ref: gridRef, inView: gridInView } = useInView(INVIEW_OPTS_01)
-  const tiles = [
-    'from-kanade-blush/30 to-kanade-lavender/30',
-    'from-kanade-lavender/30 to-kanade-mist/30',
-    'from-kanade-gold/20 to-kanade-blush/20',
-    'from-kanade-mist/30 to-kanade-lavender/20',
-  ]
+  const tiles = TILE_GRADIENTS.slice(0, 4)
 
   return (
     <section className="py-16 px-6">
@@ -239,8 +242,18 @@ function GalleryTeaser() {
   )
 }
 
+const ORG_JSONLD = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'KANADE',
+  url: SITE_URL,
+  sameAs: [TWITTER_URL],
+  logo: `${SITE_URL}/logos/logo.png`,
+}
+
 export default function Home() {
   useSEO({ title: 'KANADE | Performing Group', description: 'Meet KANADE Performing Group!', url: '/' })
+  useJsonLd(ORG_JSONLD, 'org-jsonld')
   return (
     <>
       <HeroSection />

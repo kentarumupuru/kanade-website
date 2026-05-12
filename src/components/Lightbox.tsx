@@ -87,9 +87,9 @@ export default function Lightbox({ images, startIndex, onClose }: LightboxProps)
           className="absolute bottom-4 flex gap-2"
           onClick={e => e.stopPropagation()}
         >
-          {images.map((src, i) => (
+          {images.map((_src, i) => (
             <button
-              key={src}
+              key={i}
               onClick={() => setIndex(i)}
               className={`w-2 h-2 rounded-full transition-all duration-200 ${
                 i === index ? 'bg-kanade-blush scale-125' : 'bg-kanade-sand/40 hover:bg-kanade-sand/70'

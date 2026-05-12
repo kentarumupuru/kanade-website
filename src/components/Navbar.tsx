@@ -3,7 +3,42 @@ import { NavLink, Link } from 'react-router-dom'
 import { Menu, X } from 'lucide-react'
 import MusicPlayer from './MusicPlayer'
 import { useLang } from '../context/LanguageContext'
-import { useNavItems } from '../hooks/useNavItems'
+import { useNavItems, type NavItem } from '../hooks/useNavItems'
+
+const SCROLL_THRESHOLD_PX = 40
+
+function NavLinks({ navItems, onNavigate }: { navItems: NavItem[]; onNavigate?: () => void }) {
+  return (
+    <>
+      {navItems.map(({ label, to }) => (
+        <li key={to}>
+          <NavLink
+            to={to}
+            end={to === '/'}
+            className={({ isActive }) => `nav-link${onNavigate ? ' text-base' : ''} ${isActive ? 'active' : ''}`}
+            onClick={onNavigate}
+          >
+            {label}
+          </NavLink>
+        </li>
+      ))}
+    </>
+  )
+}
+
+function LanguageToggle({ lang, onToggle, className = '' }: { lang: string; onToggle: () => void; className?: string }) {
+  return (
+    <button
+      onClick={onToggle}
+      className={`glass rounded-full border border-white/10 text-xs tracking-widest
+                 text-kanade-sand/75 hover:text-kanade-blush hover:border-kanade-blush/30
+                 transition-all duration-200 font-sans select-none ${className}`}
+      aria-label="言語切り替え / Toggle language"
+    >
+      {lang === 'ja' ? 'EN' : 'JP'}
+    </button>
+  )
+}
 
 export default function Navbar() {
   const [scrolled,  setScrolled]  = useState(false)
@@ -12,7 +47,7 @@ export default function Navbar() {
   const navItems = useNavItems()
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40)
+    const onScroll = () => setScrolled(window.scrollY > SCROLL_THRESHOLD_PX)
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
@@ -53,30 +88,12 @@ export default function Navbar() {
 
         {/* Center — desktop nav links */}
         <ul className="hidden md:flex items-center justify-center gap-6 flex-1">
-          {navItems.map(({ label, to }) => (
-            <li key={to}>
-              <NavLink
-                to={to}
-                end={to === '/'}
-                className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-              >
-                {label}
-              </NavLink>
-            </li>
-          ))}
+          <NavLinks navItems={navItems} />
         </ul>
 
         {/* Right — language toggle + music player */}
         <div className="hidden md:flex items-center gap-3 flex-shrink-0">
-          <button
-            onClick={toggle}
-            className="glass rounded-full px-3 py-1.5 border border-white/10 text-xs tracking-widest
-                       text-kanade-sand/75 hover:text-kanade-blush hover:border-kanade-blush/30
-                       transition-all duration-200 font-sans select-none"
-            aria-label="言語切り替え / Toggle language"
-          >
-            {lang === 'ja' ? 'EN' : 'JP'}
-          </button>
+          <LanguageToggle lang={lang} onToggle={toggle} className="px-3 py-1.5" />
           <div className="glass rounded-full px-3 py-1.5 border border-white/5">
             <MusicPlayer />
           </div>
@@ -102,29 +119,12 @@ export default function Navbar() {
         }`}
       >
         <ul className="flex flex-col items-center gap-5 pb-4">
-          {navItems.map(({ label, to }) => (
-            <li key={to}>
-              <NavLink
-                to={to}
-                end={to === '/'}
-                className={({ isActive }) => `nav-link text-base ${isActive ? 'active' : ''}`}
-                onClick={() => setMenuOpen(false)}
-              >
-                {label}
-              </NavLink>
-            </li>
-          ))}
+          <NavLinks navItems={navItems} onNavigate={() => setMenuOpen(false)} />
         </ul>
 
         {/* Language toggle + music player in mobile menu */}
         <div className="flex justify-center items-center gap-4 pb-2">
-          <button
-            onClick={toggle}
-            className="glass rounded-full px-4 py-2 border border-white/10 text-xs tracking-widest
-                       text-kanade-sand/75 hover:text-kanade-blush transition-all duration-200 font-sans"
-          >
-            {lang === 'ja' ? 'EN' : 'JP'}
-          </button>
+          <LanguageToggle lang={lang} onToggle={toggle} className="px-4 py-2" />
           <div className="glass rounded-full px-4 py-2 border border-white/5">
             <MusicPlayer />
           </div>

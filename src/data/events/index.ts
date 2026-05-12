@@ -1,5 +1,6 @@
 export type { Event, EventScreenshot } from './types'
 
+import { parseJstHoursMinutes } from '../../utils/parseJstTime'
 import { kanadeLive2026 } from './2026-04-18-kanade-live'
 import { housingTour77 } from './2026-04-19-housing-tour-77'
 import { springBloom2026 } from './2026-05-03-spring-bloom'
@@ -30,9 +31,7 @@ export function getEventById(id: number) {
 const JST_HOURS_AHEAD_OF_UTC = 9
 
 function eventStartUtcMs(event: { date: string; time: string }): number {
-  const timeMatch = event.time.match(/(\d{1,2}):(\d{2})/)
-  const hours = timeMatch ? parseInt(timeMatch[1], 10) : 23
-  const minutes = timeMatch ? parseInt(timeMatch[2], 10) : 59
+  const { hours, minutes } = parseJstHoursMinutes(event.time)
   const [year, month, day] = event.date.split('-').map(Number)
   return Date.UTC(year, month - 1, day, hours - JST_HOURS_AHEAD_OF_UTC, minutes)
 }
