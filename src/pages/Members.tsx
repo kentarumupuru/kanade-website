@@ -22,6 +22,9 @@ const MEMBER_CARD_INVIEW_OPTS = { threshold: 0.1 }
 
 const FLIP_DURATION = '0.5s'
 const CARD_MIN_HEIGHT = '320px'
+// `visibility` toggling (not display:none) is intentional: display:none removes the element
+// from the stacking context and breaks the CSS 3D flip — the rotated back face disappears
+// instead of rotating into view. visibility preserves layout while hiding the face.
 const CARD_FACE_STYLE: React.CSSProperties = {
   background: 'rgba(255,255,255,0.05)',
   boxShadow: '0 4px 24px rgba(0,0,0,0.2)',

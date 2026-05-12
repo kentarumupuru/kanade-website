@@ -100,6 +100,9 @@ export default function Events() {
   const { t } = useLang()
   const { ref: filtersRef, inView: filtersInView } = useInView()
 
+  // Empty deps: `events` is a static module-level array; isEventOngoing/isEventPast read
+  // Date.now() internally, so the categorisation is intentionally computed once at mount.
+  // The filter result doesn't need to update while the page is open.
   const { ongoing, upcoming, past } = useMemo(() => ({
     ongoing:  events.filter(e => isEventOngoing(e)),
     upcoming: events.filter(e => !isEventPast(e) && !isEventOngoing(e)),

@@ -242,6 +242,8 @@ function GalleryTeaser() {
   )
 }
 
+// Module-level so the object reference is stable across renders — avoids re-firing the
+// useJsonLd effect on every Home render (effect deps include the data object).
 const ORG_JSONLD = {
   '@context': 'https://schema.org',
   '@type': 'Organization',

@@ -45,7 +45,9 @@ export default function AnimatedBackground() {
     return () => mq.removeEventListener('change', handler)
   }, [])
 
-  // Crossfade cycle
+  // Crossfade cycle. `live` guard prevents state updates if the component unmounts while
+  // a timer is in flight — clearTimeout alone isn't enough because the callback may have
+  // already started executing when cleanup runs.
   useEffect(() => {
     let live = true
 

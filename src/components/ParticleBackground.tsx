@@ -38,6 +38,8 @@ interface NoteConfig {
   startY: string     // initial vertical offset so screen starts populated
 }
 
+// Deterministic LCG-style PRNG so the particle layout is identical on every render
+// and across SSR/hydration (Math.random() would produce a mismatch).
 function seededRandom(seed: number) {
   const x = Math.sin(seed + 1) * 10000
   return x - Math.floor(x)

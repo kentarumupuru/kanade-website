@@ -43,6 +43,7 @@ function GalleryTile({
                  group relative glass hover:ring-1 hover:ring-kanade-lavender/30
                  transition-all duration-300 hover:shadow-lg hover:shadow-kanade-lavender/10
                  reveal-scale ${delayClass}${inView ? ' is-visible' : ''}`}
+      // Varied aspect ratios create visual rhythm in the masonry grid without JS layout libs.
       style={{ aspectRatio: index % 5 === 0 ? '1/1.3' : index % 3 === 0 ? '1/0.8' : '1/1' }}
       onClick={onClick}
       role="button"
